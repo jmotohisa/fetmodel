@@ -3,6 +3,14 @@ doc/cylindricalMESFET.log
 doc/cylindricalMESFET.pdf
 doc/cylindricalMESFET.synctex.gz
 
+*.o
+main.c
+geom.c
+stamp-h1
+fetmodel.dSYM/
+ctl-io.h
+ctl-io.c
+Makefile
 autom4te.cache/
 config.h.in
 config.h
@@ -17,6 +25,8 @@ compile
 config.guess
 configure.scan
 config.sub
+config.log
+config.status
 depcomp
 install-sh
 ltmain.sh
@@ -24,3 +34,5 @@ missing
 .deps/
 .fetmodel
 configure
+fetmodel
+libtool

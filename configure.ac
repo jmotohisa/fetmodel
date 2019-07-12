@@ -198,6 +198,11 @@ fi # if with_libctl
 
 ##############################################################################
 
+LIBCTL_LIBS=$LIBS
+AC_SUBST(LIBCTL_LIBS)
+
+##############################################################################
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h])

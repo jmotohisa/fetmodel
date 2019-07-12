@@ -1,6 +1,12 @@
 // FET models for Cylindrical MOSFET and Cylindrical MESFET
 // in Gradual Channel Approximation
 
+/* MOSFET: Iniguez, B., Jimenez, D., Roig, J., Hamid, H., Marsal, L., & Pallares, J. (2005). Explicit continuous model for long-channel undoped surrounding gate MOSFETs. IEEE Transactions on Electron Devices, 52(8), 1868–1873.
+ */
+
+/* MESFET: see research report JM
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -350,7 +356,7 @@ double n_intrinsic(double temp,double me,double mh,double Eg,double gv)
 /////////////////////////
 // Cylyndrical MESFET
 
-void SetParams_cMESFET(radius,Lg,Nd,Vbi,eps_semi,mue)
+void SetParams_cMESFET(double radius,double Lg,double Nd,double Vbi,double eps_semi,double mue)
 {
   //double radius=50,Lg=1,ND=2.3e18,Vbi=0.34,eps_semi=14.5,mue=400;
 	  /*	Prompt radius,"nanowire radius (nm)"

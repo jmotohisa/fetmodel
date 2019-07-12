@@ -1,10 +1,10 @@
-if WITH_LIBCTL
-LIBCTL = libctl
-else
-LIBCTL =
-endif
+# if WITH_LIBCTL
+# LIBCTL = libctl
+# else
+# LIBCTL =
+# endif
 
-ACLOCAL_AMFLAGS=-I m4
+# ACLOCAL_AMFLAGS=-I m4
 
 # SUBDIRS = src/S4 src/kiss_fft src/kiss_fft/tools src test examples
 # EXTRA_DIST=AUTHORS COPYING ChangeLog INSTALL NEWS README TODO utils doc/fetmodel.pdf doc/fetmodel2.pdf doc/fetmodel_man.pdf check
@@ -12,9 +12,10 @@ ACLOCAL_AMFLAGS=-I m4
 SPECIFICATION_FILE = fetmodel.scm
 SPECIFICATION_FILE_EXTRA = 
 
+EXTRA_DIST = $(SPECIFICATION_FILE_EXTRA)
+
 bin_PROGRAMS = fetmodel
 pkgdata_DATA = $(SPECIFICATION_FILE) $(SPECIFICATION_FILE_EXTRA)
-EXTRA_DIST = $(SPECIFICATION_FILE_EXTRA)
 
 MY_INCLUDES= PhysicalConstants.h
 

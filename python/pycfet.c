@@ -1,5 +1,5 @@
 /*
- *  cfet.h - last saved: Time-stamp: <Fri Jul 12 15:04:53 JST 2019>
+ *  pycfet.c - Time-stamp: <Fri Jul 12 17:32:41 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,72 +26,71 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: cfet.h 2019-07-12 14:25:09 jmotohisa $
+ *  $Id: pycfet.c 2019-07-12 14:25:01 jmotohisa $
  */
 
 /*! 
-  @file cfet.h 
+  @file pycfet.c 
   @brief 
   @author J. Motohisa
+  @date
 */
 
-#ifndef _CFET_H
-#define _CFET_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <complex.h>
+#include <tgmath.h>
+#include "../ccm.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define GLOBAL_VALUE_DEFINE
+#include "pycfet.h"
 
-#ifdef	GLOBAL_VALUE_DEFINE
-#define	GLOBAL
-#else
-#define	GLOBAL extern
-#endif
+/*!
+  @brief
+  @param[in]
+  @param[out]
+  @param[in,out]
+  @return
+*/
 
-  typedef struct
-  {
-	number	radius;
-	number	Lg;
-	number	eps_semi;
-	number	Rs;
-	number	Rd;
-	number	Cox;
-	number	temp;
-	number	ni;
-	number	dphi;
-	number	tox;
-	number	eps_ox;
-	number	mue;
-  } param_cMOSFET;
-  
-  typedef struct
-  {
-	number	radius;
-	number	Lg;
-	number	eps_semi;
-	number	Rs;
-	number	Rd;
-	number	Cox;
-	number	temp;
-	number	ni;
-	number	dphi;
-	number	tox;
-	number	eps_ox;
-	number	mue;
-  	number	Nd;
-	number	Vbi;
-  } param_cMESFET;
-
-  GLOBAL param_cMOSFET *param_cMOSFET_new(void );  
-  GLOBAL param_cMESFET *param_cMESFET_new(void );  
-
-  GLOBAL double Ids_cMOS(double Vds, double Vgs,param_cMOSFET p);
-
-#undef GLOBAL_VALUE_DEFINE
-#undef GLOBAL
-
-#ifdef __cplusplus
+param_cMOSFET *param_cMOSFET_new()
+{
+  param_cMOSFET *p = malloc(sizeof(param_cMOSFET));
+  if(p ==NULL) {
+	perror("malloc");
+	exit(1);
+  }
+  return(p);
 }
-#endif
 
-#endif  // _CFET_H
+param_cMESFET *param_cMESFET_new()
+{
+  param_cMESFET *p = malloc(sizeof(param_cMESFET));
+  if(p ==NULL) {
+	perror("malloc");
+	exit(1);
+  }
+  return(p);
+}
+
+/* void set_global_cMOSFET(param_cMOSFET p) */
+/* { */
+/*   radius=p.radius; */
+/*   Lg=p.Lg; */
+/*   eps_semi=p.eps_semi; */
+/*   Rs=p.Rs; */
+/*   Rd=p.Rd; */
+/*   Cox=p.Cox; */
+/*   temp=p.temp; */
+/*   ni=p.ni; */
+/*   dphi=p.dphi; */
+/*   tox=p.tox; */
+/*   eps_ox=p.eps_ox; */
+/*   mue=p.mue; */
+/* } */
+
+double Ids_cMOS(double Vds, double Vgs,param_cMOSFET p)
+{
+  /* set_global_cMOSFET(p); */
+  return(Ids0_cMOSFET(Vds,Vgs,p));
+}

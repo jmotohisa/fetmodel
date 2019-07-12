@@ -3,26 +3,25 @@
 
 from distutils.core import setup, Extension
 
-cfet_sources = [
-    'cfet.i',
-    'cfef.c',
-    '../ccm.c',
-    '../ctl-io.h',
+pycfet_sources = [
+    'pycfet.i',
+    'pycfef.c',
 ]
 
-ext_cfet = Extension(
-    '_cfet',
-    sources=cfet_sources,
-    libraries=['gsl', 'gslcblas'],
+ext_pycfet = Extension(
+    '_pycfet',
+    sources=pycfet_sources,
+    libraries=['gsl', 'gslcblas', 'cfet'],
     library_dirs=['/opt/local/lib', ],
-    include_dirs=['/opt/local/include', '/usr/local/include'],
+    include_dirs=['/opt/local/include',
+                  '/usr/local/include'],
 )
 
 if __name__ == '__main__':
     setup(
-        name="cfet",
+        name="pycfet",
         version="0.0.0",
         description="cyrindcial MESFET and MOSFET",
-        ext_modules=[ext_cfet],
-        py_modules=['cfet'],
+        ext_modules=[ext_pycfet],
+        py_modules=['pycfet'],
     )

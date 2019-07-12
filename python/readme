@@ -1,0 +1,7 @@
+$ gcc -c `python3-config --includes` `guile-config compile` -I/usr/local/include -fPIC cfet.c
+$ gcc -c `python3-config --includes` `guile-config compile` -I/usr/local/include -fPIC ../ccm.c
+$ gcc -c `python3-config --includes` `guile-config compile` -I/usr/local/include -fPIC ../ctl-io.c
+$ swig -python cfet.i
+$ gcc -c `python3-config --includes` `guile-config compile` -I/usr/local/include -fPIC cfet_wrap.c
+
+$ gcc -shared ccm.o cfet.o cfet_wrap.o ctl-io.o -L/usr/local/lib -L/opt/local/lib -lgsl -lgslcblas -L/Users/motohisa/miniconda3/envs/jm/lib/python3.6/config-3.6m-darwin `python3-config --libs` `guile-config link` -L/usr/local/lib -lctl -o _cfet.so

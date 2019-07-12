@@ -1,3 +1,58 @@
+/*
+ *  ccm.c - Time-stamp: <Fri Jul 12 17:10:04 JST 2019>
+ *
+ *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
+ *
+ *   Redistribution and use in source and binary forms, with or without
+ *   modification, are permitted provided that the following conditions
+ *   are met:
+ *
+ *   1. Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *
+ *   2. Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ *   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ *   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ *   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *  $Id: ccm.c 2019-07-12 16:04:01 jmotohisa $
+ */
+
+/*! 
+  @file ccm.c 
+  @brief 
+  @author J. Motohisa
+  @date
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <complex.h>
+#include <tgmath.h>
+
+#define GLOBAL_VALUE_DEFINE
+#include "ccm.h"
+
+/*!
+  @brief
+  @param[in]
+  @param[out]
+  @param[in,out]
+  @return
+*/
+
+
 // FET models for Cylindrical MOSFET and Cylindrical MESFET
 // in Gradual Channel Approximation
 
@@ -18,11 +73,9 @@
 
 #include <math.h>
 #include "PhysicalConstants.h"
-#include "ctl-io.h"
+/* #include "ctl-io.h" */
 
 double Ids00_cMOSFET(double , double );
-double Ids0_cMOSFET(double , double );
-double Ids0_cMESFET(double , double );
 double n_intrinsic(double , double , double ,double ,double );
 double gm0_cMESFET(double ,double );
 double r2root0(double ,double );
@@ -51,6 +104,21 @@ double gv_e;
 //double Rs;
 //double Rd;
 
+double	radius;
+double	Lg;
+double	eps_semi;
+double	Rs;
+double	Rd;
+double	Cox;
+double	temp;
+double	ni;
+double	dphi;
+double	tox;
+double	eps_ox;
+double	mue;
+double	Nd;
+double	Vbi;
+
 #define POW2(X) (X)*(X)
 #define kBT (KBC*temp)
 #define Vth (kBT/EC)
@@ -58,8 +126,8 @@ double gv_e;
 #define delta (EC*EC*ni/kBT*(eps_semi*EPSILON))
 #define V0 (dphi + Cox*Vth*log(8/(delta*radius*radius)))
 #define KcMOSFET (2*PI * radius/Lg *mue)
-
 #define KcMESFET (PI*POW2(EC*Nd)*mue*POW2(POW2(radius))/(16*EPSILON*eps_semi*Lg))
+
 #define Vth_cMESFET (Vbi-EC*Nd*POW2(radius)/(4*EPSILON*eps_semi))
 #define  K2cMESFET (PI*EC*Nd*mue*POW2(radius)/(Lg))
 
@@ -69,8 +137,43 @@ struct R_cMESFET_params {double V ; double Vgs; };
 double qfunc_cMOSFET_gsl(double, void *);
 double r_cMESFET_gsl(double, void *);
 
-struct Ids_params {double Vds; double Vgs;};
-int Ids_RmodFunc(gsl_vector *, void *, gsl_vector *);
+struct Ids_params {double Vds; double Vgs;param_cMOSFET cMOS;param_cMESFET cMES;};
+int Ids_cMOSFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
+int Ids_cMESFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
+
+void set_global_cMOSFET(param_cMOSFET p)
+{
+  radius=p.radius;
+  Lg=p.Lg;
+  eps_semi=p.eps_semi;
+  Rs=p.Rs;
+  Rd=p.Rd;
+  Cox=p.Cox;
+  temp=p.temp;
+  ni=p.ni;
+  dphi=p.dphi;
+  tox=p.tox;
+  eps_ox=p.eps_ox;
+  mue=p.mue;
+}
+
+void set_global_cMESFET(param_cMESFET p)
+{
+  radius=p.radius;
+  Lg=p.Lg;
+  eps_semi=p.eps_semi;
+  Rs=p.Rs;
+  Rd=p.Rd;
+  /* Cox=Cox; */
+  /* temp=temp; */
+  /* ni=ni; */
+  /* dphi=dphi; */
+  /* tox=tox; */
+  /* eps_ox=eps_ox; */
+  /* mue=mue; */
+  Nd=p.Nd;
+  Vbi=p.Vbi;
+}
 
 //solution for cylindrical MESFET
 
@@ -319,18 +422,13 @@ double qfunc_cMOSFET_gsl(double qq, void *p)
   return(qfunc_cMOSFET(qq,V,Vgs));
 }
 
-// current
-double Ids_cMOSFET(double Vds,double Vgs)
-{
-  return(Ids0_cMOSFET(Vds,Vgs)*KcMOSFET);
-}
-
-double Ids0_cMOSFET(double Vds,double Vgs)
+double Ids0_cMOSFET(double Vds,double Vgs,param_cMOSFET p)
 {
   double QS,QD;
+  set_global_cMOSFET(p);
   QS = Q_approx(0,Vgs);
   QD = Q_approx(Vds,Vgs);
-  return(Ids00_cMOSFET(QS,QD));
+  return(Ids00_cMOSFET(QS,QD)*KcMOSFET);
 }
 
 double Ids00_cMOSFET(double QS,double QD)
@@ -340,6 +438,67 @@ double Ids00_cMOSFET(double QS,double QD)
   ids2 = Vth*Q0*log((QD+Q0)/(QS+Q0));
   return(ids1+ids2);
 }
+
+// effect of source and drain resisitance
+double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS)
+{
+  double idsmod;
+  const gsl_multiroot_fsolver_type *T;
+  gsl_multiroot_fsolver *s;
+  int status;
+  size_t i,iter=0;
+  const size_t n=2;
+  gsl_multiroot_function F;
+  param_cMESFET cMES;
+  struct Ids_params params;// = {Vds, Vgs, cMOS,cMES};
+  double x_init[2]={1,0};
+  gsl_vector *x = gsl_vector_alloc(n);
+  set_global_cMOSFET(cMOS);
+  params.Vds=Vds;
+  params.Vgs=Vgs;
+  params.cMOS=cMOS;
+  params.cMES=cMES;
+  
+  F.f = &Ids_cMOSFET_RmodFunc;
+  F.n = 2;
+  F.params = &params;
+
+  gsl_vector_set(x,0,x_init[0]);
+  gsl_vector_set(x,1,x_init[1]);
+  T=gsl_multiroot_fsolver_hybrids;
+  s=gsl_multiroot_fsolver_alloc(T,2);
+
+  gsl_multiroot_fsolver_set(s,&F,x);
+
+  do {
+	iter++;
+	status = gsl_multiroot_fsolver_iterate(s);
+	if(status)
+	  break;
+	status = gsl_multiroot_test_residual(s->f,1e-7);
+  } while(status==GSL_CONTINUE && iter <1000);
+  idsmod = Ids0_cMOSFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),cMOS);
+  gsl_multiroot_fsolver_free(s);
+  gsl_vector_free(x);
+  return(idsmod);
+}
+   
+	
+int Ids_cMOSFET_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
+{
+  struct Ids_params * params = (struct Ids_params *)p;
+  const double Vds = (params->Vds);
+  const double Vgs = (params->Vgs);
+  const param_cMOSFET pMOS = (params->cMOS);
+  const double x_Vds = gsl_vector_get(x,0);
+  const double x_Vgs = gsl_vector_get(x,1);
+  
+  gsl_vector_set(f,0,x_Vgs-Vgs+Ids0_cMOSFET(x_Vds,x_Vds,pMOS)*Rs);
+  gsl_vector_set(f,1,x_Vds-Vds+Ids0_cMOSFET(x_Vds,x_Vds,pMOS)*(Rs+Rd));
+
+  return GSL_SUCCESS;
+}
+
 
 // intrinsic carrier concentration
 // n_i = 2 (k_B T \over 2 \PI \hbar^2)^{3/2} (m_e m_h)^{3/4} \exp(-E_g/2 k_B T)
@@ -378,14 +537,11 @@ void SetParams_cMESFET(double radius,double Lg,double Nd,double Vbi,double eps_s
   //  K2=PI*EC*Nd*mue*POW2(radius)/(Lg);
 }
 
-double Ids_cMESFET(double Vds,double Vgs)
-{
-  return(KcMESFET*Ids0_cMESFET(Vds,Vgs));
-}
-
-double Ids0_cMESFET(double Vds,double Vgs)
+double Ids0_cMESFET(double Vds,double Vgs, param_cMESFET p)
 {
   double r2d,r2s,d0,s0;
+  set_global_cMESFET(p);
+
   r2d = r2root0(Vds,Vgs);
   if(r2d ==0)
 	d0=0;
@@ -411,7 +567,7 @@ double Ids0_cMESFET(double Vds,double Vgs)
 		}
 	}
   
-  return(s0-d0);
+  return((s0-d0)*KcMESFET);
 }
 
 double gm_cMESFET(double Vds,double Vgs)
@@ -502,8 +658,7 @@ double r_cMESFET_gsl(double r, void *p)
 
 
 // effect of source and drain resisitance
-
-double Ids_Rmod(double Vds,double Vgs)
+double Ids0_cMESFET_R(double Vds,double Vgs,param_cMESFET pMES)
 {
   double idsmod;
   const gsl_multiroot_fsolver_type *T;
@@ -512,11 +667,13 @@ double Ids_Rmod(double Vds,double Vgs)
   size_t i,iter=0;
   const size_t n=2;
   gsl_multiroot_function F;
-  struct  Ids_params params = {Vds, Vgs};
+  param_cMOSFET pMOS;
+  struct  Ids_params params = {Vds, Vgs,pMOS,pMES};
   double x_init[2]={1,0};
   gsl_vector *x = gsl_vector_alloc(n);
+  set_global_cMESFET(pMES);
   
-  F.f = &Ids_RmodFunc;
+  F.f = &Ids_cMESFET_RmodFunc;
   F.n = 2;
   F.params = &params;
 
@@ -534,23 +691,24 @@ double Ids_Rmod(double Vds,double Vgs)
 	  break;
 	status = gsl_multiroot_test_residual(s->f,1e-7);
   } while(status==GSL_CONTINUE && iter <1000);
-  idsmod = Ids_cMESFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1));
+  idsmod = Ids0_cMESFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),pMES);
   gsl_multiroot_fsolver_free(s);
   gsl_vector_free(x);
   return(idsmod);
 }
    
 	
-int Ids_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
+int Ids_cMESFET_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
 {
-  struct Ids_params * params = (struct Ids_params *)p;
+  struct Ids_params * params = (struct Ids_params *) p;
   const double Vds = (params->Vds);
   const double Vgs = (params->Vgs);
+  const param_cMESFET pMES = (params->cMES);
   const double x_Vds = gsl_vector_get(x,0);
   const double x_Vgs = gsl_vector_get(x,1);
   
-  gsl_vector_set(f,0,x_Vgs-Vgs+Ids_cMESFET(x_Vds,x_Vds)*Rs);
-  gsl_vector_set(f,1,x_Vds-Vds+Ids_cMESFET(x_Vds,x_Vds)*(Rs+Rd));
+  gsl_vector_set(f,0,x_Vgs-Vgs+Ids0_cMESFET(x_Vds,x_Vds,pMES)*Rs);
+  gsl_vector_set(f,1,x_Vds-Vds+Ids0_cMESFET(x_Vds,x_Vds,pMES)*(Rs+Rd));
 
   return GSL_SUCCESS;
 }

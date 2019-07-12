@@ -3,6 +3,8 @@ doc/cylindricalMESFET.log
 doc/cylindricalMESFET.pdf
 doc/cylindricalMESFET.synctex.gz
 
+.libs/
+libcfet.la
 *.o
 main.c
 geom.c

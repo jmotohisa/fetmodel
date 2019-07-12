@@ -4,7 +4,10 @@
 # LIBCTL =
 # endif
 
-# ACLOCAL_AMFLAGS=-I m4
+ACLOCAL_AMFLAGS=-I m4
+
+lib_LTLIBRARIES = libcfet.la
+libcfet_la_SOURCES = ccm.c
 
 # SUBDIRS = src/S4 src/kiss_fft src/kiss_fft/tools src test examples
 # EXTRA_DIST=AUTHORS COPYING ChangeLog INSTALL NEWS README TODO utils doc/fetmodel.pdf doc/fetmodel2.pdf doc/fetmodel_man.pdf check
@@ -19,9 +22,9 @@ pkgdata_DATA = $(SPECIFICATION_FILE) $(SPECIFICATION_FILE_EXTRA)
 
 MY_INCLUDES= PhysicalConstants.h
 
-MY_SOURCES = ccm.c
+MY_SOURCES = cfet_libctl.c
 
-MY_LIBS    =   # extra libs you need go here
+MY_LIBS    = -lcfet  # extra libs you need go here
 MY_LDFLAGS =         # extra -L flags go here
 MY_CPPFLAGS =        # extra -I include flags go here
 MY_DEFS =            # extra -D define flags go here

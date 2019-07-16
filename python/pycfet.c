@@ -1,5 +1,5 @@
 /*
- *  pycfet.c - Time-stamp: <Fri Jul 12 17:32:41 JST 2019>
+ *  pycfet.c - Time-stamp: <Tue Jul 16 14:34:42 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -93,4 +93,14 @@ double Ids_cMOS(double Vds, double Vgs,param_cMOSFET p)
 {
   /* set_global_cMOSFET(p); */
   return(Ids0_cMOSFET(Vds,Vgs,p));
+}
+
+double Qapprox_cMOS(double Vgs, param_cMOSFET p)
+{
+  return(Qapprox_cMOS0(Vgs,p));
+}
+
+double Q_cMOS(double Vgs, param_cMOSFET p)
+{
+  return(Q_cMOS0(Vgs,p));
 }

@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Fri Jul 12 17:10:04 JST 2019>
+ *  ccm.c - Time-stamp: <Tue Jul 16 20:56:04 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -123,7 +123,7 @@ double	Vbi;
 #define kBT (KBC*temp)
 #define Vth (kBT/EC)
 #define Q0 (4*eps_semi*EPSILON/radius*Vth)
-#define delta (EC*EC*ni/kBT*(eps_semi*EPSILON))
+#define delta (EC*EC*ni/(kBT*eps_semi*EPSILON))
 #define V0 (dphi + Cox*Vth*log(8/(delta*radius*radius)))
 #define KcMOSFET (2*PI * radius/Lg *mue)
 #define KcMESFET (PI*POW2(EC*Nd)*mue*POW2(POW2(radius))/(16*EPSILON*eps_semi*Lg))
@@ -374,7 +374,7 @@ double Q_approx0(double V,double Vgs,double Vt,double deltaVt)
 double qroot0(double V,double Vgs)
 {
   double low,high;
-  double V_root;
+  //  double V_root;
   gsl_function F;
   struct Q_cMOSFET_params params={V,Vgs};
   int status;
@@ -385,7 +385,7 @@ double qroot0(double V,double Vgs)
   
   F.function = &qfunc_cMOSFET_gsl;
   F.params = &params;
-  low=0;
+  low=1e-15;
   high=1-low;
   
   //FindRoots/Q/L=(low) qfunc_cMOSFET,param_cMOSFET;
@@ -410,8 +410,8 @@ double qfunc_cMOSFET(double qq,double V, double Vgs)
 {
   double qqq1,qqq2;
   qqq1 = Vgs-dphi-V-Vth*log(8/(delta*POW2(radius)));
-  qqq2=- (qq/Cox + Vth*(log(qq/Q0)+log(1+(qq/Q0))));
-  return(qqq1+qqq2);
+  qqq2 =(qq/Cox + Vth*(log(qq/Q0)+log(1+(qq/Q0))));
+  return(qqq1-qqq2);
 }
 
 double qfunc_cMOSFET_gsl(double qq, void *p)
@@ -420,6 +420,19 @@ double qfunc_cMOSFET_gsl(double qq, void *p)
   double V = (params->V);
   double Vgs = (params->Vgs);
   return(qfunc_cMOSFET(qq,V,Vgs));
+}
+
+double Q_cMOS0(double Vgs, param_cMOSFET p)
+{
+  set_global_cMOSFET(p);
+  return(qroot0(0,Vgs));
+}
+
+double Qapprox_cMOS0(double Vgs,param_cMOSFET p)
+{
+  /* double QS,QD; */
+  set_global_cMOSFET(p);
+  return(Q_approx(0,Vgs));
 }
 
 double Ids0_cMOSFET(double Vds,double Vgs,param_cMOSFET p)
@@ -446,18 +459,20 @@ double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS)
   const gsl_multiroot_fsolver_type *T;
   gsl_multiroot_fsolver *s;
   int status;
-  size_t i,iter=0;
+  /* size_t i; */
+  size_t iter=0;
   const size_t n=2;
   gsl_multiroot_function F;
-  param_cMESFET cMES;
+  /* param_cMESFET cMES; */
   struct Ids_params params;// = {Vds, Vgs, cMOS,cMES};
   double x_init[2]={1,0};
   gsl_vector *x = gsl_vector_alloc(n);
   set_global_cMOSFET(cMOS);
+  /* set_global_cMESFET(cMES); */
   params.Vds=Vds;
   params.Vgs=Vgs;
   params.cMOS=cMOS;
-  params.cMES=cMES;
+  /* params.cMES=cMES; */
   
   F.f = &Ids_cMOSFET_RmodFunc;
   F.n = 2;
@@ -508,6 +523,7 @@ int Ids_cMOSFET_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
 
 double n_intrinsic(double temp,double me,double mh,double Eg,double gv)
 {
+  return(exp(-Eg*EC/(2*KBC*temp)));
   //  return(gv*2*sqrt(KBC*temp*MEL/(2*PI*HBAR*HBAR))^3*(me*mh)^(3/4)*exp(-Eg*EC/(2*KBC*temp)));
 }
 
@@ -597,7 +613,7 @@ double r2root0(double V,double Vgs)
 {
   double low,high;
   double VbiV,Vbi_r;
-  double V_root;
+  //  double V_root;
   gsl_function F;
   struct R_cMESFET_params params={V,Vgs};
   int status;
@@ -664,7 +680,8 @@ double Ids0_cMESFET_R(double Vds,double Vgs,param_cMESFET pMES)
   const gsl_multiroot_fsolver_type *T;
   gsl_multiroot_fsolver *s;
   int status;
-  size_t i,iter=0;
+  /* size_t i; */
+  size_t iter=0;
   const size_t n=2;
   gsl_multiroot_function F;
   param_cMOSFET pMOS;

@@ -18,4 +18,11 @@ p.tox = 1.5e-9
 p.eps_ox = 3.9
 p.mue = 0.04
 
-print(pycfet.Ids0_cMOSFET(1, 1, p))
+Vgs = 1
+Vds = 1
+
+print(pycfet.Qapprox_cMOS(Vgs, p))
+print(pycfet.Qapprox_cMOS(Vgs-Vds, p))
+print(pycfet.Q_cMOS(Vgs, p))
+print(pycfet.Q_cMOS(Vgs-Vds, p))
+print(pycfet.Ids_cMOS(Vds, Vgs, p))

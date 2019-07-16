@@ -1,5 +1,5 @@
 /*
- *  ccm.h - last saved: Time-stamp: <Fri Jul 12 17:00:24 JST 2019>
+ *  ccm.h - last saved: Time-stamp: <Tue Jul 16 14:36:18 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -86,6 +86,9 @@ extern "C" {
   GLOBAL double Ids0_cMESFET(double Vds,double Vgs,param_cMESFET p);
   GLOBAL double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS);
   GLOBAL double Ids0_cMESFET_R(double Vds,double Vgs,param_cMESFET cMES);
+
+  GLOBAL double Qapprox_cMOS0(double Vgs, param_cMOSFET p);
+  GLOBAL double Q_cMOS0(double Vgs, param_cMOSFET p);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

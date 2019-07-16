@@ -22,9 +22,9 @@ pkgdata_DATA = $(SPECIFICATION_FILE) $(SPECIFICATION_FILE_EXTRA)
 
 MY_INCLUDES= PhysicalConstants.h
 
-MY_SOURCES = cfet_libctl.c
+MY_SOURCES = cfet_libctl.c ccm.c
 
-MY_LIBS    = -lcfet  # extra libs you need go here
+MY_LIBS    =  # extra libs you need go here
 MY_LDFLAGS =         # extra -L flags go here
 MY_CPPFLAGS =        # extra -I include flags go here
 MY_DEFS =            # extra -D define flags go here

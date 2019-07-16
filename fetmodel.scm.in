@@ -85,6 +85,12 @@
 (define-external-function Ids-cMOSFET true true
   'number 'number 'number)
 
+(define-external-function Qapprox-cMOSFET true true
+  'number 'number)
+
+(define-external-function Q-cMOSFET true true
+  'number 'number)
+
 (define-external-function Ids-cMESFET true true
   'number 'number 'number)
 ; ****************************************************************

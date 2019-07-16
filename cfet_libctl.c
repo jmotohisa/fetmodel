@@ -1,5 +1,5 @@
 /*
- *  cfet_libctl.c - Time-stamp: <Fri Jul 12 17:00:35 JST 2019>
+ *  cfet_libctl.c - Time-stamp: <Tue Jul 16 14:42:46 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -98,6 +98,20 @@ number Ids_cMOSFET(number Vds,number Vgs)
   param_cMOSFET p;
   get_global_cMOSFET(&p);
   return(Ids0_cMOSFET(Vds,Vgs,p));
+}
+
+number Qapprox_cMOSFET(number Vgs)
+{
+  param_cMOSFET p;
+  get_global_cMOSFET(&p);
+  return(Qapprox_cMOS0(Vgs,p));
+}
+
+number Q_cMOSFET(number Vgs)
+{
+  param_cMOSFET p;
+  get_global_cMOSFET(&p);
+  return(Q_cMOS0(Vgs,p));
 }
 
 number Ids_cMOSFET_R(number Vds,number Vgs)

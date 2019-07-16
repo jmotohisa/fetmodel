@@ -3,7 +3,7 @@
 %{
 #define SWIG_FILE_WITH_INIT
   
-  #incldde "../ccm.h"
+  #include "../ccm.h"
   #include "pycfet.h"
 %}
 

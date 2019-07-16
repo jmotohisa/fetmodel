@@ -5,14 +5,15 @@ from distutils.core import setup, Extension
 
 pycfet_sources = [
     'pycfet.i',
-    'pycfef.c',
+    'pycfet.c',
 ]
 
 ext_pycfet = Extension(
     '_pycfet',
     sources=pycfet_sources,
     libraries=['gsl', 'gslcblas', 'cfet'],
-    library_dirs=['/opt/local/lib', ],
+    library_dirs=['/opt/local/lib', '/Users/motohisa/local/lib',
+                  ],
     include_dirs=['/opt/local/include',
                   '/usr/local/include'],
 )

@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Tue Jul 16 20:56:04 JST 2019>
+ *  ccm.c - Time-stamp: <Wed Jul 17 14:26:29 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -124,7 +124,7 @@ double	Vbi;
 #define Vth (kBT/EC)
 #define Q0 (4*eps_semi*EPSILON/radius*Vth)
 #define delta (EC*EC*ni/(kBT*eps_semi*EPSILON))
-#define V0 (dphi + Cox*Vth*log(8/(delta*radius*radius)))
+#define V0 (dphi + Vth*log(8/(delta*radius*radius)))
 #define KcMOSFET (2*PI * radius/Lg *mue)
 #define KcMESFET (PI*POW2(EC*Nd)*mue*POW2(POW2(radius))/(16*EPSILON*eps_semi*Lg))
 

@@ -1,5 +1,5 @@
 /*
- *  pycfet.c - Time-stamp: <Tue Jul 16 14:34:42 JST 2019>
+ *  pycfet.c - Time-stamp: <Wed Jul 17 10:33:33 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -89,18 +89,27 @@ param_cMESFET *param_cMESFET_new()
 /*   mue=p.mue; */
 /* } */
 
-double Ids_cMOS(double Vds, double Vgs,param_cMOSFET p)
+void Ids_cMOS_func(double *in_array, double *out_array, int size,
+				   double Vds,param_cMOSFET p)
 {
   /* set_global_cMOSFET(p); */
-  return(Ids0_cMOSFET(Vds,Vgs,p));
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Ids0_cMOSFET(Vds,*(in_array+i),p);
 }
 
-double Qapprox_cMOS(double Vgs, param_cMOSFET p)
+void Qapprox_cMOS_func(double *in_array,double *out_array,int size,
+					   param_cMOSFET p)
 {
-  return(Qapprox_cMOS0(Vgs,p));
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Qapprox_cMOS0(*(in_array+i),p);
 }
 
-double Q_cMOS(double Vgs, param_cMOSFET p)
+void Q_cMOS_func(double *in_array,double *out_array,int size,
+				 param_cMOSFET p)
 {
-  return(Q_cMOS0(Vgs,p));
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Q_cMOS0(*(in_array+i),p);
 }

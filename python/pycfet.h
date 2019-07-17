@@ -1,5 +1,5 @@
 /*
- *  pycfet.h - last saved: Time-stamp: <Tue Jul 16 14:34:52 JST 2019>
+ *  pycfet.h - last saved: Time-stamp: <Wed Jul 17 09:55:47 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -50,9 +50,9 @@ extern "C" {
   GLOBAL param_cMOSFET *param_cMOSFET_new(void );  
   GLOBAL param_cMESFET *param_cMESFET_new(void );  
 
-  GLOBAL double Ids_cMOS(double Vds, double Vgs,param_cMOSFET p);
-  GLOBAL double Qapprox_cMOS(double Vgs, param_cMOSFET p);
-  GLOBAL double Q_cMOS(double Vgs, param_cMOSFET p);
+  GLOBAL void Ids_cMOS_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p);
+  GLOBAL void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
+  GLOBAL void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

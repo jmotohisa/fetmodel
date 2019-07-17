@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from distutils.core import setup, Extension
+import numpy
 
 pycfet_sources = [
     'pycfet.i',
@@ -24,5 +25,6 @@ if __name__ == '__main__':
         version="0.0.0",
         description="cyrindcial MESFET and MOSFET",
         ext_modules=[ext_pycfet],
+        include_dirs=[numpy.get_include()],
         py_modules=['pycfet'],
     )

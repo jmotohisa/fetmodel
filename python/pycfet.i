@@ -5,7 +5,19 @@
   
   #include "../ccm.h"
   #include "pycfet.h"
-%}
+
+  extern void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
+  extern void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
+
+  extern void Ids0_cMOS_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p);
+  extern void Ids_cMOS_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p);
+  extern void Ids0_cMOS_R_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p);
+  extern void Ids_cMOS_R_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p);
+  
+  extern void Ids_cMES_func(double *in_array,double *out_array, int size, double Vds,param_cMESFET p);
+  extern void Ids_cMES_R_func(double *in_array,double *out_array, int size, double Vds,param_cMESFET p);
+
+  %}
 
 %include <numpy.i>
 %init %{
@@ -22,10 +34,6 @@
 /* %apply (double** ARGOUTVIEWM_ARRAY2, int* DIM1, int* DIM2){(double** outmat, int* mx, int* my)} */
 
 %inline %{
-  void Ids_cMOS(double * in_array, int size_in, double * out_array, int size_out,
-				double Vds, param_cMOSFET p) {
-	Ids_cMOS_func(in_array, out_array, size_in, Vds, p);
-  }
   void Qapprox_cMOS(double * in_array, int size_in, double * out_array, int size_out,
 					param_cMOSFET p) {
 	Qapprox_cMOS_func(in_array,out_array,size_in,p);
@@ -35,8 +43,29 @@
   {
 	Q_cMOS_func(in_array, out_array, size_in, p);
   }
+  void Ids_cMOS(double * in_array, int size_in, double * out_array, int size_out,
+				double Vds, param_cMOSFET p) {
+	Ids_cMOS_func(in_array, out_array, size_in, Vds, p);
+  }
+  void Ids0_cMOS(double * in_array, int size_in, double * out_array, int size_out,
+				 double Vds, param_cMOSFET p) {
+	Ids0_cMOS_func(in_array, out_array, size_in, Vds, p);
+  }
+  void Ids_cMOS_R(double * in_array, int size_in, double * out_array, int size_out,
+				  double Vds, param_cMOSFET p) {
+	Ids_cMOS_R_func(in_array, out_array, size_in, Vds, p);
+  }
+  void Ids0_cMOS_R(double * in_array, int size_in, double * out_array, int size_out,
+				   double Vds, param_cMOSFET p) {
+	Ids0_cMOS_R_func(in_array, out_array, size_in, Vds, p);
+  }
+  void Ids_cMES(double * in_array, int size_in, double * out_array, int size_out,
+				double Vds, param_cMESFET p) {
+	Ids_cMES_func(in_array, out_array, size_in, Vds, p);
+  }
+  void Ids_cMES_R(double * in_array, int size_in, double * out_array, int size_out,
+				  double Vds, param_cMESFET p) {
+	Ids_cMES_R_func(in_array, out_array, size_in, Vds, p);
+  }
   %}
-
-/* extern param_cMOSFET *param_cMOSFET_new(void );   */
-/* extern param_cMESFET *param_cMESFET_new(void );   */
 

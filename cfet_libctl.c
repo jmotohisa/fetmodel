@@ -1,5 +1,5 @@
 /*
- *  cfet_libctl.c - Time-stamp: <Tue Jul 16 14:42:46 JST 2019>
+ *  cfet_libctl.c - Time-stamp: <Thu Jul 18 08:46:19 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -57,8 +57,7 @@
   @return
 */
 
-// current
-
+// Get global and store local valuable 
 void get_global_cMOSFET(param_cMOSFET *p)
 {
   p->radius=radius;
@@ -93,44 +92,74 @@ void get_global_cMESFET(param_cMESFET *p)
   p->Vbi=Vbi;
 }
 
-number Ids_cMOSFET(number Vds,number Vgs)
+// cMOSFET: Charges
+number func_Qapprox_cMOSFET(number Vgs)
 {
   param_cMOSFET p;
   get_global_cMOSFET(&p);
-  return(Ids0_cMOSFET(Vds,Vgs,p));
+  return(Qapprox_cMOSFET(Vgs,p));
 }
 
-number Qapprox_cMOSFET(number Vgs)
+number func_Q_cMOSFET(number Vgs)
 {
   param_cMOSFET p;
   get_global_cMOSFET(&p);
-  return(Qapprox_cMOS0(Vgs,p));
+  return(Q_cMOSFET(Vgs,p));
 }
 
-number Q_cMOSFET(number Vgs)
-{
-  param_cMOSFET p;
-  get_global_cMOSFET(&p);
-  return(Q_cMOS0(Vgs,p));
-}
+// cMOSFET: current
 
-number Ids_cMOSFET_R(number Vds,number Vgs)
-{
-  param_cMOSFET p;
-  get_global_cMOSFET(&p);
-  return(Ids0_cMOSFET_R(Vds,Vgs,p));
-}
+#define EXPORT_CMOSFET(name) \
+  number func_##name(number Vds, number Vgs) \
+  {											 \
+  param_cMOSFET p;							 \
+  get_global_cMOSFET(&p);					 \
+  return( name(Vds,Vgs,p));				 \
+  }
 
-number Ids_cMESFET(number Vds,number Vgs)
-{
-  param_cMESFET p;
-  get_global_cMESFET(&p);
-  return(Ids0_cMESFET(Vds,Vgs,p));
-}
+EXPORT_CMOSFET(Ids_cMOSFET);
+EXPORT_CMOSFET(Ids_cMOSFET_R);
+EXPORT_CMOSFET(Ids0_cMOSFET);
+EXPORT_CMOSFET(Ids0_cMOSFET_R);
 
-number Ids_cMESFET_R(number Vds,number Vgs)
-{
-  param_cMESFET p;
-  get_global_cMESFET(&p);
-  return(Ids0_cMESFET_R(Vds,Vgs,p));
-}
+
+// cMESFET: current
+
+#define EXPORT_CMESFET(name)				 \
+  number func_##name(number Vds, number Vgs) \
+  {											 \
+  param_cMESFET p;							 \
+  get_global_cMESFET(&p);					 \
+  return( name(Vds,Vgs,p));				 \
+  }
+
+EXPORT_CMESFET(Ids_cMESFET);
+EXPORT_CMESFET(Ids_cMESFET_R);
+
+/* number Ids_cMOSFET(number Vds,number Vgs) */
+/* { */
+/*   param_cMOSFET p; */
+/*   get_global_cMOSFET(&p); */
+/*   return(Ids0_cMOSFET(Vds,Vgs,p)); */
+/* } */
+
+/* number Ids_cMOSFET_R(number Vds,number Vgs) */
+/* { */
+/*   param_cMOSFET p; */
+/*   get_global_cMOSFET(&p); */
+/*   return(Ids0_cMOSFET_R(Vds,Vgs,p)); */
+/* } */
+
+/* number Ids_cMESFET(number Vds,number Vgs) */
+/* { */
+/*   param_cMESFET p; */
+/*   get_global_cMESFET(&p); */
+/*   return(Ids0_cMESFET(Vds,Vgs,p)); */
+/* } */
+
+/* number Ids_cMESFET_R(number Vds,number Vgs) */
+/* { */
+/*   param_cMESFET p; */
+/*   get_global_cMESFET(&p); */
+/*   return(Ids0_cMESFET_R(Vds,Vgs,p)); */
+/* } */

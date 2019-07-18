@@ -1,5 +1,5 @@
 /*
- *  pycfet.c - Time-stamp: <Wed Jul 17 10:33:33 JST 2019>
+ *  pycfet.c - Time-stamp: <Thu Jul 18 09:55:32 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -73,37 +73,14 @@ param_cMESFET *param_cMESFET_new()
   return(p);
 }
 
-/* void set_global_cMOSFET(param_cMOSFET p) */
-/* { */
-/*   radius=p.radius; */
-/*   Lg=p.Lg; */
-/*   eps_semi=p.eps_semi; */
-/*   Rs=p.Rs; */
-/*   Rd=p.Rd; */
-/*   Cox=p.Cox; */
-/*   temp=p.temp; */
-/*   ni=p.ni; */
-/*   dphi=p.dphi; */
-/*   tox=p.tox; */
-/*   eps_ox=p.eps_ox; */
-/*   mue=p.mue; */
-/* } */
-
-void Ids_cMOS_func(double *in_array, double *out_array, int size,
-				   double Vds,param_cMOSFET p)
-{
-  /* set_global_cMOSFET(p); */
-  int i;
-  for(i=0;i<size;i++)
-	*(out_array+i)=Ids0_cMOSFET(Vds,*(in_array+i),p);
-}
-
+// Cylindrical MOSFET
+// charges:: numpy compatible
 void Qapprox_cMOS_func(double *in_array,double *out_array,int size,
 					   param_cMOSFET p)
 {
   int i;
   for(i=0;i<size;i++)
-	*(out_array+i)=Qapprox_cMOS0(*(in_array+i),p);
+	*(out_array+i)=Qapprox_cMOSFET(*(in_array+i),p);
 }
 
 void Q_cMOS_func(double *in_array,double *out_array,int size,
@@ -111,5 +88,57 @@ void Q_cMOS_func(double *in_array,double *out_array,int size,
 {
   int i;
   for(i=0;i<size;i++)
-	*(out_array+i)=Q_cMOS0(*(in_array+i),p);
+	*(out_array+i)=Q_cMOSFET(*(in_array+i),p);
 }
+
+// Current:: numpy Vgs
+void Ids0_cMOS_func(double *in_array, double *out_array, int size,
+				   double Vds,param_cMOSFET p)
+{
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Ids0_cMOSFET(Vds,*(in_array+i),p);
+}
+
+void Ids_cMOS_func(double *in_array, double *out_array, int size,
+				   double Vds,param_cMOSFET p)
+{
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Ids_cMOSFET(Vds,*(in_array+i),p);
+}
+
+void Ids0_cMOS_R_func(double *in_array, double *out_array, int size,
+				   double Vds,param_cMOSFET p)
+{
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Ids0_cMOSFET_R(Vds,*(in_array+i),p);
+}
+
+void Ids_cMOS_R_func(double *in_array, double *out_array, int size,
+				   double Vds,param_cMOSFET p)
+{
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Ids_cMOSFET_R(Vds,*(in_array+i),p);
+}
+
+// cyrlindircal MESFET
+void Ids_cMES_func(double *in_array, double *out_array, int size,
+				   double Vds,param_cMESFET p)
+{
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Ids_cMESFET(Vds,*(in_array+i),p);
+}
+
+void Ids_cMES_R_func(double *in_array, double *out_array, int size,
+				   double Vds,param_cMESFET p)
+{
+  int i;
+  for(i=0;i<size;i++)
+	*(out_array+i)=Ids_cMESFET_R(Vds,*(in_array+i),p);
+}
+
+

@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# B. Iniguez et al., IEEE Trans. Elec. Dev. 52, No.8, Auguust 2015 (p.1868)
+
 import pycfet
 import math
 import numpy as np
@@ -19,21 +24,31 @@ p.mue = 0.04
 p.Cox = p.eps_ox*8.85e-12/(p.radius*math.log(1+p.tox/p.radius))
 
 Vgs = np.arange(0, 2, 0.01)
-Q1 = np.empty_like(Vgs)
-pycfet.Qapprox_cMOS(Vgs, Q1, p)
-Q2 = np.empty_like(Vgs)
-pycfet.Q_cMOS(Vgs, Q2, p)
 
+# Fig.2
+Q1 = np.empty_like(Vgs)
+Q2 = np.empty_like(Vgs)
+pycfet.Qapprox_cMOS(Vgs, Q1, p)
+pycfet.Q_cMOS(Vgs, Q2, p)
 # Q1 = pycfet.Qapprox_cMOS(Vgs, p)
 # Q2 = pycfet.Q_cMOS(Vgs, p)
 
 plt.plot(Vgs, Q1)
 plt.plot(Vgs, Q2)
+plt.show()
 
-# print(pycfet.Qapprox_cMOS(Vgs, p))
-# print(pycfet.Qapprox_cMOS(Vgs-Vds, p))
-# print(pycfet.Q_cMOS(Vgs, p))
-# print(pycfet.Q_cMOS(Vgs-Vds, p))
-# print(pycfet.Ids_cMOS(Vds, Vgs, p))
+# Fig.3
+Ids01 = np.empty_like(Vgs)
+Ids02 = np.empty_like(Vgs)
+pycfet.Ids_cMOS(Vgs, Ids01, 0.1, p)
+pycfet.Ids0_cMOS(Vgs, Ids02, 0.1, p)
+plt.plot(Vgs, Ids01)
+plt.plot(Vgs, Ids02)
+plt.show()
 
+# Fig.4
+pycfet.Ids_cMOS(Vgs, Ids01, 1, p)
+pycfet.Ids0_cMOS(Vgs, Ids02, 1, p)
+plt.plot(Vgs, Ids01)
+plt.plot(Vgs, Ids02)
 plt.show()

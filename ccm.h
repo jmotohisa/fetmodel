@@ -1,5 +1,5 @@
 /*
- *  ccm.h - last saved: Time-stamp: <Tue Jul 16 14:36:18 JST 2019>
+ *  ccm.h - last saved: Time-stamp: <Thu Jul 18 08:46:04 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -82,13 +82,15 @@ extern "C" {
 	double	Vbi;
   } param_cMESFET;
 
+  GLOBAL double Q_cMOSFET(double Vgs, param_cMOSFET p);
+  GLOBAL double Qapprox_cMOSFET(double Vgs, param_cMOSFET p);
+  GLOBAL double Ids_cMOSFET(double Vds,double Vgs,param_cMOSFET p);
+  GLOBAL double Ids_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS);
   GLOBAL double Ids0_cMOSFET(double Vds,double Vgs,param_cMOSFET p);
-  GLOBAL double Ids0_cMESFET(double Vds,double Vgs,param_cMESFET p);
-  GLOBAL double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS);
-  GLOBAL double Ids0_cMESFET_R(double Vds,double Vgs,param_cMESFET cMES);
+  GLOBAL double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET p);
 
-  GLOBAL double Qapprox_cMOS0(double Vgs, param_cMOSFET p);
-  GLOBAL double Q_cMOS0(double Vgs, param_cMOSFET p);
+  GLOBAL double Ids_cMESFET(double Vds,double Vgs,param_cMESFET cMES);
+  GLOBAL double Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET cMES);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

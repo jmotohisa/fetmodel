@@ -1,5 +1,5 @@
 /*
- *  pycfet.h - last saved: Time-stamp: <Wed Jul 17 09:55:47 JST 2019>
+ *  pycfet.h - last saved: Time-stamp: <Thu Jul 18 10:45:05 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -50,9 +50,16 @@ extern "C" {
   GLOBAL param_cMOSFET *param_cMOSFET_new(void );  
   GLOBAL param_cMESFET *param_cMESFET_new(void );  
 
-  GLOBAL void Ids_cMOS_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p);
-  GLOBAL void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
-  GLOBAL void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
+  /* GLOBAL void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p); */
+  /* GLOBAL void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p); */
+
+  /* GLOBAL void Ids0_cMOS_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p); */
+  /* GLOBAL void Ids_cMOS_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p); */
+  /* GLOBAL void Ids0_cMOS_R_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p); */
+  /* GLOBAL void Ids_cMOS_R_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p); */
+  
+  /* GLOBAL void Ids_cMES_func(double *in_array,double *out_array, int size, double Vds,param_cMESFET p); */
+  /* GLOBAL void Ids_cMES_R_func(double *in_array,double *out_array, int size, double Vds,param_cMESFET p); */
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

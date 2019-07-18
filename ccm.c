@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Wed Jul 17 14:26:29 JST 2019>
+ *  ccm.c - Time-stamp: <Thu Jul 18 09:32:48 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -138,6 +138,7 @@ double qfunc_cMOSFET_gsl(double, void *);
 double r_cMESFET_gsl(double, void *);
 
 struct Ids_params {double Vds; double Vgs;param_cMOSFET cMOS;param_cMESFET cMES;};
+int Ids0_cMOSFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
 int Ids_cMOSFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
 int Ids_cMESFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
 
@@ -364,10 +365,15 @@ double Q_approx(double V, double Vgs)
 // unified approximated formula for Q (eq. 13 in Iniguez et al., Trans. ED)
 double Q_approx0(double V,double Vgs,double Vt,double deltaVt)
 {
-  double a,b;
+  double a,b,c1,c2;
   a=2*Cox*Vth*Vth/Q0;
   b=2*Vth*log(1+exp((Vgs-Vt+deltaVt-V)/(2*Vth)));
-  return(Cox*(sqrt(a*a+b*b)-a));
+  c1=sqrt(a*a+b*b)-a;
+  c2=b*b/(2*a);
+  if(c1 < DBL_EPSILON)
+	return(Cox*c2);
+  else
+	return(Cox*c1);
 }
 
 //find solution for Q usint GSL library
@@ -382,12 +388,15 @@ double qroot0(double V,double Vgs)
   double r;
   const gsl_root_fsolver_type *T;
   gsl_root_fsolver *s;
+  double qqq;
   
   F.function = &qfunc_cMOSFET_gsl;
   F.params = &params;
-  low=1e-15;
-  high=1-low;
-  
+  /* low=1e-15; */
+  /* high=1-low; */
+  qqq=Q_approx(V,Vgs);
+  low=qqq/100;
+  high=qqq*100;
   //FindRoots/Q/L=(low) qfunc_cMOSFET,param_cMOSFET;
 
   T= gsl_root_fsolver_brent;
@@ -422,13 +431,13 @@ double qfunc_cMOSFET_gsl(double qq, void *p)
   return(qfunc_cMOSFET(qq,V,Vgs));
 }
 
-double Q_cMOS0(double Vgs, param_cMOSFET p)
+double Q_cMOSFET(double Vgs, param_cMOSFET p)
 {
   set_global_cMOSFET(p);
   return(qroot0(0,Vgs));
 }
 
-double Qapprox_cMOS0(double Vgs,param_cMOSFET p)
+double Qapprox_cMOSFET(double Vgs,param_cMOSFET p)
 {
   /* double QS,QD; */
   set_global_cMOSFET(p);
@@ -444,6 +453,15 @@ double Ids0_cMOSFET(double Vds,double Vgs,param_cMOSFET p)
   return(Ids00_cMOSFET(QS,QD)*KcMOSFET);
 }
 
+double Ids_cMOSFET(double Vds,double Vgs,param_cMOSFET p)
+{
+  double QS,QD;
+  set_global_cMOSFET(p);
+  QS = qroot0(0,Vgs);
+  QD = qroot0(Vds,Vgs);
+  return(Ids00_cMOSFET(QS,QD)*KcMOSFET);
+}
+
 double Ids00_cMOSFET(double QS,double QD)
 {
   double ids1,ids2;
@@ -452,8 +470,71 @@ double Ids00_cMOSFET(double QS,double QD)
   return(ids1+ids2);
 }
 
-// effect of source and drain resisitance
+// effect of source and drain resisitance (1) Approximate solution for Q
 double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS)
+{
+  double idsmod;
+  const gsl_multiroot_fsolver_type *T;
+  gsl_multiroot_fsolver *s;
+  int status;
+  /* size_t i; */
+  size_t iter=0;
+  const size_t n=2;
+  gsl_multiroot_function F;
+  /* param_cMESFET cMES; */
+  struct Ids_params params;// = {Vds, Vgs, cMOS,cMES};
+  double x_init[2]={1,0};
+  gsl_vector *x = gsl_vector_alloc(n);
+  set_global_cMOSFET(cMOS);
+  /* set_global_cMESFET(cMES); */
+  params.Vds=Vds;
+  params.Vgs=Vgs;
+  params.cMOS=cMOS;
+  /* params.cMES=cMES; */
+  
+  F.f = &Ids0_cMOSFET_RmodFunc;
+  F.n = 2;
+  F.params = &params;
+
+  gsl_vector_set(x,0,x_init[0]);
+  gsl_vector_set(x,1,x_init[1]);
+  T=gsl_multiroot_fsolver_hybrids;
+  s=gsl_multiroot_fsolver_alloc(T,2);
+
+  gsl_multiroot_fsolver_set(s,&F,x);
+
+  do {
+	iter++;
+	status = gsl_multiroot_fsolver_iterate(s);
+	if(status)
+	  break;
+	status = gsl_multiroot_test_residual(s->f,1e-7);
+  } while(status==GSL_CONTINUE && iter <1000);
+  idsmod = Ids0_cMOSFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),cMOS);
+  gsl_multiroot_fsolver_free(s);
+  gsl_vector_free(x);
+  return(idsmod);
+}
+   
+	
+int Ids0_cMOSFET_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
+{
+  struct Ids_params * params = (struct Ids_params *)p;
+  const double Vds = (params->Vds);
+  const double Vgs = (params->Vgs);
+  const param_cMOSFET pMOS = (params->cMOS);
+  const double x_Vds = gsl_vector_get(x,0);
+  const double x_Vgs = gsl_vector_get(x,1);
+  
+  gsl_vector_set(f,0,x_Vgs-Vgs+Ids0_cMOSFET(x_Vds,x_Vds,pMOS)*Rs);
+  gsl_vector_set(f,1,x_Vds-Vds+Ids0_cMOSFET(x_Vds,x_Vds,pMOS)*(Rs+Rd));
+
+  return GSL_SUCCESS;
+}
+
+
+// effect of source and drain resisitance (2) Rigorous solution for Q
+double Ids_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS)
 {
   double idsmod;
   const gsl_multiroot_fsolver_type *T;
@@ -492,7 +573,7 @@ double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS)
 	  break;
 	status = gsl_multiroot_test_residual(s->f,1e-7);
   } while(status==GSL_CONTINUE && iter <1000);
-  idsmod = Ids0_cMOSFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),cMOS);
+  idsmod = Ids_cMOSFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),cMOS);
   gsl_multiroot_fsolver_free(s);
   gsl_vector_free(x);
   return(idsmod);
@@ -508,8 +589,8 @@ int Ids_cMOSFET_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
   const double x_Vds = gsl_vector_get(x,0);
   const double x_Vgs = gsl_vector_get(x,1);
   
-  gsl_vector_set(f,0,x_Vgs-Vgs+Ids0_cMOSFET(x_Vds,x_Vds,pMOS)*Rs);
-  gsl_vector_set(f,1,x_Vds-Vds+Ids0_cMOSFET(x_Vds,x_Vds,pMOS)*(Rs+Rd));
+  gsl_vector_set(f,0,x_Vgs-Vgs+Ids_cMOSFET(x_Vds,x_Vds,pMOS)*Rs);
+  gsl_vector_set(f,1,x_Vds-Vds+Ids_cMOSFET(x_Vds,x_Vds,pMOS)*(Rs+Rd));
 
   return GSL_SUCCESS;
 }
@@ -553,7 +634,7 @@ void SetParams_cMESFET(double radius,double Lg,double Nd,double Vbi,double eps_s
   //  K2=PI*EC*Nd*mue*POW2(radius)/(Lg);
 }
 
-double Ids0_cMESFET(double Vds,double Vgs, param_cMESFET p)
+double Ids_cMESFET(double Vds,double Vgs, param_cMESFET p)
 {
   double r2d,r2s,d0,s0;
   set_global_cMESFET(p);
@@ -674,7 +755,7 @@ double r_cMESFET_gsl(double r, void *p)
 
 
 // effect of source and drain resisitance
-double Ids0_cMESFET_R(double Vds,double Vgs,param_cMESFET pMES)
+double Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET pMES)
 {
   double idsmod;
   const gsl_multiroot_fsolver_type *T;
@@ -708,7 +789,7 @@ double Ids0_cMESFET_R(double Vds,double Vgs,param_cMESFET pMES)
 	  break;
 	status = gsl_multiroot_test_residual(s->f,1e-7);
   } while(status==GSL_CONTINUE && iter <1000);
-  idsmod = Ids0_cMESFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),pMES);
+  idsmod = Ids_cMESFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),pMES);
   gsl_multiroot_fsolver_free(s);
   gsl_vector_free(x);
   return(idsmod);
@@ -724,8 +805,8 @@ int Ids_cMESFET_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
   const double x_Vds = gsl_vector_get(x,0);
   const double x_Vgs = gsl_vector_get(x,1);
   
-  gsl_vector_set(f,0,x_Vgs-Vgs+Ids0_cMESFET(x_Vds,x_Vds,pMES)*Rs);
-  gsl_vector_set(f,1,x_Vds-Vds+Ids0_cMESFET(x_Vds,x_Vds,pMES)*(Rs+Rd));
+  gsl_vector_set(f,0,x_Vgs-Vgs+Ids_cMESFET(x_Vds,x_Vds,pMES)*Rs);
+  gsl_vector_set(f,1,x_Vds-Vds+Ids_cMESFET(x_Vds,x_Vds,pMES)*(Rs+Rd));
 
   return GSL_SUCCESS;
 }

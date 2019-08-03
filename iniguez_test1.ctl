@@ -23,6 +23,6 @@
 ;; (define Vgs1 (interpolate 99 (list 0 2)))
 ;; (define Vds1 (interpolate 99 (list 0 2)))
 
-(set! interactive? false)
+(set! interactive? true)
 
 (print (func-Ids-cMOSFET Vds Vgs) "\n")

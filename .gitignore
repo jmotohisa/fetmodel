@@ -43,3 +43,5 @@ python/pycfet_wrap.c
 python/pycfet.py
 python/__pycache__
 python/*.so
+python/build
+python/.ipynb_checkpoints

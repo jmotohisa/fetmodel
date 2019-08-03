@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Thu Jul 18 09:32:48 JST 2019>
+ *  ccm.c - Time-stamp: <Thu Jul 18 16:29:52 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -134,7 +134,12 @@ double	Vbi;
 // solution for cylindrical MOSFET
 struct Q_cMOSFET_params {double V ; double Vgs; };
 struct R_cMESFET_params {double V ; double Vgs; };
+
+double qroot_newton(double, double);
+double qroot_brent(double, double);
 double qfunc_cMOSFET_gsl(double, void *);
+double qdfunc_cMOSFET_gsl(double, void *);
+void qfdfunc_cMOSFET_gsl(double, void *, double *, double *);
 double r_cMESFET_gsl(double, void *);
 
 struct Ids_params {double Vds; double Vgs;param_cMOSFET cMOS;param_cMESFET cMES;};
@@ -377,7 +382,14 @@ double Q_approx0(double V,double Vgs,double Vt,double deltaVt)
 }
 
 //find solution for Q usint GSL library
-double qroot0(double V,double Vgs)
+
+double qroot0(double V, double Vgs)
+{
+  /* return(qroot_brent(V,Vgs)); */
+  return(qroot_newton(V,Vgs));
+}
+  
+double qroot_brent(double V,double Vgs)
 {
   double low,high;
   //  double V_root;
@@ -415,6 +427,38 @@ double qroot0(double V,double Vgs)
   return(r);
 }
 
+//find solution for Q usint GSL library
+double qroot_newton(double V,double Vgs)
+{
+  int status;
+  int iter=0,max_iter=100;
+  const gsl_root_fdfsolver_type *T;
+  gsl_root_fdfsolver *s;
+  double x0,x;
+  gsl_function_fdf FDF;
+  struct Q_cMOSFET_params params={V,Vgs};
+  
+  x=Q_approx(V,Vgs);
+
+  FDF.f = &qfunc_cMOSFET_gsl;
+  FDF.df = &qdfunc_cMOSFET_gsl;
+  FDF.fdf = &qfdfunc_cMOSFET_gsl;
+  FDF.params = &params;
+  T = gsl_root_fdfsolver_newton;
+  s = gsl_root_fdfsolver_alloc(T);
+  gsl_root_fdfsolver_set(s,&FDF,x);
+
+  do {
+	iter++;
+	status = gsl_root_fdfsolver_iterate(s);
+	x0=x;
+	x=gsl_root_fdfsolver_root(s);
+	status = gsl_root_test_delta(x,x0,0,1e-3);
+  } while (status==GSL_CONTINUE && iter < max_iter);
+  
+  return(x);
+}
+
 double qfunc_cMOSFET(double qq,double V, double Vgs)
 {
   double qqq1,qqq2;
@@ -431,6 +475,25 @@ double qfunc_cMOSFET_gsl(double qq, void *p)
   return(qfunc_cMOSFET(qq,V,Vgs));
 }
 
+double qdfunc_cMOSFET_gsl(double qq, void *p)
+{
+  /* struct Q_cMOSFET_params * params = (struct Q_cMOSFET_params *) p; */
+  /* double V = (params->V); */
+  /* double Vgs = (params->Vgs); */
+  double qqq1;
+  qqq1 =-(1/Cox + Vth*(1/qq+1/(qq+Q0)));
+  return(qqq1);
+}
+
+void qfdfunc_cMOSFET_gsl(double qq, void *p, double *f, double *df)
+{
+  struct Q_cMOSFET_params * params = (struct Q_cMOSFET_params *) p;
+  double V = (params->V);
+  double Vgs = (params->Vgs);
+  *f=qfunc_cMOSFET(qq,V,Vgs);
+  *df=-(1/Cox + Vth*(1/qq+1/(qq+Q0)));
+}
+  
 double Q_cMOSFET(double Vgs, param_cMOSFET p)
 {
   set_global_cMOSFET(p);

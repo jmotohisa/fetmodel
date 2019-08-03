@@ -221,7 +221,91 @@ Poisson方程式は
 &= \frac{1}{2}(\d{\phi}{r})^2 + C + \int \frac{1}{r}(\d{\phi}{r})^2 dr 
 \end{align}
 \end{subequations}
+\begin{equation}
+ Q=C_{\mathrm{OX}}
+  \left(
+   \sqrt{a^2+b^2}-a
+  \right)
+\end{equation}
+\begin{subequations}
+\begin{align}
+ a&=\frac{2 C_{\mathrm{OX}}V_{\mathrm{th}}^2}{Q_0} \\
+ b&=2 V_{\mathrm{th}} \log
+ \left(1+\exp
+ \left(\frac{V_{\mathrm{GS}}-V_{\mathrm{T}}+\Delta V_{T}-V}{2 V_{\mathrm{th}}} 
+ \right)
+ \right)
+\end{align}
+\end{subequations}
 
+\begin{subequations}
+\begin{align}
+ Q&\sim C_{\mathrm{OX}}\frac{b^2}{2a}
+  =  Q_0 \left( \log \left(1+\exp \left(\frac{V_{\mathrm{GS}}-V_{\mathrm{T}}+\Delta V_{T}-V}{2 V_{\mathrm{th}}}  \right)
+					\right)\right)^2 \\
+ &\sim Q_0 \exp \left(\frac{V_{\mathrm{GS}}-V_{\mathrm{T}}+\Delta V_{T}-V}{V_{\mathrm{th}}}\right)
+\end{align}
+\end{subequations}
+
+\begin{equation}
+ I_{\mathrm{DS}} = \frac{2 \pi R}{L}\mu
+  \left\{
+   2 \frac{k_B T}{q}(Q_S - Q_D) + \frac{Q_S^2-Q_D^2}{2C_{\mathrm{OX}}}
+   + \frac{k_B T}{q}Q_0\log \left[\frac{Q_D + Q_0}{Q_S+Q_0}\right]
+  \right\}
+\end{equation}
+\begin{equation}
+ Q_0 = \frac{4 \epsilon_{\mathrm{Si}}}{R} \frac{k_B T}{q}
+\end{equation}
+$Q_S \gg Q_D$として
+\begin{subequations}
+ \begin{align}
+ \log I_{\mathrm{DS}} 
+ &= \log \left(\frac{2 \pi R}{L}\mu\right)
+ +\log \left(
+   2 \frac{k_B T}{q}(Q_S-Q_D) + \frac{Q_S^2-Q_D^2}{2C_{\mathrm{OX}}}
+   + \frac{k_B T}{q}Q_0\log \left[\frac{Q_D+Q_0}{Q_S+Q_0}\right]
+  \right) \\
+ &\sim \log \left(\frac{2 \pi R}{L}\mu\right)
+ +\log \left(
+   2 \frac{k_B T}{q}(Q_S) + \frac{Q_S^2}{2C_{\mathrm{OX}}}
+   + \frac{k_B T}{q} Q_0 \log \left[\frac{Q_D+Q_0}{Q_S+Q_0}\right]
+	   \right)
+ \end{align}
+\end{subequations}
+
+サブスレショルドスロープは
+\begin{subequations}
+ \begin{align}
+ \log 10{S}^{-1}&=\d{\log{I_{DS}}}{V_{GS}}
+  =  \d{Q_S}{V_{GS}} \frac{  \left[
+   2 \frac{k_B T}{q}
+   + \frac{Q_S}{C_{\mathrm{OX}}}
+   - \frac{k_B T}{q} \frac{Q_0}{Q_S+Q_0} \right]
+}{2 \frac{k_B T}{q}(Q_S) + \frac{Q_S^2}{2C_{\mathrm{OX}}}
++ \frac{k_B T}{q}Q_0\log \left[\frac{Q_D+Q_0}{Q_S+Q_0}\right]} \\
+ &=\frac{Q_S}{V_{\mathrm{th}}}
+  \frac{  \left[
+   2 \frac{k_B T}{q}
+   + \frac{Q_S}{C_{\mathrm{OX}}}
+   - \frac{k_B T}{q} \frac{Q_0}{Q_S+Q_0} \right]
+}{2 \frac{k_B T}{q}(Q_S) + \frac{Q_S^2}{2C_{\mathrm{OX}}}
+  + \frac{k_B T}{q}Q_0\log \left[\frac{Q_D+Q_0}{Q_S+Q_0}\right]}
+ \end{align}
+\end{subequations}
+ここで
+\begin{equation}
+ Q_S = Q_0 \exp\left(\frac{V_{\mathrm{GS}}-V_{\mathrm{T}}-\Delta V_{T}}{V_{\mathrm{th}}}\right)
+\end{equation}
+よって
+\begin{equation}
+ S = 2.30 \frac{k_B T}{q}
+  \frac{2  + \frac{Q_S}{2C_{\mathrm{OX}}V_{th}}
+  + \frac{Q_0}{Q_S}\log \left[\frac{Q_D+Q_0}{Q_S+Q_0}\right]}{\left[
+   2 + \frac{Q_S}{C_{\mathrm{OX}}V_{th}}
+   - \frac{Q_0}{Q_S+Q_0} \right]
+  }
+\end{equation}
 
 \end{document}
 

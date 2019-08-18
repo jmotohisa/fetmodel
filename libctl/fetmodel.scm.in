@@ -51,15 +51,58 @@
 ; predefinde funcion
 ; Capacitor: SGT
 
-(define (Cox-radial r t eps) (* eps 8.85e-12 (/ (* r (log (+ 1 (/ t r)))))))
+;; (define (Cox-radial r t eps) (* eps 8.85e-12 (/ (* r (log (+ 1 (/ t r)))))))
 
+(define-class NW-sizes no-parent)
+
+(define-class NW-rect NW-sizes
+  (define-property W1 10e-8 'number)
+  (define-property W2 8e-8 'number)
+  )
+
+(define-class NW-radial NW-sizes
+  (define-property radius 5e-9 'number)
+  )
+
+(define NW-default (make NW-rect))
+
+(define-class NWFET-params no-parent
+  (define-property sizes NW-default 'NW-sizes) ;; NW shape and size
+  (define-property tox 10e-9 'number) ;; oxide thickness
+  (define-property eps-ox 8.5 'number) ;; dielectric constant of gate oxide
+  (define-property eps-s 8.6 'number) ;; dielectric constant of semiconductor
+  (define-property bandgap 0.36  'number) ;; bandgap energy
+  (define-property effective-mass 0.2 'number)
+  (define-property nonpallabolic? false 'boolean)
+  (define-property alpha-NP 0 'number)
+  (define-property n-max 2 'integer) ;; number of subbands to consider
+  (define-property m-max 2 'integer)
+  )
+
+(define NW-default
+  (make NW-rect))
+
+(define-class params-ToB no-parent
+  (define-property Fermi-Energy 0 'number)
+  (define-property alpha-D 0 'number)
+  (define-property alpha-G 1 'number)
+  (define-property C-eff 1 'number)
+  )
+
+(define params-ballisticFET0-default
+  (make params-ballisticFET0-type))
+
+(define-input-var params-ballisticFET0 params-ballisticFET0-default
+  'params-ballisticFET0-type)
+  
+(define-input-var temperature 300 'number)
 
 					
 ; ****************************************************************
 
 (define-input-var radius 50e-9 'number) ; nanowire diameter, m
 (define-input-var Lg 1e-6 'number) ; gate length, m
-(define-input-var eps-semi 11.6 'number) ; dielectric constant
+;; (define-input-var eps-semi 11.6 'number) ; dielectric constant
 (define-input-var Rs 0 'number) ; source resistance
 (define-input-var Rd 0 'number) ; drain resistance
 
@@ -81,7 +124,9 @@
 ; external functions
 ; ****************************************************************
 
-; simulation main functions
+;; simulation main functions
+
+;; Cylindrical 1D MOSFET
 (define-external-function func-Qapprox-cMOSFET true true
   'number 'number)
 
@@ -105,17 +150,51 @@
 (define-external-function func-Ids-cMESFET-R true true
   'number 'number 'number)
 
-; ****************************************************************
+;; Ballistic MOSFET: 1D
 
-; Load GNU Readline support, for easier command-line editing support.
-; This is not loaded in by default in Guile 1.3.2+ because readline
-; is licensed under the GPL, which would have caused Guile to effectively
-; be under the GPL itself.  However, since the MIT Photonic Bands package
-; is under the GPL too, we can load Readline by default with no problems.
+(define-external-function density2d-parabollic00 false false 'number
+  'number 'number 'number 'number)
+(define-external-function density1d-parabollic00 false false 'number
+  'number 'number 'number 'number)
 
-@ACTIVATE_READLINE@  ; command to activate readline is determined by configure
+(define-external-function density1d-nonpara00 false false 'number
+  'number 'number 'number 'number 'number)
+
+(define-external-function E0-func true false 'number
+  'params-ballisticFET0-type)
+
+(define-external-function funcval-E00 true false 'number
+  'number   'params-ballisticFET0-type)
+
+(define-external-function alphaNP00 false false 'number
+  'number 'number)
+(define-external-function gamma-nm00 false false 'number
+  'number 'number 'number 'number 'integer 'integer)
+(define-external-function E-nm0 false false 'number
+  'number 'number)
+(define-external-function alpha-nm0 false false 'number
+  'number 'number)
+(define-external-function ems-nm0 false false 'number
+  'number 'number)
+
+(define-external-function Cox-rect false false 'number
+  'number 'number 'number 'number)
+(define-external-function Cc-rect false false 'number
+  'number 'number 'number)
+(define-external-function Cox-radial false false 'number
+  'number 'number 'number)
+
+;; ****************************************************************
+
+;; Load GNU Readline support, for easier command-line editing support.
+;; This is not loaded in by default in Guile 1.3.2+ because readline
+;; is licensed under the GPL, which would have caused Guile to effectively
+;; be under the GPL itself.  However, since the MIT Photonic Bands package
+;; is under the GPL too, we can load Readline by default with no problems.
+
+@ACTIVATE_READLINE@  ;; command to activate readline is determined by configure
 
 (ctl-set-prompt! "fetmodel> ")
 
-; ****************************************************************
+;; ****************************************************************
 

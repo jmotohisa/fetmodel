@@ -4,8 +4,9 @@ doc/cylindricalMESFET.pdf
 doc/cylindricalMESFET.synctex.gz
 
 .libs/
-libcfet.la
+*.la
 *.o
+*.lo
 main.c
 geom.c
 stamp-h1

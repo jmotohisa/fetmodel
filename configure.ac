@@ -2,9 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.56)
-AC_INIT(fetmodel, 0.1a, motohisa@ist.hokudai.ac.jp)
-AC_CONFIG_SRCDIR([ccm.c])
-AC_CONFIG_HEADER([config.h])
+AC_INIT(fetmodel, 0.2a, motohisa@ist.hokudai.ac.jp)
+AC_CONFIG_SRCDIR([src/ccm.c])
+AC_CONFIG_HEADER([src/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.11])
 LT_INIT
@@ -214,5 +214,5 @@ AC_TYPE_SIZE_T
 # Checks for library functions.
 AC_CHECK_FUNCS([sqrt])
 
-AC_CONFIG_FILES([Makefile fetmodel.scm])
+AC_CONFIG_FILES([Makefile src/Makefile libctl/Makefile libctl/fetmodel.scm])
 AC_OUTPUT

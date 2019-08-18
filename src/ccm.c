@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Thu Jul 18 16:29:52 JST 2019>
+ *  ccm.c - Time-stamp: <Sat Aug 10 10:07:55 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -73,7 +73,6 @@
 
 #include <math.h>
 #include "PhysicalConstants.h"
-/* #include "ctl-io.h" */
 
 double Ids00_cMOSFET(double , double );
 double n_intrinsic(double , double , double ,double ,double );
@@ -857,7 +856,6 @@ double Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET pMES)
   gsl_vector_free(x);
   return(idsmod);
 }
-   
 	
 int Ids_cMESFET_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
 {

@@ -1,5 +1,5 @@
 /*
- *  ballistic.h - last saved: Time-stamp: <Sat Aug 10 12:05:54 JST 2019>
+ *  ballistic.h - last saved: Time-stamp: <Sun Aug 18 13:56:28 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -73,7 +73,7 @@ typedef struct param_E0_struct
   double alpha_D;
   double alpha_G;
   double Ceff;
-  param_density1d_all p_density1d_all;
+  param_density1d_rect p_density1d_rect;
 } param_E0;
   
   GLOBAL double func_for_rootfind_E0_rect1d0(double ene0,double EFermi,

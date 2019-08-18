@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Sat Aug 10 19:43:21 JST 2019>
+ *  ballistic.c - Time-stamp: <Sun Aug 18 14:05:27 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -72,18 +72,18 @@ double func_for_findroot_E0_rect1d0(double ene0,double EFermi,
 									double W1, double W2, int nmax, int mmax)					
 {
   double n1d_S,n1d_D;
-  param_density1d_all p_density1d_all;
+  param_density1d_rect p_density1d_rect;
   
-  p_density1d_all.alpha=alpha;
-  p_density1d_all.ems=ems;
-  p_density1d_all.temp=temp;
-  p_density1d_all.W1=W1;
-  p_density1d_all.W2=W2;
-  p_density1d_all.nmax=nmax;
-  p_density1d_all.mmax=mmax;
+  p_density1d_rect.alpha=alpha;
+  p_density1d_rect.ems=ems;
+  p_density1d_rect.temp=temp;
+  p_density1d_rect.W1=W1;
+  p_density1d_rect.W2=W2;
+  p_density1d_rect.nmax=nmax;
+  p_density1d_rect.mmax=mmax;
 
-  n1d_S=density1d_all0(EFermi-ene0,    p_density1d_all);
-  n1d_D=density1d_all0(EFermi-ene0-VDS,p_density1d_all);
+  n1d_S=density1d_rect1d_all(EFermi-ene0,    p_density1d_rect);
+  n1d_D=density1d_rect1d_all(EFermi-ene0-VDS,p_density1d_rect);
   return(alpha_D*VDS + alpha_D*VGS - (n1d_S + n1d_D)/(2*Ceff)*GSL_CONST_MKS_ELECTRON_VOLT);
 }
 
@@ -93,10 +93,10 @@ double func_for_findroot_E0_rect1d(double ene0,param_E0 *p)
 									  p->EFermi, p->VDS, p->VGS,
 									  p->alpha_D, p->alpha_G,
 									  p->Ceff,
-									  p->p_density1d_all.alpha, p->p_density1d_all.ems,
-									  p->p_density1d_all.temp,
-									  p->p_density1d_all.W1, p->p_density1d_all.W2,
-									  p->p_density1d_all.nmax, p->p_density1d_all.mmax));
+									  p->p_density1d_rect.alpha, p->p_density1d_rect.ems,
+									  p->p_density1d_rect.temp,
+									  p->p_density1d_rect.W1, p->p_density1d_rect.W2,
+									  p->p_density1d_rect.nmax, p->p_density1d_rect.mmax));
   /* double n1d_S,n1d_D; */
   
   /* n1d_S=density1d_all0(p->EFermi-ene0,       p->p_density1d_all); */
@@ -148,18 +148,18 @@ double E0_rect1d_root0(double EFermi,
 					   double W1, double W2, int nmax, int mmax)
 {
   double low,high;
-  param_density1d_all p_density1d_all;
+  param_density1d_rect p_density1d_rect;
   param_E0 params;
   
-  p_density1d_all.alpha=alpha;
-  p_density1d_all.ems=ems;
-  p_density1d_all.temp=temp;
-  p_density1d_all.W1=W1;
-  p_density1d_all.W2=W2;
-  p_density1d_all.nmax=nmax;
-  p_density1d_all.mmax=mmax;
+  p_density1d_rect.alpha=alpha;
+  p_density1d_rect.ems=ems;
+  p_density1d_rect.temp=temp;
+  p_density1d_rect.W1=W1;
+  p_density1d_rect.W2=W2;
+  p_density1d_rect.nmax=nmax;
+  p_density1d_rect.mmax=mmax;
   
-  params.p_density1d_all = p_density1d_all;
+  params.p_density1d_rect = p_density1d_rect;
   params.EFermi = EFermi;
   params.VDS = VDS;
   params.VGS = VGS;

@@ -1,5 +1,5 @@
 /*
- *  pycfet.h - last saved: Time-stamp: <Thu Jul 18 10:45:05 JST 2019>
+ *  pyfet.h - last saved: Time-stamp: <Sun Aug 18 09:15:18 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,17 +26,17 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: pycfet.h 2019-07-12 14:25:09 jmotohisa $
+ *  $Id: pyfet.h 2019-07-12 14:25:09 jmotohisa $
  */
 
 /*! 
-  @file pycfet.h 
+  @file pyfet.h 
   @brief 
   @author J. Motohisa
 */
 
-#ifndef _PYCFET_H
-#define _PYCFET_H
+#ifndef _PYFET_H
+#define _PYFET_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,6 +47,7 @@ extern "C" {
 #else
 #define	GLOBAL extern
 #endif
+  
   GLOBAL param_cMOSFET *param_cMOSFET_new(void );  
   GLOBAL param_cMESFET *param_cMESFET_new(void );  
 
@@ -68,4 +69,4 @@ extern "C" {
 }
 #endif
 
-#endif  // _PYCFET_H
+#endif  // _PYFET_H

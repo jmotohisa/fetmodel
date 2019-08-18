@@ -1,5 +1,5 @@
 /*
- *  density1d.h - last saved: Time-stamp: <Tue Jul 30 14:41:46 JST 2019>
+ *  density1d.h - last saved: Time-stamp: <Sun Aug 18 14:03:14 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -57,7 +57,7 @@ extern "C" {
 	double emsnm;
   } param_density1d;
   
-  typedef struct param_density1d_all_struct
+  typedef struct param_density1d_rect_struct
   {
 	double alpha;
 	double ems;
@@ -66,13 +66,28 @@ extern "C" {
 	double W2;
 	int nmax;
 	int mmax;
-  } param_density1d_all;
+  } param_density1d_rect;
 
-  GLOBAL double density1d_parabollic00(double EFermi,double Enm, double ems, double temp);
-  GLOBAL double density1d_all00(double EFermi,double alpha, double ems, double temp,
-								double W1, double W2, int nmax, int mmax);
 
-  GLOBAL double density1d_all0(double EFermi,param_density1d_all p);
+  // parabolic band  
+  GLOBAL double Ep_nm_rect1d(double ems, double W1, double W2, int n , int m);
+  GLOBAL double density1d0(double EFermi, double Enm, double ems,double temp);
+  GLOBAL double density1d_rect1d0(double EFermi, double ems,double temp,
+								  double W1, double W2, int n, int m);
+  GLOBAL double density1d_rect1d_all0(double EFermi, double ems, double temp,
+									  double W1, double W2, int nmax, int mmax);
+  GLOBAL double density1d_rect1d_all(double EFermi,param_density1d_rect p);
+
+  // nonparabolic band
+  GLOBAL double density1d_NP0(double EFermi, double Enm, double alpha_nm, double ems_nm, double temp);
+  GLOBAL double density1d_rect1dNP0(double EFermi,double alphaNP, double ems, double temp,
+									double W1, double W2, int n, int m);
+  GLOBAL double density1d_rect1dNP_all0(double EFermi,double alphaNP, double ems, double temp,
+										double W1, double W2, int nmax, int mmax);
+
+  GLOBAL double density1d_all(double EFermi,param_density1d_rect p);
+  GLOBAL double density1d_NP(param_density1d params);
+  GLOBAL double density1d_rec1dNP_all(double EFermi,param_density1d_rect p);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

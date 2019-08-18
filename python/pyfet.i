@@ -1,10 +1,13 @@
-%module pycfet
+%module pyfet
 
 %{
 #define SWIG_FILE_WITH_INIT
   
-  #include "../ccm.h"
-  #include "pycfet.h"
+#include "../ccm.h"
+#include "../density1d.h"
+#include "../ballistic.h"
+#include "../capacitor.h"
+#include "pyfet.h"
 
   extern void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
   extern void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
@@ -25,6 +28,9 @@
 %}
 
 %include "../ccm.h"
+#include "../density1d.h"
+#include "../ballistic.h"
+#include "../capacitor.h"
 %include "pycfet.h"
 
 %apply (double* IN_ARRAY1, int DIM1) {(double * in_array, int size_in)}

@@ -4,14 +4,14 @@
 from distutils.core import setup, Extension
 import numpy
 
-pycfet_sources = [
-    'pycfet.i',
-    'pycfet.c',
+pyfet_sources = [
+    'pyfet.i',
+    'pyfet.c',
 ]
 
-ext_pycfet = Extension(
-    '_pycfet',
-    sources=pycfet_sources,
+ext_pyfet = Extension(
+    '_pyfet',
+    sources=pyfet_sources,
     libraries=['gsl', 'gslcblas', 'cfet'],
     library_dirs=['/opt/local/lib', '/Users/motohisa/local/lib',
                   ],
@@ -21,10 +21,10 @@ ext_pycfet = Extension(
 
 if __name__ == '__main__':
     setup(
-        name="pycfet",
+        name="pyfet",
         version="0.0.0",
-        description="cyrindcial MESFET and MOSFET",
-        ext_modules=[ext_pycfet],
+        description="FET models",
+        ext_modules=[ext_pyfet],
         include_dirs=[numpy.get_include()],
-        py_modules=['pycfet'],
+        py_modules=['pyfet'],
     )

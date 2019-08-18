@@ -1,5 +1,5 @@
 /*
- *  density1d.c - Time-stamp: <Sat Aug 10 12:05:06 JST 2019>
+ *  density1d.c - Time-stamp: <Sun Aug 18 14:04:19 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -58,12 +58,10 @@
   @return
 */
 
-double alphaNP00(double Eg, double ems)
-{
-  return((1-ems)*(1-ems)/Eg);
-}
+// parabollic band
 
-double Ep_nm00(double ems, double W1, double W2, int n , int m)
+// Quantization energy: rectangular QWR
+double Ep_nm_rect1d(double ems, double W1, double W2, int n , int m)
 {
   double ene;
   ene=(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*M_PI*M_PI)/(2*MASS(ems)*GSL_CONST_MKS_ELECTRON_VOLT)
@@ -71,46 +69,87 @@ double Ep_nm00(double ems, double W1, double W2, int n , int m)
   return(ene*(n*n/(W1*W1)+m*m/(W2*W2)));
 }
 
-double gamma_nm00(double alpha,double ems,double W1,double W2,int n,int m)
+double density1d0(double EFermi, double Enm, double ems,double temp)
 {
-  double Ep_nm=Ep_nm00(ems,W1,W2, n,m);
-  return(sqrt(1+4*alpha*Ep_nm));
-}											
+  double d0=sqrt(2*MASS(ems)*kBT0/M_PI)/GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR;
+  return (d0*gsl_sf_fermi_dirac_mhalf ((EFermi-Enm)/kBT));
+}
 
+double density1d_rect1d0(double EFermi, double ems,double temp,
+						 double W1, double W2, int n, int m)
+{
+  double Enm = Ep_nm_rect1d(ems, W1, W2, n , m);
+  return(density1d0(EFermi, Enm, ems,temp));
+}
+
+double density1d_rect1d_all0(double EFermi, double ems, double temp,
+							   double W1, double W2, int nmax, int mmax)
+{
+  int n,m;
+  double sum;
+
+  sum=0;
+  for(n=1;n<=nmax;n++)
+	for(m=1;m<=mmax;m++)
+	  {
+		sum += density1d_rect1d0(EFermi,ems,temp,W1,W2,n,m);
+	  }
+  return(sum);
+}
+
+double density1d_rect1d_all(double EFermi,param_density1d_rect p)
+{
+  return(density1d_rect1d_all0(EFermi,p.ems,p.temp,p.W1,p.W2,p.nmax,p.mmax));
+}
+
+// nonparabolic band
 // nonparabolicity parameter
 // double Enm, double alpha_nm, double ems_nm
 
-double E_nm0(double alpha, double gamma_nm)
+double alpha_NP(double Eg, double ems)
 {
-  return((gamma_nm-1)/(2*alpha));
+  return((1-ems)*(1-ems)/Eg);
 }
 
-double alpha_nm0(double alpha, double gamma_nm)
+double E_nm_NP(double alphaNP, double gamma_nm)
 {
-  return(alpha/gamma_nm);
+  return((gamma_nm-1)/(2*alphaNP));
 }
 
-double ems_nm0(double ems, double gamma_nm)
+double alpha_nm_NP(double alphaNP, double gamma_nm)
+{
+  return(alphaNP/gamma_nm);
+}
+
+double ems_nm_NP(double ems, double gamma_nm)
 {
   return(ems*gamma_nm);
 }
 
-double E_nm00(double alpha,double ems,double W1,double W2,int n,int m)
+// rectangular QWR, nonparaboic band
+// quantization energy with nonparaboic band correction
+double gamma_nm_rect1dNP(double alphaNP,double ems,double W1,double W2,int n,int m)
 {
-  double gamma_nm=gamma_nm00(alpha,ems,W1,W2,n,m);
-  return(E_nm0(alpha,gamma_nm));
+  double Ep_nm=Ep_nm_rect1d(ems,W1,W2, n,m);
+  return(sqrt(1+4*alphaNP*Ep_nm));
+}											
+
+double E_nm_rect1dNP(double alphaNP,double ems,double W1,double W2,int n,int m)
+{
+  double gamma_nm=gamma_nm_rect1dNP(alphaNP,ems,W1,W2,n,m);
+  return(E_nm_NP(alphaNP,gamma_nm));
 }
 
-double alpha_nm00(double alpha,double ems,double W1,double W2,int n,int m)
+double alpha_nm_rect1dNP(double alpha,double ems,double W1,double W2,int n,int m)
 {
-  double gamma_nm=gamma_nm00(alpha,ems,W1,W2,n,m);
-  return(alpha_nm0(alpha,gamma_nm));
+  double gamma_nm=gamma_nm_rect1dNP(alpha,ems,W1,W2,n,m);
+  return(alpha_nm_NP(alpha,gamma_nm));
 }
 
-double ems_nm00(double alpha,double ems,double W1,double W2,int n,int m)
+double ems_nm_rect1dNP(double alpha,double ems,double W1,double W2,int n,int m)
 {
-  double gamma_nm=gamma_nm00(alpha,ems,W1,W2,n,m);
-  return(ems_nm0(ems,gamma_nm));
+  double gamma_nm=gamma_nm_rect1dNP(alpha,ems,W1,W2,n,m);
+  return(ems_nm_NP(ems,gamma_nm));
 }
 
 // electron density
@@ -123,16 +162,16 @@ double dos1D0_red(double ene,double alpha)
 	return 0;
 }
 
-double func_density_1d0(double eta,double EFermi,double Enm,double emsnm,double alphanm,double temp)
+double func_for_integ_density_1d0(double eta,double EFermi,double Enm,double emsnm,double alphanm,double temp)
 {
   double eta0=(EFermi-Enm)/(kBT);
   return (dos1D0_red(eta,alphanm*kBT)/(1+exp(eta-eta0)));
 }
 
-double func_density_1d(double ene, void *params)
+double func_for_integ_density_1d(double ene, void *params)
 {
   param_density1d *p=(param_density1d *) params;
-  return(func_density_1d0(ene,p->EFermi,p->Enm, p->emsnm, p->alphanm,p->temp));
+  return(func_for_integ_density_1d0(ene,p->EFermi,p->Enm, p->emsnm, p->alphanm,p->temp));
 }
 
 // test of integration
@@ -156,7 +195,7 @@ double func_density_1d(double ene, void *params)
 /* 					   w, &result, &error); */
 /* } */
 
-double density1d_nonpara0(param_density1d params)
+double density1d_NP(param_density1d params)
 {
   gsl_integration_workspace * w = gsl_integration_workspace_alloc(1000);
   gsl_function F;
@@ -164,18 +203,20 @@ double density1d_nonpara0(param_density1d params)
   double epsrel=1e-7;
   size_t limit=1000;
   double result, abserr;
+  double temp=params.temp;
 
-  F.function=&func_density_1d;
+  F.function=&func_for_integ_density_1d;
   F.params = &params;
 /* int gsl_integration_qagiu (gsl_function * f, double a, double epsabs, double epsrel, size_t limit, gsl_integration_workspace * workspace, double *result, double *abserr); */
 
   gsl_integration_qagiu(&F,0,epsabs,epsrel,limit,w,&result,&abserr);
 
   gsl_integration_workspace_free(w);
-  return(result);
+  double d0=sqrt(2*MASS(params.emsnm)*kBT0)/(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*M_PI);
+  return(d0*result);
 }
 				  
-double density1d_nonpara00(double EFermi, double Enm, double alpha_nm, double ems_nm, double temp)
+double density1d_NP0(double EFermi, double Enm, double alpha_nm, double ems_nm, double temp)
 {
   param_density1d p;
   p.temp=temp;
@@ -184,40 +225,42 @@ double density1d_nonpara00(double EFermi, double Enm, double alpha_nm, double em
   p.alphanm=alpha_nm;
   p.emsnm=ems_nm;
   
-  double d0=sqrt(2*MASS(p.emsnm)*kBT0)/(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*M_PI);
-  return (d0*density1d_nonpara0(p));
+  return (density1d_NP(p));
 }
 
-double density1d_parabollic00(double EFermi, double Enm, double ems,double temp)
+double density1d_rect1dNP0(double EFermi,double alphaNP, double ems, double temp,
+						   double W1, double W2, int n, int m)
 {
-  double d0=sqrt(2*MASS(ems)*kBT0/M_PI)/GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR;
-  return (d0*gsl_sf_fermi_dirac_mhalf ((EFermi-Enm)/kBT));
+  double gamma_nm, Enm; //,alpha_nm, ems_nm;
+
+  /* alphaNP = alpha_NP(Eg, ems); */
+  gamma_nm = gamma_nm_rect1dNP(alphaNP, ems, W1, W2, n, m);
+  Enm = E_nm_NP(alphaNP, gamma_nm);
+  return(density1d_NP0(EFermi, Enm,
+					   alpha_nm_NP(alphaNP, gamma_nm),
+					   ems_nm_NP(ems, gamma_nm),
+					   temp));
 }
 
-double density1d_all00(double EFermi,double alpha, double ems, double temp,
-					   double W1, double W2, int nmax, int mmax)
+double density1d_rect1dNP_all0(double EFermi,double alphaNP, double ems, double temp,
+							   double W1, double W2, int nmax, int mmax)
 {
   int n,m;
   double sum;
-  double gamma_nm, Enm,alpha_nm, ems_nm;
 
-  /* alpha = alphaNP00(Eg, ems); */
+  /* alphaNP = alpha_NP(Eg, ems); */
   sum=0;
   for(n=1;n<=nmax;n++)
 	for(m=1;m<=mmax;m++)
 	  {
-		gamma_nm = gamma_nm00(alpha, ems, W1, W2, n, m);
-		Enm = E_nm0(alpha, gamma_nm);
-		alpha_nm = alpha_nm0(alpha, gamma_nm);
-		ems_nm = ems_nm0(ems, gamma_nm);
-		sum = sum+density1d_nonpara00(EFermi, Enm, alpha_nm, ems_nm, temp);
+		sum += density1d_rect1dNP0(EFermi,alphaNP, ems, temp,W1,W2,n,m);
 	  }
   return(sum);
 }
 
-double density1d_all0(double EFermi,param_density1d_all p)
+double density1d_rect1dNP_all(double EFermi,param_density1d_rect p)
 {
   return
-	(density1d_all00(EFermi,p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax));
+	(density1d_rect1dNP_all0(EFermi,p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax));
 }
   

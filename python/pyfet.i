@@ -3,10 +3,10 @@
 %{
 #define SWIG_FILE_WITH_INIT
   
-#include "../ccm.h"
-#include "../density1d.h"
-#include "../ballistic.h"
-#include "../capacitor.h"
+#include "../src/ccm.h"
+#include "../src/density1d.h"
+#include "../src/ballistic.h"
+#include "../src/capacitor.h"
 #include "pyfet.h"
 
   extern void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
@@ -27,11 +27,11 @@
   import_array();
 %}
 
-%include "../ccm.h"
-#include "../density1d.h"
-#include "../ballistic.h"
-#include "../capacitor.h"
-%include "pycfet.h"
+%include "../src/ccm.h"
+%include "../src/density1d.h"
+%include "../src/ballistic.h"
+%include "../src/capacitor.h"
+%include "pyfet.h"
 
 %apply (double* IN_ARRAY1, int DIM1) {(double * in_array, int size_in)}
 /* %apply (double* ARGOUT_ARRAY1, int DIM1) {(double * out_array, int size_out)} */

@@ -1,10 +1,13 @@
 bin_PROGRAMS = fetmodel
-EXTRA_DIST = $(SPECIFICATION_FILE_EXTRA)
 
 SPECIFICATION_FILE = fetmodel.scm
 SPECIFICATION_FILE_EXTRA = 
 
+EXTRA_DIST = $(SPECIFICATION_FILE_EXTRA)
+
 pkgdata_DATA = $(SPECIFICATION_FILE) $(SPECIFICATION_FILE_EXTRA)
+
+LIBFETMODEL = $(top_builddir)/src/libfetmodel.la
 
 MY_INCLUDES= 
 MY_SOURCES = cfet_libctl.c
@@ -41,7 +44,7 @@ fetmodel_SOURCES = $(MY_SOURCES)
 nodist_fetmodel_SOURCES = main.c ctl-io.h ctl-io.c
 # do not use geom.c 
 BUILT_SOURCES = $(nodist_fetmodel_SOURCES)
-fetmodel_LDADD = $(MY_LIBS) $(LIBCTL)
+fetmodel_LDADD = $(LIBFETMODEL) $(MY_LIBS) $(LIBCTL)
 fetmodel_LDFLAGS = $(MY_LDFLAGS)
 fetmodel_CPPFLAGS = $(MY_CPPFLAGS) $(MY_DEFS) $(CTL_DEFS) $(LIBCTL_CPPFLAGS)
 

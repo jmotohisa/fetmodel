@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Sat Aug 10 10:07:55 JST 2019>
+ *  ccm.c - Time-stamp: <Mon Aug 19 10:21:31 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -170,12 +170,12 @@ void set_global_cMESFET(param_cMESFET p)
   Rs=p.Rs;
   Rd=p.Rd;
   /* Cox=Cox; */
-  /* temp=temp; */
+  temp=p.temp;
   /* ni=ni; */
   /* dphi=dphi; */
   /* tox=tox; */
   /* eps_ox=eps_ox; */
-  /* mue=mue; */
+  mue=p.mue;
   Nd=p.Nd;
   Vbi=p.Vbi;
 }

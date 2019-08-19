@@ -40,8 +40,8 @@ configure
 fetmodel
 libtool
 
-python/pycfet_wrap.c
-python/pycfet.py
+python/pyfet_wrap.c
+python/pyfet.py
 python/__pycache__
 python/*.so
 python/build

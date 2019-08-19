@@ -1,21 +1,29 @@
 ;; B. Iniguez et al., IEEE Trans. Elec. Dev. 52, No.8, Auguust 2015 (p.1868)
 
-(set! radius 6.25e-9) ; nanowire diameter, m
-(set! Lg 1e-6) ; gate length, m
-(set! eps-semi 11.6) ; dielectric constant
-(set! Rs 50) ; source resistance
-(set! Rd 50) ; drain resistance
+(set! temperature 300) ; temperature
+
+(set! FET-params
+  (make params-cMOSFET
+	(ni 1.45e16) ; intrinsic carrier concentration, m^-3	
+	(radius 6.25e-9) ; nanowire diameter, m
+    (Lg 1e-6) ; gate length, m
+	(eps-s 11.6) ; dielectric constant
+	(dphi 0) ; work function difference, eV
+	(tox 1.5e-9) ; gate oxide thickness, m
+	(eps-ox 3.9) ; dielectric constant of gate oxide
+	(mobility 0.04) ;mobility, m^2/Vs
+	))
+
+;; parasitic
+(set! params-parasitic
+  (make parasitic-component 
+	(Rs 50) ; source resistance
+    (Rd 50) ; drain resistance
+	))
 
 ; input variable for MOSFET
 
-(set! temp 300) ; temperature
-(set! ni 1.45e16) ; intrinsic carrier concentration, m^-3
-(set! dphi 0) ; work function difference, eV
-(set! tox 1.5e-9) ; gate oxide thickness, m
-(set! eps-ox 3.9) ; dielectric constant of gate oxide
-(set! mue 0.04) ;mobility, m^2/Vs
-
-(set! Cox (Cox-radial radius tox eps-ox))
+;;(set! Cox (Cox-radial epx-ox tox radius))
 
 (define Vgs1 (interpolate 99 (list 0 2)))
 (define Vds1 (interpolate 99 (list 0 2)))

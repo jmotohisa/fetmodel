@@ -1,5 +1,5 @@
-lib_LTLIBRARIES = libfetmodels.la
+lib_LTLIBRARIES = libfetmodel.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/scc
+AM_CPPFLAGS = -I$(top_srcdir)/src
 
-libfetmodels_la_SOURCES = density1d.c ballistic.c ccm.c density2d.c capacitor.c
+libfetmodel_la_SOURCES = density1d.c ballistic.c ccm.c density2d.c capacitor.c

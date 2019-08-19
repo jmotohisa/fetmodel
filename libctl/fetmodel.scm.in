@@ -53,6 +53,8 @@
 
 ;; (define (Cox-radial r t eps) (* eps 8.85e-12 (/ (* r (log (+ 1 (/ t r)))))))
 
+(define-input-var temperature 300 'number)
+
 (define-class NW-sizes no-parent)
 
 (define-class NW-rect NW-sizes
@@ -66,60 +68,67 @@
 
 (define NW-default (make NW-rect))
 
-(define-class NWFET-params no-parent
+(define (Cox-func-default x) 0.0233)
+;; (define-input-var Cox 0.0233 'number) ; gate capacitance, F/m^2
+
+(define-class params-NWFET no-parent
   (define-property sizes NW-default 'NW-sizes) ;; NW shape and size
   (define-property tox 10e-9 'number) ;; oxide thickness
   (define-property eps-ox 8.5 'number) ;; dielectric constant of gate oxide
   (define-property eps-s 8.6 'number) ;; dielectric constant of semiconductor
   (define-property bandgap 0.36  'number) ;; bandgap energy
-  (define-property effective-mass 0.2 'number)
+  (define-property effective-mass 0.2 'number) ;; band edge effective mass
   (define-property nonpallabolic? false 'boolean)
-  (define-property alpha-NP 0 'number)
+  (define-property alpha-NP 0 'number) ;; nonparabolicity parameter
   (define-property n-max 2 'integer) ;; number of subbands to consider
   (define-property m-max 2 'integer)
+  (define-property mobility 0.04 'number) ;; mobility
+  (define-property Lg 1e-6 'number) ;; gate length
   )
 
-(define NW-default
-  (make NW-rect))
+; input variable for cylindirical-NW MOSFET
+(define-class params-cMOSFET params-NWFET
+  (define-property ni 1.45e16 'number) ; intrinsic carrier concentration, m^-3
+  (define-property dphi 0 'number) ; work function difference, eV
+  (define-property use-Cox-func? false 'boolean) 
+  (define-property Cox-func Cox-func-default 'function)  ;; gate capacitance, use if use-func-Cox? is true
+  )
 
-(define-class params-ToB no-parent
+;; input Variable for cylindirical-NW MESFET
+(define-class params-cMESFET params-NWFET
+  (define-property Nd 2.3e24 'number) ; doping density, m^-3
+  (define-property Vbi 0.34 'number) ; built in potential, eV
+)  
+
+;; input variables for ballistic FET
+(define-class params-ballisticFET no-parent
   (define-property Fermi-Energy 0 'number)
   (define-property alpha-D 0 'number)
   (define-property alpha-G 1 'number)
   (define-property C-eff 1 'number)
   )
 
-(define params-ballisticFET0-default
-  (make params-ballisticFET0-type))
+;; parasitic component
+(define-class parasitic-component no-parent
+  (define-property Rs 0 'number) ; source resistance
+  (define-property Rd 0 'number) ; drain resistance
+  )
 
-(define-input-var params-ballisticFET0 params-ballisticFET0-default
-  'params-ballisticFET0-type)
+;; input
+(define FET-params-default
+  (make params-NWFET))
+
+(define-input-var FET-params FET-params-default
+  'params-NWFET)
+(define-input-var params-parasitic
+  (make parasitic-component) 'parasitic-component)
   
-(define-input-var temperature 300 'number)
-
-					
 ; ****************************************************************
 
-(define-input-var radius 50e-9 'number) ; nanowire diameter, m
-(define-input-var Lg 1e-6 'number) ; gate length, m
-;; (define-input-var eps-semi 11.6 'number) ; dielectric constant
-(define-input-var Rs 0 'number) ; source resistance
-(define-input-var Rd 0 'number) ; drain resistance
+;; (define-input-var radius 50e-9 'number) ; nanowire diameter, m
+;; (define-input-var Lg 1e-6 'number) ; gate length, m
+;; ;; (define-input-var eps-semi 11.6 'number) ; dielectric constant
 
-; input variable for MOSFET
-
-(define-input-var Cox 0.0233 'number) ; gate capacitance, F/m^2
-(define-input-var temp 300 'number) ; temperature
-(define-input-var ni 1.45e16 'number) ; intrinsic carrier concentration, m^-3
-(define-input-var dphi 0 'number) ; work function difference, eV
-(define-input-var tox 1.5e-9 'number) ; gate oxide thickness, m
-(define-input-var eps-ox 3.9 'number) ; dielectric constant of gate oxide
-(define-input-var mue 0.04 'number) ;mobility, m^2/Vs
-
-; input Variable for MESFET
-(define-input-var Nd 2.3e24 'number) ; doping density, m^-3
-(define-input-var Vbi 0.34 'number) ; built in potential, eV
- 
 ; ****************************************************************
 ; external functions
 ; ****************************************************************
@@ -145,6 +154,7 @@
 (define-external-function func-Ids0-cMOSFET-R true true
   'number 'number 'number)
 
+;; Cylindrical 1D MESFET
 (define-external-function func-Ids-cMESFET true true
   'number 'number 'number)
 (define-external-function func-Ids-cMESFET-R true true
@@ -152,30 +162,30 @@
 
 ;; Ballistic MOSFET: 1D
 
-(define-external-function density2d-parabollic00 false false 'number
-  'number 'number 'number 'number)
-(define-external-function density1d-parabollic00 false false 'number
-  'number 'number 'number 'number)
+;; (define-external-function density2d-parabollic00 false false 'number
+;;   'number 'number 'number 'number)
+;; (define-external-function density1d-parabollic00 false false 'number
+;;   'number 'number 'number 'number)
 
-(define-external-function density1d-nonpara00 false false 'number
-  'number 'number 'number 'number 'number)
+;; (define-external-function density1d-nonpara00 false false 'number
+;;   'number 'number 'number 'number 'number)
 
-(define-external-function E0-func true false 'number
-  'params-ballisticFET0-type)
+;; (define-external-function E0-func true false 'number
+;;   'params-ballisticFET0-type)
 
-(define-external-function funcval-E00 true false 'number
-  'number   'params-ballisticFET0-type)
+;; (define-external-function funcval-E00 true false 'number
+;;   'number   'params-ballisticFET0-type)
 
-(define-external-function alphaNP00 false false 'number
-  'number 'number)
-(define-external-function gamma-nm00 false false 'number
-  'number 'number 'number 'number 'integer 'integer)
-(define-external-function E-nm0 false false 'number
-  'number 'number)
-(define-external-function alpha-nm0 false false 'number
-  'number 'number)
-(define-external-function ems-nm0 false false 'number
-  'number 'number)
+;; (define-external-function alphaNP00 false false 'number
+;;   'number 'number)
+;; (define-external-function gamma-nm00 false false 'number
+;;   'number 'number 'number 'number 'integer 'integer)
+;; (define-external-function E-nm0 false false 'number
+;;   'number 'number)
+;; (define-external-function alpha-nm0 false false 'number
+;;   'number 'number)
+;; (define-external-function ems-nm0 false false 'number
+;;   'number 'number)
 
 (define-external-function Cox-rect false false 'number
   'number 'number 'number 'number)

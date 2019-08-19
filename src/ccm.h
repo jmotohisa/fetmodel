@@ -1,5 +1,5 @@
 /*
- *  ccm.h - last saved: Time-stamp: <Thu Jul 18 08:46:04 JST 2019>
+ *  ccm.h - last saved: Time-stamp: <Mon Aug 19 10:21:19 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -72,12 +72,12 @@ extern "C" {
 	double	Rs;
 	double	Rd;
 	/* double	Cox; */
-	/* double	temp; */
+	double	temp;
 	/* double	ni; */
 	/* double	dphi; */
 	/* double	tox; */
 	/* double	eps_ox; */
-	/* double	mue; */
+	double	mue;
   	double	Nd;
 	double	Vbi;
   } param_cMESFET;

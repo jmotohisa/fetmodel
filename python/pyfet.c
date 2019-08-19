@@ -1,5 +1,5 @@
-/*
- *  pycfet.c - Time-stamp: <Thu Jul 18 09:55:32 JST 2019>
+/*1
+ *  pyfet.c - Time-stamp: <Mon Aug 19 07:32:57 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,11 +26,11 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: pycfet.c 2019-07-12 14:25:01 jmotohisa $
+ *  $Id: pyfet.c 2019-07-12 14:25:01 jmotohisa $
  */
 
 /*! 
-  @file pycfet.c 
+  @file pyfet.c 
   @brief 
   @author J. Motohisa
   @date
@@ -40,10 +40,10 @@
 #include <stdlib.h>
 #include <complex.h>
 #include <tgmath.h>
-#include "../ccm.h"
+#include "../src/ccm.h"
 
 #define GLOBAL_VALUE_DEFINE
-#include "pycfet.h"
+#include "pyfet.h"
 
 /*!
   @brief
@@ -64,7 +64,7 @@ param_cMOSFET *param_cMOSFET_new()
 }
 
 param_cMESFET *param_cMESFET_new()
-{
+l{
   param_cMESFET *p = malloc(sizeof(param_cMESFET));
   if(p ==NULL) {
 	perror("malloc");

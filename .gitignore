@@ -38,6 +38,8 @@ missing
 configure
 fetmodel
 libtool
+*.lo
+*.la
 
 python/pycfet_wrap.c
 python/pycfet.py

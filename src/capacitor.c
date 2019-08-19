@@ -1,5 +1,5 @@
 /*
- *  capacitor.c - Time-stamp: <Sat Aug 10 10:12:30 JST 2019>
+ *  capacitor.c - Time-stamp: <Mon Aug 19 12:31:17 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -60,6 +60,11 @@ double Cox_rect(double epsOX,double tOX,double W1, double W2)
   return(2*EPSILON(epsOX)*(W1+W2)/tOX + 2.232*EPSILON(epsOX));
 }
 
+double Cox_rect_area(double epsOX,double tOX,double W1, double W2)
+{
+  return(Cox_rect(epsOX,tOX,W1,W2)/(2*(W1+W2)));
+}
+
 double Cc_rect(double epsS, double W1, double W2)
 {
   return (6.94*EPSILON(epsS)*(W1*W1+W2*W2)/(W1*W2));
@@ -67,6 +72,11 @@ double Cc_rect(double epsS, double W1, double W2)
 
 double Cox_radial(double epsOX, double tOX, double radius)
 {
-  return(2*M_PI*EPSILON(epsOX)/(log(1+radius/tOX)));
+  return(2*M_PI*EPSILON(epsOX)/(log(1+tOX/radius)));
+}
+
+double Cox_radial_area(double epsOX, double tOX, double radius)
+{
+  return(EPSILON(epsOX)/(radius*log(1+tOX/radius)));
 }
 

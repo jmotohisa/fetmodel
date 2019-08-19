@@ -1,5 +1,5 @@
 /*
- *  cfet_libctl.c - Time-stamp: <Mon Aug 19 10:22:08 JST 2019>
+ *  cfet_libctl.c - Time-stamp: <Mon Aug 19 12:29:38 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -108,11 +108,11 @@ double get_Cox(params_NWFET p)
 	  {
 		switch(p.sizes.which_subclass) {
 		case NW_RECT:
-		  Cox0=Cox_rect(p.eps_ox,p.tox,get_radius(p),get_radius2(p));
+		  Cox0=Cox_rect_area(p.eps_ox,p.tox,get_radius(p),get_radius2(p));
 		  break;
 		case NW_RADIAL:
 		default:
-		  Cox0=Cox_radial(p.eps_ox,p.tox,get_radius(p));
+		  Cox0=Cox_radial_area(p.eps_ox,p.tox,get_radius(p));
 		  //Cox_radial(double epsOX, double tOX, double radius);
 		  break;
 		}

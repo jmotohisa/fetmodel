@@ -1,5 +1,5 @@
 /*
- *  capacitor.h - last saved: Time-stamp: <Sat Aug 10 10:10:36 JST 2019>
+ *  capacitor.h - last saved: Time-stamp: <Mon Aug 19 12:29:14 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -49,9 +49,10 @@ extern "C" {
 #endif
 
   GLOBAL double Cox_rect(double epsOX,double tOX,double W1, double W2);
+  GLOBAL double Cox_rect_area(double epsOX,double tOX,double W1, double W2);
   GLOBAL double Cc_rect(double epsS, double W1, double W2);
   GLOBAL double Cox_radial(double epsOX, double tOX, double radius);
-
+  GLOBAL double Cox_radial_area(double epsOX, double tOX, double radius);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

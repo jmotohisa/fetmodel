@@ -4,8 +4,9 @@
 
 (set! FET-params
   (make params-cMOSFET
+	(sizes (make NW-radial (radius 6.25e-9) ; nanowire diameter, m
+							))
 	(ni 1.45e16) ; intrinsic carrier concentration, m^-3	
-	(radius 6.25e-9) ; nanowire diameter, m
     (Lg 1e-6) ; gate length, m
 	(eps-s 11.6) ; dielectric constant
 	(dphi 0) ; work function difference, eV

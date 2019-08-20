@@ -30,7 +30,7 @@ for i, e in enumerate(ene):
     dens[i] = pyfet.density1d0(e, Enm, ems_nm, temperature)
     dens2[i] = pyfet.density1d_NP0(
         e, Enm, alpha_nm, ems_nm, temperature)
-    dens3[i] = pyfet.density1d_rect1DNP_all0(e, alpha, ems, temperature,
+    dens3[i] = pyfet.density1d_rect1dNP_all0(e, alpha, ems, temperature,
                                              W1, W2, 2, 2)
 
 plt.plot(ene, dens, ene, dens2, ene, dens3)

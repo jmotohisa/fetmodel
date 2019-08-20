@@ -39,9 +39,9 @@ p.mmax = 2
 
 
 def func_e0_find(E0, p, Vgs, Vds):
-    n1d_S = pyfet.density1d_rect1DNP_all0(
+    n1d_S = pyfet.density1d_rect1dNP_all0(
         p.EFermi - E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
-    n1d_D = pyfet.density1d_rect1DNP_all0(
+    n1d_D = pyfet.density1d_rect1dNP_all0(
         p.EFermi - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)

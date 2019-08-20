@@ -12,7 +12,7 @@ pyfet_sources = [
 ext_pyfet = Extension(
     '_pyfet',
     sources=pyfet_sources,
-    libraries=['gsl', 'gslcblas', 'cfet'],
+    libraries=['gsl', 'gslcblas', 'fetmodel'],
     library_dirs=['/opt/local/lib', '/Users/motohisa/local/lib',
                   ],
     include_dirs=['/opt/local/include',

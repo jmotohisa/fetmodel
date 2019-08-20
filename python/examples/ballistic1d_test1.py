@@ -41,9 +41,9 @@ p.mmax = 2
 
 
 def func_e0_find(E0, p, Vgs, Vds):
-    n1d_S = pyfet.density1d_rect1DNP_all0(
+    n1d_S = pyfet.density1d_rect1dNP_all0(
         p.EFermi - E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
-    n1d_D = pyfet.density1d_rect1DNP_all0(
+    n1d_D = pyfet.density1d_rect1dNP_all0(
         p.EFermi - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
@@ -80,34 +80,34 @@ def func_FD0(ene, temp):
 
 
 def func_current1D(Vgs, Vds, p, EFs):
-    e0 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs)), x0 = -0.1, x1 = 1)
+    e0 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
     # e0=get_E0(p, Vgs, Vds)
-    nlist=np.arange(1, p.nmax+1, dtype = np.int64)
-    mlist=np.arange(1, p.mmax+1, dtype = np.int64)
-    cur=0
+    nlist = np.arange(1, p.nmax+1, dtype=np.int64)
+    mlist = np.arange(1, p.mmax+1, dtype=np.int64)
+    cur = 0
     for n in nlist:
         for m in mlist:
-            Enmp=pyfet.Ep_nm_rect1d(ems, W1, W2, int(n), int(m))
-            gamma_nm=pyfet.gamma_nm_NP(Enmp, p.alpha)
-            Enm=pyfet.E_nm_NP(p.alpha, gamma_nm)
-            cur1=func_FD0(EFs-Enm-e0.root, temperature)
-            cur2=func_FD0(EFs-Enm-e0.root-Vds, temperature)
+            Enmp = pyfet.Ep_nm_rect1d(ems, W1, W2, int(n), int(m))
+            gamma_nm = pyfet.gamma_nm_NP(Enmp, p.alpha)
+            Enm = pyfet.E_nm_NP(p.alpha, gamma_nm)
+            cur1 = func_FD0(EFs-Enm-e0.root, temperature)
+            cur2 = func_FD0(EFs-Enm-e0.root-Vds, temperature)
             cur += cur1-cur2
 
     return (cur*2*1.6e-19/6.63e-34*p.temp*1.38e-23)
 
 
-Vds=np.arange(0, 1, 0.01)
-Ids1=np.empty_like(Vds)
-Ids2=np.empty_like(Vds)
+Vds = np.arange(0, 1, 0.01)
+Ids1 = np.empty_like(Vds)
+Ids2 = np.empty_like(Vds)
 
 for i, Vds0 in enumerate(Vds):
-    Ids1[i]=func_current1D(-0.1, Vds0, p, 0)
-    Ids2[i]=func_current1D(0, Vds0, p, 0)
+    Ids1[i] = func_current1D(-0.1, Vds0, p, 0)
+    Ids2[i] = func_current1D(0, Vds0, p, 0)
 
-plt.plot(Vds, Ids1, label = 'Ids1')
-plt.plot(Vds, Ids2, label = 'Ids2')
+plt.plot(Vds, Ids1, label='Ids1')
+plt.plot(Vds, Ids2, label='Ids2')
 plt.xlabel('Drain Voltage (V)')
 plt.ylabel('Drain Current (A/m)')
-plt.legend(loc = 'best')
+plt.legend(loc='best')
 plt.show()

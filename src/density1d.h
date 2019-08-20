@@ -1,5 +1,5 @@
 /*
- *  density1d.h - last saved: Time-stamp: <Tue Aug 20 07:34:22 JST 2019>
+ *  density1d.h - last saved: Time-stamp: <Tue Aug 20 10:51:23 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -83,19 +83,23 @@ extern "C" {
   GLOBAL double density1d_rect1dNP_all0(double EFermi,double alphaNP, double ems, double temp,
 										double W1, double W2, int nmax, int mmax);
 
-  GLOBAL double density1d_all(double EFermi,param_density1d_rect p);
+  GLOBAL double density1d_rect1d_all(double EFermi,param_density1d_rect p);
   GLOBAL double density1d_NP(param_density1d params);
-  GLOBAL double density1d_rec1dNP_all(double EFermi,param_density1d_rect p);
+  GLOBAL double density1d_rect1dNP_all(double EFermi,param_density1d_rect p);
 
   // utility functions
   GLOBAL double Ep_nm_rect1d(double ems, double W1, double W2, int n , int m);
   GLOBAL double Ep_n_radial1d(double ems,double radius,int n);
+
   GLOBAL double alpha_NP(double Eg, double ems);
   GLOBAL double E_nm_NP(double alphaNP, double gamma_nm);
   GLOBAL double alpha_nm_NP(double alphaNP, double gamma_nm);
   GLOBAL double ems_nm_NP(double ems, double gamma_nm);
   GLOBAL double gamma_nm_NP(double Enm, double alphaNP);
 
+  GLOBAL double gamma_nm_rect1dNP(double alphaNP,double ems,double W1,double W2,int n,int m);
+  GLOBAL double E_nm_rect1dNP(double alphaNP,double ems,double W1,double W2,int n,int m);
+  
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL
 

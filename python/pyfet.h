@@ -1,5 +1,5 @@
 /*
- *  pyfet.h - last saved: Time-stamp: <Sun Aug 18 09:15:18 JST 2019>
+ *  pyfet.h - last saved: Time-stamp: <Tue Aug 20 10:17:07 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -50,6 +50,7 @@ extern "C" {
   
   GLOBAL param_cMOSFET *param_cMOSFET_new(void );  
   GLOBAL param_cMESFET *param_cMESFET_new(void );  
+  GLOBAL param_ballistic *param_ballistic_new(void );
 
   /* GLOBAL void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p); */
   /* GLOBAL void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p); */

@@ -1,5 +1,5 @@
 /*
- *  cfet_libctl.c - Time-stamp: <Mon Aug 19 12:29:38 JST 2019>
+ *  cfet_libctl.c - Time-stamp: <Mon Aug 19 20:56:22 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -46,9 +46,8 @@
 #include "../src/ccm.h"
 #include "../src/capacitor.h"
 
-//#define GLOBAL_VALUE_DEFINE
-//#include "cfet_libctl.h"
-
+#define GLOBAL_VALUE_DEFINE
+#include "cfet_libctl.h"
 
 /*!
   @brief
@@ -121,9 +120,7 @@ double get_Cox(params_NWFET p)
   }
   return(Cox0);
 }
-  
-  
-	  
+
 // Get global and store local valuable 
 void get_global_cMOSFET(param_cMOSFET *p)
 {

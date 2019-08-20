@@ -10,7 +10,7 @@ pkgdata_DATA = $(SPECIFICATION_FILE) $(SPECIFICATION_FILE_EXTRA)
 LIBFETMODEL = $(top_builddir)/src/libfetmodel.la
 
 MY_INCLUDES= 
-MY_SOURCES = cfet_libctl.c
+MY_SOURCES = cfet_libctl.c ballisticFET1d_libctl.c
 
 MY_LIBS    =  # extra libs you need go here
 MY_LDFLAGS =         # extra -L flags go here

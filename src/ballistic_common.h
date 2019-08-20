@@ -1,5 +1,5 @@
 /*
- *  ballistic_common.h - last saved: Time-stamp: <Mon Jul 29 11:45:10 JST 2019>
+ *  ballistic_common.h - last saved: Time-stamp: <Tue Aug 20 05:54:59 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -52,6 +52,7 @@ extern "C" {
 #define MASS(ems) (ems*GSL_CONST_MKS_MASS_ELECTRON)
 #define kBT (GSL_CONST_MKS_BOLTZMANN*temp/GSL_CONST_MKS_ELECTRON_VOLT)
 #define kBT0 (GSL_CONST_MKS_BOLTZMANN*temp)
+#define BETA (GSL_CONST_MKS_ELECTRON_VOLT/(GSL_CONST_MKS_BOLTZMANN*temp))
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

@@ -78,7 +78,7 @@
   (define-property eps-s 8.6 'number) ;; dielectric constant of semiconductor
   (define-property bandgap 0.36  'number) ;; bandgap energy
   (define-property effective-mass 0.2 'number) ;; band edge effective mass
-  (define-property nonpallabolic? false 'boolean)
+  (define-property nonparabollic? false 'boolean)
   (define-property alpha-NP 0 'number) ;; nonparabolicity parameter
   (define-property n-max 2 'integer) ;; number of subbands to consider
   (define-property m-max 2 'integer)
@@ -122,7 +122,9 @@
   'params-NWFET)
 (define-input-var params-parasitic
   (make parasitic-component) 'parasitic-component)
-  
+(define-input-var ballistic-params
+  (make params-ballisticFET) 'params-ballisticFET)
+
 ; ****************************************************************
 
 ;; (define-input-var radius 50e-9 'number) ; nanowire diameter, m
@@ -162,31 +164,18 @@
 
 ;; Ballistic MOSFET: 1D
 
-;; (define-external-function density2d-parabollic00 false false 'number
-;;   'number 'number 'number 'number)
-;; (define-external-function density1d-parabollic00 false false 'number
-;;   'number 'number 'number 'number)
+(define-external-function density1d true false 'number
+  'number 'params-NWFET)
 
-;; (define-external-function density1d-nonpara00 false false 'number
-;;   'number 'number 'number 'number 'number)
+;; top of the barrier E0: (E0-rect1d VDS VGS);
+(define-external-function E0-rect1d true false 'number
+  'number 'number)
+;; ('params-NWFET 'params-ballisticFET)
 
-;; (define-external-function E0-func true false 'number
-;;   'params-ballisticFET0-type)
 
-;; (define-external-function funcval-E00 true false 'number
-;;   'number   'params-ballisticFET0-type)
-
-;; (define-external-function alphaNP00 false false 'number
-;;   'number 'number)
-;; (define-external-function gamma-nm00 false false 'number
-;;   'number 'number 'number 'number 'integer 'integer)
-;; (define-external-function E-nm0 false false 'number
-;;   'number 'number)
-;; (define-external-function alpha-nm0 false false 'number
-;;   'number 'number)
-;; (define-external-function ems-nm0 false false 'number
-;;   'number 'number)
-
+;; capactitance
+;; (Cox-rect eps-OX tOX W1 W2)
+;; (Cc-rect epsS W1 W2)
 (define-external-function Cox-rect false false 'number
   'number 'number 'number 'number)
 (define-external-function Cc-rect false false 'number

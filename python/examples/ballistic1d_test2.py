@@ -1,41 +1,47 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import pyfet
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-import ballistic
 from scipy import optimize
 
 Eg = 0.036
 epsOX = 8.5
 epsS = 8.9
 tOX = 20e-9
+temperature = 300
+ems = 0.067
+W1 = 10e-9
+W2 = 8e-9
+alpha = pyfet.alpha_NP(Eg, ems)
+Cox = pyfet.Cox_rect(epsOX, tOX, W1, W2)
+Cc = pyfet.Cc_rect(epsS, W1, W2)
+alpha_D = 0
+alpha_G = 1
 
-p = ballistic.param_ballistic_new()
-p.ems = 0.067
-p.alpha = ballistic.alphaNP00(Eg, p.ems)
-p.W1 = 10e-9
-p.W2 = 8e-9
-
-Cox = ballistic.Cox_rect(epsOX, tOX, p.W1, p.W2)
-Cc = ballistic.Cc_rect(epsS, p.W1, p.W2)
+p = pyfet.param_ballistic_new()
+p.ems = ems
+p.alpha = alpha
+p.W1 = W1
+p.W2 = W1
 
 p.EFermi = -0.1
 # p.VDS = 0
 # p.VGS = 0
-p.alpha_D = 0
-p.alpha_G = 1
+p.alpha_D = alpha_D
+p.alpha_G = alpha_G
 p.Ceff = Cox*Cc/(Cox+Cc)
-p.temp = 300
+p.temp = temperature
 p.nmax = 2
 p.mmax = 2
 
 
 def func_e0_find(E0, p, Vgs, Vds):
-    n1d_S = ballistic.density1d_all00(
+    n1d_S = pyfet.density1d_rect1DNP_all0(
         p.EFermi - E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
-    n1d_D = ballistic.density1d_all00(
+    n1d_D = pyfet.density1d_rect1DNP_all0(
         p.EFermi - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
@@ -78,9 +84,10 @@ def func_current1D(Vgs, Vds, p, EFs):
     cur = 0
     for n in nlist:
         for m in mlist:
-            gamma_nm = ballistic.gamma_nm00(
+            gamma_nm = pyfet.gamma_nm_rect1dNP(
                 p.alpha, p.ems, p.W1, p.W2, int(n), int(m))
-            Enm = ballistic.E_nm0(p.alpha, gamma_nm)
+            Enm = pyfet.E_nm_rect1dNP(
+                p.alpha, p.ems, p.W1, p.W2, int(n), int(m))
             cur1 = func_FD0(EFs-Enm-e0, p.temp)
             cur2 = func_FD0(EFs-Enm-e0-Vds, p.temp)
             cur += cur1-cur2

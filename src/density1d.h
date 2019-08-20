@@ -1,5 +1,5 @@
 /*
- *  density1d.h - last saved: Time-stamp: <Sun Aug 18 14:03:14 JST 2019>
+ *  density1d.h - last saved: Time-stamp: <Tue Aug 20 07:34:22 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -68,9 +68,7 @@ extern "C" {
 	int mmax;
   } param_density1d_rect;
 
-
   // parabolic band  
-  GLOBAL double Ep_nm_rect1d(double ems, double W1, double W2, int n , int m);
   GLOBAL double density1d0(double EFermi, double Enm, double ems,double temp);
   GLOBAL double density1d_rect1d0(double EFermi, double ems,double temp,
 								  double W1, double W2, int n, int m);
@@ -88,6 +86,15 @@ extern "C" {
   GLOBAL double density1d_all(double EFermi,param_density1d_rect p);
   GLOBAL double density1d_NP(param_density1d params);
   GLOBAL double density1d_rec1dNP_all(double EFermi,param_density1d_rect p);
+
+  // utility functions
+  GLOBAL double Ep_nm_rect1d(double ems, double W1, double W2, int n , int m);
+  GLOBAL double Ep_n_radial1d(double ems,double radius,int n);
+  GLOBAL double alpha_NP(double Eg, double ems);
+  GLOBAL double E_nm_NP(double alphaNP, double gamma_nm);
+  GLOBAL double alpha_nm_NP(double alphaNP, double gamma_nm);
+  GLOBAL double ems_nm_NP(double ems, double gamma_nm);
+  GLOBAL double gamma_nm_NP(double Enm, double alphaNP);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

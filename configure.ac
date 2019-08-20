@@ -23,9 +23,9 @@ AC_ARG_ENABLE(debug,
               [AC_HELP_STRING([--enable-debug],[compile for debugging])],
 	      enable_debug=$enableval, enable_debug=no)
 if test "$enable_debug" = "yes"; then
-	CFLAGS="-g"
-	CXXFLAGS="-g"
-	FFLAGS="-g"
+	CFLAGS="-g -Wall -O0"
+	CXXFLAGS="-g -Wall -O0"
+	FFLAGS="-g -Wall -O0"
 	AC_DEFINE(DEBUG,1,[define to enable debugging code])
 fi
 

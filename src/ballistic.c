@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Sun Aug 18 14:05:27 JST 2019>
+ *  ballistic.c - Time-stamp: <Tue Aug 20 07:40:34 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -46,13 +46,13 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multiroots.h>
+#include <gsl/gsl_sf_fermi_dirac.h>
 
 #include "ballistic_common.h"
 #include "density1d.h"
 
 #define GLOBAL_VALUE_DEFINE
 #include "ballistic.h"
-
 
 /*!
   @brief
@@ -177,4 +177,33 @@ double E0_rect1d_root(param_ballistic p)
   return(E0_rect1d_root0(p.EFermi,p.VDS, p.VGS, p.alpha_D, p.alpha_G, p.Ceff,
 						 p.alpha, p.ems, p.temp,
 						 p.W1, p.W2, p.nmax, p.nmax));
+}
+
+// current
+
+double Ids_ballistic1d_recdt1d0(double VDS, double VGS,
+								double EFs, double EFermi,
+								double alpha_D, double alpha_G,
+								double Ceff,
+								double alpha, double ems, double temp,
+								double W1, double W2, int nmax, int mmax)
+{
+  double Enm,E0;
+  double ids1,ids2;
+  int n,m;
+  ids1=0;
+  ids2=0;
+  E0=E0_rect1d_root0(EFermi,VDS, VGS, alpha_D, alpha_G, Ceff,
+					 alpha, ems, temp,
+					 W1, W2, nmax, nmax);
+  
+  for(n=1;n<=nmax;n++)
+    for(m=1;m<=mmax;m++)
+	  {
+		Enm=Ep_nm_rect1d(ems,W1,W2,n,m);
+		ids1 += gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+		ids2 += gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS));
+	  }
+  
+  return(2*(ids1-ids2)*GSL_CONST_MKS_ELECTRON_VOLT/GSL_CONST_MKS_PLANCKS_CONSTANT_H);
 }

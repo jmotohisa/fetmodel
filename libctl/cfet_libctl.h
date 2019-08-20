@@ -1,5 +1,5 @@
 /*
- *  ballistic_libctl.c - Time-stamp: <Tue Jul 30 14:55:58 JST 2019>
+ *  cfet_libctl.h - last saved: Time-stamp: <Mon Aug 19 20:32:01 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,74 +26,37 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: ballistic_libctl.c 2019-07-30 14:23:51 jmotohisa $
+ *  $Id: cfet_libctl.h 2019-08-19 20:31:16 jmotohisa $
  */
 
 /*! 
-  @file ballistic_libctl.c 
+  @file cfet_libctl.h 
   @brief 
   @author J. Motohisa
-  @date
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <complex.h>
-#include <tgmath.h>
-#include "ctl-io.h"
+#ifndef _CFET_LIBCTL_H
+#define _CFET_LIBCTL_H
 
-#include "density1d.h"
-#include "ballistic.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define GLOBAL_VALUE_DEFINE
-// #include "ballistic_libctl.h"
+#ifdef	GLOBAL_VALUE_DEFINE
+#define	GLOBAL
+#else
+#define	GLOBAL extern
+#endif
 
-/*!
-  @brief
-  @param[in]
-  @param[out]
-  @param[in,out]
-  @return
-*/
+  GLOBAL double get_radius(params_NWFET p);
+  GLOBAL double get_radius2(params_NWFET p);
+  GLOBAL double get_Cox(params_NWFET p);
 
-number E0_func(params_ballisticFET0_type pp)
-{
-  param_ballistic p;
-  p.EFermi = pp.Fermi_Energy;
-  p.VDS = pp.Vds;
-  p.VGS = pp.Vgs;
-  p.alpha_D = pp.alpha_D;
-  p.alpha_G = pp.alpha_G;
-  p.Ceff = pp.C_eff;
-  p.alpha = pp.alpha_NP;
-  p.ems = pp.effective_mass;
-  p.W1 = pp.size_W1;
-  p.temp = temperature;
-  p.W2 = pp.size_W2;
-  p.nmax = pp.n_max;
-  p.mmax = pp.m_max;
-  return(find_E0(p));
+#undef GLOBAL_VALUE_DEFINE
+#undef GLOBAL
+
+#ifdef __cplusplus
 }
-  
-number funcval_E00(double ene0,params_ballisticFET0_type pp)
-{
-  param_E0 p;
-  param_density1d_all p_density1d_all;
+#endif
 
-  p_density1d_all.alpha=pp.alpha_NP;
-  p_density1d_all.ems=pp.effective_mass;
-  p_density1d_all.temp=temperature;
-  p_density1d_all.W1=pp.size_W1;
-  p_density1d_all.W2=pp.size_W2;
-  p_density1d_all.nmax=pp.n_max;
-  p_density1d_all.mmax=pp.m_max;
-
-  p.p_density1d_all = p_density1d_all;
-  p.EFermi = pp.Fermi_Energy;
-  p.VDS = pp.Vds;
-  p.VGS = pp.Vgs;
-  p.alpha_D = pp.alpha_D;
-  p.alpha_G = pp.alpha_G;
-  p.Ceff = pp.C_eff;
-  return(ene0-func_E00(ene0,&p));
-}
+#endif  // _CFET_LIBCTL_H

@@ -1,5 +1,5 @@
 /*
- *  density1d.c - Time-stamp: <Sun Aug 18 14:04:19 JST 2019>
+ *  density1d.c - Time-stamp: <Tue Aug 20 05:58:06 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -44,6 +44,7 @@
 #include <gsl/gsl_sf_fermi_dirac.h>
 #include <gsl/gsl_const_mks.h>
 #include <gsl/gsl_integration.h>
+#include <gsl/gsl_sf_bessel.h>
 
 #include "ballistic_common.h"
 
@@ -64,9 +65,16 @@
 double Ep_nm_rect1d(double ems, double W1, double W2, int n , int m)
 {
   double ene;
-  ene=(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*M_PI*M_PI)/(2*MASS(ems)*GSL_CONST_MKS_ELECTRON_VOLT)
-	;
+  ene=(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*M_PI*M_PI)/(2*MASS(ems)*GSL_CONST_MKS_ELECTRON_VOLT);
   return(ene*(n*n/(W1*W1)+m*m/(W2*W2)));
+}
+
+double Ep_n_radial1d(double ems,double radius,int n)
+{
+  double ene;
+  double jzero=gsl_sf_bessel_zero_J0(n);
+  ene=(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR)/(2*MASS(ems)*GSL_CONST_MKS_ELECTRON_VOLT);
+  return(ene*(jzero*jzero)/(radius*radius));
 }
 
 double density1d0(double EFermi, double Enm, double ems,double temp)
@@ -124,6 +132,11 @@ double alpha_nm_NP(double alphaNP, double gamma_nm)
 double ems_nm_NP(double ems, double gamma_nm)
 {
   return(ems*gamma_nm);
+}
+
+double gamma_nm_NP(double Enm, double alphaNP)
+{
+  return(sqrt(1+4*alphaNP*Enm));
 }
 
 // rectangular QWR, nonparaboic band

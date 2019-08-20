@@ -7,7 +7,7 @@ import pyfet
 import numpy as np
 import matplotlib.pyplot as plt
 
-Eg = 0.4
+Eg = 0.36
 ems = 0.0671
 alpha = pyfet.alpha_NP(Eg, ems)
 temperature = 300
@@ -20,6 +20,8 @@ gamma_nm = pyfet.gamma_nm_NP(Enmp, alpha)
 Enm = pyfet.E_nm_NP(alpha, gamma_nm)
 alpha_nm = pyfet.alpha_nm_NP(alpha, gamma_nm)
 ems_nm = pyfet.ems_nm_NP(ems, gamma_nm)
+
+print(alpha, gamma_nm, Enm, ems_nm)
 
 ene = np.arange(-0.1, 0.2, 0.005)
 dens = np.empty_like(ene)

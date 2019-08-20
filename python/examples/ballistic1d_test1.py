@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import optimize
 
-Eg = 0.036
+Eg = 0.36
 epsOX = 8.5
 epsS = 8.9
 tOX = 20e-9
@@ -37,7 +37,7 @@ p.temp = temperature
 p.nmax = 2
 p.mmax = 2
 
-# print(pyfet.find_E0(p))
+print(pyfet.E0_rect1d_root(p))
 
 
 def func_e0_find(E0, p, Vgs, Vds):

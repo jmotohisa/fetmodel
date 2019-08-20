@@ -169,6 +169,9 @@
 ;; (density1d-NP0 EFermi Enm alpha_nm ems_nm temperature)
 (define-external-function density1d-NP0 false false 'number
   'number 'number 'number 'number 'number)
+;; (density1d-rect1dNP-all0 EFermi alpha ems temperature W1 W2 nmax mmax)
+(define-external-function density1d-rect1dNP-all0 false false 'number
+  'number 'number 'number 'number 'number 'number 'integer 'integer)
 ;; (density1d EFermi 'params-NWFET)
 (define-external-function density1d true false 'number
   'number 'params-NWFET)

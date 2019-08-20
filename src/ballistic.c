@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Tue Aug 20 16:57:58 JST 2019>
+ *  ballistic.c - Time-stamp: <Wed Aug 21 07:03:47 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -84,7 +84,7 @@ double func_for_findroot_E0_rect1d0(double ene0,double EFermi,
 
   n1d_S=density1d_rect1d_all(EFermi-ene0,    p_density1d_rect);
   n1d_D=density1d_rect1d_all(EFermi-ene0-VDS,p_density1d_rect);
-  return(alpha_D*VDS + alpha_D*VGS - (n1d_S + n1d_D)/(2*Ceff)*GSL_CONST_MKS_ELECTRON_VOLT);
+  return(alpha_D*VDS + alpha_G*VGS - (n1d_S + n1d_D)/(2*Ceff)*GSL_CONST_MKS_ELECTRON_VOLT);
 }
 
 double func_for_findroot_E0_rect1d(double ene0,param_E0 *p)
@@ -205,7 +205,7 @@ double Ids_ballistic1d_recdt1dNP0(double VDS, double VGS,
 		ids2 += gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS));
 	  }
   
-  return(2*(ids1-ids2)*GSL_CONST_MKS_ELECTRON_VOLT/GSL_CONST_MKS_PLANCKS_CONSTANT_H);
+  return(2*(ids1-ids2)*GSL_CONST_MKS_ELECTRON_VOLT/GSL_CONST_MKS_PLANCKS_CONSTANT_H*kBT0);
 }
 
 double Ids_ballistic1d_recdt1dNP(param_ballistic p,double EFs)

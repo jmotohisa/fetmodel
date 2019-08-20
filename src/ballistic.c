@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Tue Aug 20 07:40:34 JST 2019>
+ *  ballistic.c - Time-stamp: <Tue Aug 20 16:57:58 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -65,11 +65,11 @@
 // 1D, rectangular cross section, with nonparabolicity
 
 double func_for_findroot_E0_rect1d0(double ene0,double EFermi,
-									double VDS, double VGS,
+									double VDS, double VGS, 
 									double alpha_D, double alpha_G,
 									double Ceff,
 									double alpha, double ems, double temp,
-									double W1, double W2, int nmax, int mmax)					
+									double W1, double W2, int nmax, int mmax)
 {
   double n1d_S,n1d_D;
   param_density1d_rect p_density1d_rect;
@@ -181,7 +181,7 @@ double E0_rect1d_root(param_ballistic p)
 
 // current
 
-double Ids_ballistic1d_recdt1d0(double VDS, double VGS,
+double Ids_ballistic1d_recdt1dNP0(double VDS, double VGS,
 								double EFs, double EFermi,
 								double alpha_D, double alpha_G,
 								double Ceff,
@@ -206,4 +206,12 @@ double Ids_ballistic1d_recdt1d0(double VDS, double VGS,
 	  }
   
   return(2*(ids1-ids2)*GSL_CONST_MKS_ELECTRON_VOLT/GSL_CONST_MKS_PLANCKS_CONSTANT_H);
+}
+
+double Ids_ballistic1d_recdt1dNP(param_ballistic p,double EFs)
+{
+  return(Ids_ballistic1d_recdt1dNP0(p.VDS,p.VGS,EFs,p.EFermi,
+									p.alpha_D, p.alpha_G, p.Ceff,
+									p.alpha, p.ems, p.temp,
+									p.W1, p.W2, p.nmax, p.nmax));
 }

@@ -49,9 +49,6 @@
 
 ; ****************************************************************
 ; predefinde funcion
-; Capacitor: SGT
-
-;; (define (Cox-radial r t eps) (* eps 8.85e-12 (/ (* r (log (+ 1 (/ t r)))))))
 
 (define-input-var temperature 300 'number)
 
@@ -78,8 +75,8 @@
   (define-property eps-s 8.6 'number) ;; dielectric constant of semiconductor
   (define-property bandgap 0.36  'number) ;; bandgap energy
   (define-property effective-mass 0.2 'number) ;; band edge effective mass
-  (define-property nonparabollic? false 'boolean)
-  (define-property alpha-NP 0 'number) ;; nonparabolicity parameter
+  (define-property nonparabolic? false 'boolean)
+  (define-property alpha-nonparabolicity 0 'number) ;; nonparabolicity parameter
   (define-property n-max 2 'integer) ;; number of subbands to consider
   (define-property m-max 2 'integer)
   (define-property mobility 0.04 'number) ;; mobility
@@ -162,26 +159,68 @@
 (define-external-function func-Ids-cMESFET-R true true
   'number 'number 'number)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ballistic MOSFET: 1D
 
+;; electorn density
+;; (density1d EFermi Enm ems temperature)
+(define-external-function density1d0 false false 'number
+  'number 'number 'number 'number)
+;; (density1d-NP0 EFermi Enm alpha_nm ems_nm temperature)
+(define-external-function density1d-NP0 false false 'number
+  'number 'number 'number 'number 'number)
+;; (density1d EFermi 'params-NWFET)
 (define-external-function density1d true false 'number
   'number 'params-NWFET)
 
 ;; top of the barrier E0: (E0-rect1d VDS VGS);
 (define-external-function E0-rect1d true false 'number
   'number 'number)
-;; ('params-NWFET 'params-ballisticFET)
+;; ('params-NWFET FET-params 'params-ballisticFET ballistic-params should be set)
 
-
-;; capactitance
+;; Ids current
+(define-external-function Ids-ballistic-rect1d true true 'number
+  'number 'number 'number)
+  
+;; Capactitance
 ;; (Cox-rect eps-OX tOX W1 W2)
 ;; (Cc-rect epsS W1 W2)
+;; (Cox-radial eps-OX tOX radius)
 (define-external-function Cox-rect false false 'number
   'number 'number 'number 'number)
 (define-external-function Cc-rect false false 'number
   'number 'number 'number)
 (define-external-function Cox-radial false false 'number
   'number 'number 'number)
+
+;; (Ep-nm-rect1d ems W1 W2 n m)
+(define-external-function Ep-nm-rect1d false false 'number
+  'number 'number 'number 'integer 'integer)
+;; (Ep-n-radial1d ems radius n)
+(define-external-function Ep-n-radial1d false false 'number
+  'number 'number 'integer)
+;; (alpha-NP Eg ems)
+(define-external-function alpha-NP false false 'number
+  'number 'number)
+;; (E-nm-NP alphaNP gamma-nm)
+(define-external-function E-nm-NP false false 'number
+  'number 'number)
+;; (alpha-nm-NP alphaNP gamma-nm)
+(define-external-function alpha-nm-NP false false 'number
+  'number 'number)
+;; (ems-nm-NP ems gamma-nm)
+(define-external-function ems-nm-NP false false 'number
+  'number 'number)
+;; (gamma-nm-NP Enm alphaNP)
+(define-external-function gamma-nm-NP false false 'number
+  'number 'number)
+
+;; (gamma-nm-rect1dNP alphaNP ems W1 W2 n m)
+(define-external-function gamma-nm-rect1dNP false false 'number
+  'number 'number 'number 'number 'integer 'integer)
+;; (E-nm-rect1dNP alphaNP ems W1 W2 n m)
+(define-external-function E-nm-rect1dNP false false 'number
+  'number 'number 'number 'number 'integer 'integer)
 
 ;; ****************************************************************
 

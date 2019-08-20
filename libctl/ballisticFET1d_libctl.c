@@ -1,5 +1,5 @@
 /*
- *  ballisticFET1d_libctl.c - Time-stamp: <Tue Aug 20 07:38:30 JST 2019>
+ *  ballisticFET1d_libctl.c - Time-stamp: <Tue Aug 20 21:49:44 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -72,7 +72,7 @@ number density1d(number EFermi, params_NWFET NW_params)
 {
   number ems = NW_params.effective_mass;
   //  number Eg = NW_params.bandgap;
-  number alphaNP = NW_params.alpha_NP;
+  number alphaNP = NW_params.alpha_nonparabolicity;
   integer nmax=NW_params.n_max;
   integer mmax=NW_params.m_max;
   number W1 = get_radius(NW_params);
@@ -83,7 +83,7 @@ number density1d(number EFermi, params_NWFET NW_params)
 
   switch(NW_params.sizes.which_subclass) {
   case NW_RADIAL:
-	if(NW_params.nonparabollicp)
+	if(NW_params.nonparabolicp)
 	  {
 		n1d=0;
 		for(n=1;n<=nmax;n++) {
@@ -107,7 +107,7 @@ number density1d(number EFermi, params_NWFET NW_params)
 	break;
   case NW_RECT:
   default:
-	if(NW_params.nonparabollicp)
+	if(NW_params.nonparabolicp)
 	  {
 		n1d=0;
 		for(n=1;n<=nmax;n++)
@@ -137,9 +137,28 @@ number E0_rect1d(number VDS, number VGS)
   double Ceff = Cox*Cc/(Cox+Cc);
   // b.C_eff is overridden
   
-  E0=E0_rect1d_root0(b.Fermi_Energy,VDS, VGS,
+  E0=E0_rect1d_root0(b.Fermi_Energy, VDS, VGS,
 					 b.alpha_D, b.alpha_G, Ceff,
-					 p.alpha_NP, p.effective_mass, temperature,
+					 p.alpha_nonparabolicity, p.effective_mass, temperature,
 					 W1, W2, p.n_max, p.m_max);
   return(E0);
 }				 
+
+number Ids_ballistic_rect1d(number VDS, number VGS, number EFs)
+{
+  params_NWFET p=FET_params ;
+  params_ballisticFET b=ballistic_params;
+  double W1 = get_radius(p);
+  double W2 = get_radius2(p);
+  double Cox = Cox_rect(p.eps_ox,p.tox,W1,W2);
+  double Cc  = Cc_rect(p.eps_s,W1,W2);
+  double Ceff = Cox*Cc/(Cox+Cc);
+  // b.C_eff is overridden
+  double ids;
+  ids=Ids_ballistic1d_recdt1dNP0(VDS, VGS, EFs,
+								 b.Fermi_Energy,
+								 b.alpha_D, b.alpha_G, Ceff,
+								 p.alpha_nonparabolicity, p.effective_mass, temperature,
+								 W1, W2, p.n_max, p.m_max);
+  return(ids);
+}

@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Wed Aug 21 07:03:47 JST 2019>
+ *  ballistic.c - Time-stamp: <Wed Aug 21 08:52:41 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -181,7 +181,7 @@ double E0_rect1d_root(param_ballistic p)
 
 // current
 
-double Ids_ballistic1d_recdt1dNP0(double VDS, double VGS,
+double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
 								double EFs, double EFermi,
 								double alpha_D, double alpha_G,
 								double Ceff,
@@ -208,9 +208,9 @@ double Ids_ballistic1d_recdt1dNP0(double VDS, double VGS,
   return(2*(ids1-ids2)*GSL_CONST_MKS_ELECTRON_VOLT/GSL_CONST_MKS_PLANCKS_CONSTANT_H*kBT0);
 }
 
-double Ids_ballistic1d_recdt1dNP(param_ballistic p,double EFs)
+double Ids_ballistic1d_rect1dNP(param_ballistic p,double EFs)
 {
-  return(Ids_ballistic1d_recdt1dNP0(p.VDS,p.VGS,EFs,p.EFermi,
+  return(Ids_ballistic1d_rect1dNP0(p.VDS,p.VGS,EFs,p.EFermi,
 									p.alpha_D, p.alpha_G, p.Ceff,
 									p.alpha, p.ems, p.temp,
 									p.W1, p.W2, p.nmax, p.nmax));

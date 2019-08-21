@@ -1,5 +1,5 @@
 /*
- *  ballisticFET1d_libctl.c - Time-stamp: <Tue Aug 20 21:49:44 JST 2019>
+ *  ballisticFET1d_libctl.c - Time-stamp: <Wed Aug 21 08:53:17 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -155,10 +155,10 @@ number Ids_ballistic_rect1d(number VDS, number VGS, number EFs)
   double Ceff = Cox*Cc/(Cox+Cc);
   // b.C_eff is overridden
   double ids;
-  ids=Ids_ballistic1d_recdt1dNP0(VDS, VGS, EFs,
-								 b.Fermi_Energy,
-								 b.alpha_D, b.alpha_G, Ceff,
-								 p.alpha_nonparabolicity, p.effective_mass, temperature,
-								 W1, W2, p.n_max, p.m_max);
+  ids=Ids_ballistic1d_rect1dNP0(VDS, VGS, EFs,
+								b.Fermi_Energy,
+								b.alpha_D, b.alpha_G, Ceff,
+								p.alpha_nonparabolicity, p.effective_mass, temperature,
+								W1, W2, p.n_max, p.m_max);
   return(ids);
 }

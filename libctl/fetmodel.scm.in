@@ -176,6 +176,10 @@
 (define-external-function density1d true false 'number
   'number 'params-NWFET)
 
+;; function to find E0
+;; (func-e0-find ene0 VGS VDS)
+(define-external-function func-e0-find true false 'number
+  'number 'number 'number)
 ;; top of the barrier E0: (E0-rect1d VDS VGS);
 (define-external-function E0-rect1d true false 'number
   'number 'number)

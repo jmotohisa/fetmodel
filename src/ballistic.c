@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Wed Aug 21 08:52:41 JST 2019>
+ *  ballistic.c - Time-stamp: <Wed Aug 21 16:50:18 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -82,9 +82,9 @@ double func_for_findroot_E0_rect1d0(double ene0,double EFermi,
   p_density1d_rect.nmax=nmax;
   p_density1d_rect.mmax=mmax;
 
-  n1d_S=density1d_rect1d_all(EFermi-ene0,    p_density1d_rect);
-  n1d_D=density1d_rect1d_all(EFermi-ene0-VDS,p_density1d_rect);
-  return(alpha_D*VDS + alpha_G*VGS - (n1d_S + n1d_D)/(2*Ceff)*GSL_CONST_MKS_ELECTRON_VOLT);
+  n1d_S=density1d_rect1dNP_all(EFermi-ene0,    p_density1d_rect);
+  n1d_D=density1d_rect1dNP_all(EFermi-ene0-VDS,p_density1d_rect);
+  return(ene0+alpha_D*VDS + alpha_G*VGS - (n1d_S + n1d_D)/(2*Ceff)*GSL_CONST_MKS_ELECTRON_VOLT);
 }
 
 double func_for_findroot_E0_rect1d(double ene0,param_E0 *p)
@@ -108,7 +108,7 @@ double func_for_findroot_E0_rect1d00(double ene0,void *pp)
 {
   param_E0 *p = (param_E0 *) pp;
   double e0=func_for_findroot_E0_rect1d(ene0,p);
-  return(ene0+e0);
+  return(e0);
 }
 
 double E0_rect1d_root_brent(param_E0 params,
@@ -189,10 +189,10 @@ double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
 								double W1, double W2, int nmax, int mmax)
 {
   double Enm,E0;
-  double ids1,ids2;
+  //  double gamma_nm,Enmp;
+  double ids,ids1,ids2;
   int n,m;
-  ids1=0;
-  ids2=0;
+  ids=0;
   E0=E0_rect1d_root0(EFermi,VDS, VGS, alpha_D, alpha_G, Ceff,
 					 alpha, ems, temp,
 					 W1, W2, nmax, nmax);
@@ -200,17 +200,21 @@ double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
   for(n=1;n<=nmax;n++)
     for(m=1;m<=mmax;m++)
 	  {
-		Enm=Ep_nm_rect1d(ems,W1,W2,n,m);
-		ids1 += gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
-		ids2 += gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS));
+		Enm=E_nm_rect1dNP(alpha,ems,W1,W2,n,m);
+		/* Enmp = Ep_nm_rect1d(ems, W1, W2, n, m); */
+		/* gamma_nm = gamma_nm_NP(Enmp, alpha); */
+		/* Enm = E_nm_NP(alpha, gamma_nm); */
+		ids1 = gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+		ids2 = gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS));
+		ids += ids1 - ids2;
 	  }
   
-  return(2*(ids1-ids2)*GSL_CONST_MKS_ELECTRON_VOLT/GSL_CONST_MKS_PLANCKS_CONSTANT_H*kBT0);
+  return(2*ids*GSL_CONST_MKS_ELECTRON_VOLT/GSL_CONST_MKS_PLANCKS_CONSTANT_H*kBT0);
 }
 
-double Ids_ballistic1d_rect1dNP(param_ballistic p,double EFs)
+double Ids_ballistic1d_rect1dNP(double VDS, double VGS, param_ballistic p,double EFs)
 {
-  return(Ids_ballistic1d_rect1dNP0(p.VDS,p.VGS,EFs,p.EFermi,
+  return(Ids_ballistic1d_rect1dNP0(VDS,VGS,EFs,p.EFermi,
 									p.alpha_D, p.alpha_G, p.Ceff,
 									p.alpha, p.ems, p.temp,
 									p.W1, p.W2, p.nmax, p.nmax));

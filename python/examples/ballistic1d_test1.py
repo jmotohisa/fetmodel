@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# test of ballistic FET (using lower level interface)
+
 import pyfet
 import math
 import numpy as np
@@ -21,11 +23,12 @@ Cc = pyfet.Cc_rect(epsS, W1, W2)
 alpha_D = 0
 alpha_G = 1
 
+
 p = pyfet.param_ballistic_new()
 p.ems = ems
 p.alpha = alpha
 p.W1 = W1
-p.W2 = W1
+p.W2 = W2
 
 p.EFermi = 0
 p.VDS = 0
@@ -37,7 +40,10 @@ p.temp = temperature
 p.nmax = 2
 p.mmax = 2
 
-print(pyfet.E0_rect1d_root(p))
+# print(pyfet.E0_rect1d_root(p))
+# print(p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax, p.Ceff)
+# print(pyfet.density1d_rect1dNP_all0(
+#     0.1, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax))
 
 
 def func_e0_find(E0, p, Vgs, Vds):
@@ -53,6 +59,8 @@ def get_E0(p, Vgs, Vds):
     e0 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vds), x0=-0.1, x1=1)
     return e0.root
 
+
+# print(alpha, gamma_nm, Enm, alpha_nm, ems_nm)
 
 Vgs = 0
 Vds = 0
@@ -90,8 +98,8 @@ def func_current1D(Vgs, Vds, p, EFs):
             Enmp = pyfet.Ep_nm_rect1d(ems, W1, W2, int(n), int(m))
             gamma_nm = pyfet.gamma_nm_NP(Enmp, p.alpha)
             Enm = pyfet.E_nm_NP(p.alpha, gamma_nm)
-            cur1 = func_FD0(EFs-Enm-e0.root, temperature)
-            cur2 = func_FD0(EFs-Enm-e0.root-Vds, temperature)
+            cur1 = func_FD0(EFs-Enm-e0.root, p.temp)
+            cur2 = func_FD0(EFs-Enm-e0.root-Vds, p.temp)
             cur += cur1-cur2
 
     return (cur*2*1.6e-19/6.63e-34*p.temp*1.38e-23)
@@ -108,6 +116,6 @@ for i, Vds0 in enumerate(Vds):
 plt.plot(Vds, Ids1, label='Ids1')
 plt.plot(Vds, Ids2, label='Ids2')
 plt.xlabel('Drain Voltage (V)')
-plt.ylabel('Drain Current (A/m)')
+plt.ylabel('Drain Current (A)')
 plt.legend(loc='best')
 plt.show()

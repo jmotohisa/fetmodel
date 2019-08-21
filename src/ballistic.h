@@ -1,5 +1,5 @@
 /*
- *  ballistic.h - last saved: Time-stamp: <Wed Aug 21 08:52:20 JST 2019>
+ *  ballistic.h - last saved: Time-stamp: <Wed Aug 21 16:51:35 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -96,7 +96,8 @@ typedef struct param_E0_struct
 										   double Ceff,
 										   double alpha, double ems, double temp,
 										   double W1, double W2, int nmax, int mmax);
-  GLOBAL double Ids_ballistic1d_rect1dNP(param_ballistic p,double EFs);
+  GLOBAL double Ids_ballistic1d_rect1dNP(double VDS, double VGS,
+										 param_ballistic p,double EFs);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

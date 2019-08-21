@@ -1,5 +1,5 @@
 /*
- *  pyfet.c - Time-stamp: <Wed Aug 21 08:51:18 JST 2019>
+ *  pyfet.c - Time-stamp: <Wed Aug 21 16:45:34 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -165,5 +165,3 @@ param_ballistic *param_ballistic_new()
   }
   return(p);
 }
-
-

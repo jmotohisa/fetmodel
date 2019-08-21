@@ -1,5 +1,5 @@
 /*
- *  ballisticFET1d_libctl.c - Time-stamp: <Wed Aug 21 08:53:17 JST 2019>
+ *  ballisticFET1d_libctl.c - Time-stamp: <Wed Aug 21 11:44:01 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -123,6 +123,26 @@ number density1d(number EFermi, params_NWFET NW_params)
 	break;
   }
   return(n1d);
+}
+
+/// params_NWFET p, params_ballisticFET b,
+number func_e0_find(number ene0, number VGS, number VDS)
+{
+  params_NWFET p=FET_params ;
+  params_ballisticFET b=ballistic_params;
+  double val;
+  double W1 = get_radius(p);
+  double W2 = get_radius2(p);
+  double Cox = Cox_rect(p.eps_ox,p.tox,W1,W2);
+  double Cc  = Cc_rect(p.eps_s,W1,W2);
+  double Ceff = Cox*Cc/(Cox+Cc);
+  // b.C_eff is overridden
+  val = func_for_findroot_E0_rect1d0(ene0,b.Fermi_Energy,
+									 VDS, VGS, 
+									 b.alpha_D, b.alpha_G, Ceff,
+									 p.alpha_nonparabolicity, p.effective_mass, temperature,
+									 W1, W2, p.n_max, p.m_max);
+  return (val);
 }
 
 number E0_rect1d(number VDS, number VGS)

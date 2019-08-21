@@ -22,7 +22,7 @@
 
 (define ene (interpolate 99 '(-0.1 0.2)))
 
-;; (print alpha "\t" gamma_nm "\t" Enm "\t" alpha_nm "\t" ems_nm "\n")
+(print alpha "\t" gamma_nm "\t" Enm "\t" alpha_nm "\t" ems_nm "\n")
 
 ;; (print
 ;;  (density1d0 ene 0 ems temperature)
@@ -51,6 +51,7 @@
   (map (lambda (x) (density1d-rect1dNP-all0 x alpha ems temperature
 												 W1-NW W2-NW 2 2)) ene))
   
-(for-each (lambda (ene0 dens00 dens20 dens30)
-			(print ene0 "\t" dens00 "\t" dens20 "\t" dens30 "\n"))
-		  ene dens dens2 dens3)
+;; (for-each (lambda (ene0 dens00 dens20 dens30)
+;; 			(print ene0 "\t" dens00 "\t" dens20 "\t" dens30 "\n"))
+;; 		  ene dens dens2 dens3)
+

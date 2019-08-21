@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import optimize
 
-Eg = 0.036
+Eg = 0.36
 epsOX = 8.5
 epsS = 8.9
 tOX = 20e-9
@@ -25,11 +25,9 @@ p = pyfet.param_ballistic_new()
 p.ems = ems
 p.alpha = alpha
 p.W1 = W1
-p.W2 = W1
+p.W2 = W2
 
 p.EFermi = -0.1
-# p.VDS = 0
-# p.VGS = 0
 p.alpha_D = alpha_D
 p.alpha_G = alpha_G
 p.Ceff = Cox*Cc/(Cox+Cc)
@@ -98,10 +96,14 @@ def func_current1D(Vgs, Vds, p, EFs):
 Vds = np.arange(0, 1, 0.01)
 Ids1 = np.empty_like(Vds)
 Ids2 = np.empty_like(Vds)
+Ids3 = np.empty_like(Vds)
+Ids4 = np.empty_like(Vds)
 
 for i, Vds0 in enumerate(Vds):
     Ids1[i] = func_current1D(-0.1, Vds0, p, 0)/(2*(p.W1+p.W2))
     Ids2[i] = func_current1D(0, Vds0, p, 0)/(2*(p.W1+p.W2))
+    Ids3[i] = pyfet.Ids_ballistic1d_rect1dNP(Vds0, -0.1, p, 0)/(2*(p.W1+p.W2))
+    Ids3[i] = pyfet.Ids_ballistic1d_rect1dNP(Vds0, 0, p, 0)/(2*(p.W1+p.W2))
 
 plt.plot(Vds, Ids1, label='Ids1')
 plt.plot(Vds, Ids2, label='Ids2')

@@ -103,10 +103,12 @@ for i, Vds0 in enumerate(Vds):
     Ids1[i] = func_current1D(-0.1, Vds0, p, 0)/(2*(p.W1+p.W2))
     Ids2[i] = func_current1D(0, Vds0, p, 0)/(2*(p.W1+p.W2))
     Ids3[i] = pyfet.Ids_ballistic1d_rect1dNP(Vds0, -0.1, p, 0)/(2*(p.W1+p.W2))
-    Ids3[i] = pyfet.Ids_ballistic1d_rect1dNP(Vds0, 0, p, 0)/(2*(p.W1+p.W2))
+    Ids4[i] = pyfet.Ids_ballistic1d_rect1dNP(Vds0, 0, p, 0)/(2*(p.W1+p.W2))
 
 plt.plot(Vds, Ids1, label='Ids1')
 plt.plot(Vds, Ids2, label='Ids2')
+plt.plot(Vds, Ids3, label='Ids3')
+plt.plot(Vds, Ids4, label='Ids4')
 plt.xlabel('Drain Voltage (V)')
 plt.ylabel('Drain Current (A/m)')
 plt.legend(loc='best')

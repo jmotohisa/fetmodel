@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Fri Aug 30 19:59:25 JST 2019>
+ *  ballistic.c - Time-stamp: <Fri Aug 30 21:00:27 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -336,7 +336,7 @@ double Ids_ballistic2d0(double VDS, double VGS,
 				 ems, temp);
   
   ns0=density2d0(EFs,Enm,ems, temp);
-  vinj = sqrt(2*kBT/(MASS(ems)*M_PI))*gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+  vinj = sqrt(2*kBT0/(MASS(ems)*M_PI))*gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
   f1=1-gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0));
   f2=1+gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
   return(GSL_CONST_MKS_ELECTRON_VOLT*ns0*vinj*f1/f2);

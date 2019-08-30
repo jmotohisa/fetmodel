@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Wed Aug 21 16:50:18 JST 2019>
+ *  ballistic.c - Time-stamp: <Fri Aug 30 19:59:25 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -50,6 +50,7 @@
 
 #include "ballistic_common.h"
 #include "density1d.h"
+#include "density2d.h"
 
 #define GLOBAL_VALUE_DEFINE
 #include "ballistic.h"
@@ -218,4 +219,132 @@ double Ids_ballistic1d_rect1dNP(double VDS, double VGS, param_ballistic p,double
 									p.alpha_D, p.alpha_G, p.Ceff,
 									p.alpha, p.ems, p.temp,
 									p.W1, p.W2, p.nmax, p.nmax));
+}
+
+
+//////////////////////////////////////////////////
+// 2D, neglect quantum confinment (subbands)
+
+double func_for_findroot_E0_2d0(double ene0,double EFermi,
+								double VDS, double VGS, 
+								double alpha_D, double alpha_G,
+								double Ceff,
+								double ems, double temp)
+{
+  double n2d_S,n2d_D;
+  /* param_density1d_rect p_density1d_rect; */
+  
+  /* p_density1d_rect.ems=ems; */
+  /* p_density1d_rect.temp=temp; */
+
+  n2d_S=density2d0(EFermi-ene0,    0,ems,temp);
+  n2d_D=density2d0(EFermi-ene0-VDS,0,ems,temp);
+  return(ene0+alpha_D*VDS + alpha_G*VGS - (n2d_S + n2d_D)/(2*Ceff)*GSL_CONST_MKS_ELECTRON_VOLT);
+}
+
+double func_for_findroot_E0_2d(double ene0,param_E0 *p)
+{
+  return(func_for_findroot_E0_2d0(ene0,
+								  p->EFermi, p->VDS, p->VGS,
+								  p->alpha_D, p->alpha_G,
+								  p->Ceff,
+								  p->p_density1d_rect.ems,
+								  p->p_density1d_rect.temp));
+
+}
+
+double func_for_findroot_E0_2d00(double ene0,void *pp)
+{
+  param_E0 *p = (param_E0 *) pp;
+  double e0=func_for_findroot_E0_2d(ene0,p);
+  return(e0);
+}
+
+double E0_2d_root_brent(param_E0 params,
+						double low, double high)
+{
+  gsl_function F;
+  int status;
+  int iter = 0, max_iter = 100;
+  double r;
+  const gsl_root_fsolver_type *T;
+  gsl_root_fsolver *s;
+
+  F.function = &func_for_findroot_E0_2d00;
+  F.params = &params;
+
+  //FindRoots/Q/L=(low) qfunc_cMOSFET,param_cMOSFET;
+
+  T= gsl_root_fsolver_brent;
+  s = gsl_root_fsolver_alloc(T);
+
+  gsl_root_fsolver_set(s,&F,low,high);
+  do {
+        iter++;
+        status = gsl_root_fsolver_iterate(s);
+        r=gsl_root_fsolver_root(s);
+        low = gsl_root_fsolver_x_lower(s);
+        high = gsl_root_fsolver_x_upper(s);
+        status = gsl_root_test_interval(low,high,0,0.001);
+  } while (status==GSL_CONTINUE && iter < max_iter);
+
+  return(r);
+}
+
+double E0_2d_root0(double EFermi,
+				   double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
+				   double ems, double temp)
+{
+  double low,high;
+  param_density1d_rect p_density1d_rect;
+  param_E0 params;
+  
+  p_density1d_rect.ems=ems;
+  p_density1d_rect.temp=temp;
+  
+  params.p_density1d_rect = p_density1d_rect;
+  params.EFermi = EFermi;
+  params.VDS = VDS;
+  params.VGS = VGS;
+  params.alpha_D = alpha_D;
+  params.alpha_G = alpha_G;
+  params.Ceff = Ceff;
+  low=-1;
+  high=1;
+  return(E0_rect1d_root_brent(params, low, high));
+  
+}
+
+double E0_2d_root(param_ballistic p)
+{
+  return(E0_2d_root0(p.EFermi,p.VDS, p.VGS, p.alpha_D, p.alpha_G, p.Ceff,
+					 p.ems, p.temp));
+}
+
+// current
+
+double Ids_ballistic2d0(double VDS, double VGS,
+						double EFs, double EFermi,
+						double alpha_D, double alpha_G,
+						double Ceff,
+						double ems, double temp)
+{
+  double Enm=0,E0;
+  double vinj,ns0,f1,f2;
+  
+  E0=E0_2d_root0(EFermi,VDS, VGS, alpha_D, alpha_G, Ceff,
+				 ems, temp);
+  
+  ns0=density2d0(EFs,Enm,ems, temp);
+  vinj = sqrt(2*kBT/(MASS(ems)*M_PI))*gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+  f1=1-gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0));
+  f2=1+gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+  return(GSL_CONST_MKS_ELECTRON_VOLT*ns0*vinj*f1/f2);
+}
+
+double Ids_ballistic2d(double VDS, double VGS, param_ballistic p,double EFs)
+{
+  return(Ids_ballistic2d0(VDS,VGS,EFs,p.EFermi,
+						  p.alpha_D, p.alpha_G, p.Ceff,
+						  p.ems, p.temp));
 }

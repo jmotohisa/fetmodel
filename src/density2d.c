@@ -1,5 +1,5 @@
 /*
- *  density2d.c - Time-stamp: <Sat Aug 10 19:27:11 JST 2019>
+ *  density2d.c - Time-stamp: <Fri Aug 30 19:57:57 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -58,7 +58,7 @@
   @return
 */
 
-double density2d_parabollic00(double EFermi,double Enm, double ems, double temp)
+double density2d0(double EFermi,double Enm, double ems, double temp)
 {
   double dos2D=MASS(ems)/(M_PI*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR)*kBT;
   return (dos2D*gsl_sf_fermi_dirac_0((EFermi-Enm)/kBT));

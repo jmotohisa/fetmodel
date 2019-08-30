@@ -1,5 +1,5 @@
 /*
- *  density2d.h - last saved: Time-stamp: <Sat Aug 10 12:15:28 JST 2019>
+ *  density2d.h - last saved: Time-stamp: <Fri Aug 30 19:57:48 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -48,7 +48,7 @@ extern "C" {
 #define	GLOBAL extern
 #endif
 
-  GLOBAL double density2d_parabollic00(double EFermi,double Enm, double ems, double temp);
+  GLOBAL double density2d0(double EFermi,double Enm, double ems, double temp);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

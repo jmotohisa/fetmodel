@@ -5,6 +5,7 @@
   
 #include "../src/ccm.h"
 #include "../src/density1d.h"
+#include "../src/density2d.h"
 #include "../src/ballistic.h"
 #include "../src/capacitor.h"
 #include "pyfet.h"
@@ -31,6 +32,7 @@
 
 %include "../src/ccm.h"
 %include "../src/density1d.h"
+%include "../src/density2d.h"
 %include "../src/ballistic.h"
 %include "../src/capacitor.h"
 %include "pyfet.h"

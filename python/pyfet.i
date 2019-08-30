@@ -1,4 +1,4 @@
-%module pyfet
+%module(docstring="I-V characteritics of various FETs") pyfet
 
 %{
 #define SWIG_FILE_WITH_INIT
@@ -26,6 +26,8 @@
 %init %{
   import_array();
 %}
+
+%feature("autodoc","1");
 
 %include "../src/ccm.h"
 %include "../src/density1d.h"

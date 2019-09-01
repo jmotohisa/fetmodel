@@ -1,5 +1,5 @@
 /*
- *  pyfet.c - Time-stamp: <Wed Aug 21 16:45:34 JST 2019>
+ *  fetmodel.c - Time-stamp: <Sun Sep 01 11:58:02 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,11 +26,11 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: pyfet.c 2019-07-12 14:25:01 jmotohisa $
+ *  $Id: fetmodel.c 2019-07-12 14:25:01 jmotohisa $
  */
 
 /*! 
-  @file pyfet.c 
+  @file fetmodel.c 
   @brief 
   @author J. Motohisa
   @date
@@ -45,7 +45,7 @@
 #include "../src/ballistic.h"
 
 #define GLOBAL_VALUE_DEFINE
-#include "pyfet.h"
+#include "fetmodel.h"
 
 /*!
   @brief

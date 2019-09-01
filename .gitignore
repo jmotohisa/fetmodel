@@ -40,18 +40,18 @@ configure
 fetmodel
 libtool
 
-python/pyfet_wrap.c
-python/pyfet.py
+python/fetmodel_wrap.c
+python/fetmodel.py
 python/__pycache__
 python/*.so
 python/build
 python/.ipynb_checkpoints
 python/__init__.py
 python/__init__.py.bak
-python/pyfet-python.c
+python/fetmodel-python.c
 python/install_files.txt
 py-compile
-python/pyfet
+python/fetmodel
 
 python/examples/__pycache__
 python/examples/.ipynb_checkpoints

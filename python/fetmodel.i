@@ -1,4 +1,4 @@
-%module(docstring="I-V characteritics of various FETs") pyfet
+%module(docstring="I-V characteritics of various FETs") fetmodel
 
 %{
 #define SWIG_FILE_WITH_INIT
@@ -8,7 +8,7 @@
 #include "../src/density2d.h"
 #include "../src/ballistic.h"
 #include "../src/capacitor.h"
-#include "pyfet.h"
+#include "fetmodel.h"
 
   extern void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
   extern void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
@@ -35,7 +35,7 @@
 %include "../src/density2d.h"
 %include "../src/ballistic.h"
 %include "../src/capacitor.h"
-%include "pyfet.h"
+%include "fetmodel.h"
 
 %apply (double* IN_ARRAY1, int DIM1) {(double * in_array, int size_in)}
 /* %apply (double* ARGOUT_ARRAY1, int DIM1) {(double * out_array, int size_out)} */

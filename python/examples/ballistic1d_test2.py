@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pyfet
+import fetmodel
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,13 +15,13 @@ temperature = 300
 ems = 0.067
 W1 = 10e-9
 W2 = 8e-9
-alpha = pyfet.alpha_NP(Eg, ems)
-Cox = pyfet.Cox_rect(epsOX, tOX, W1, W2)
-Cc = pyfet.Cc_rect(epsS, W1, W2)
+alpha = fetmodel.alpha_NP(Eg, ems)
+Cox = fetmodel.Cox_rect(epsOX, tOX, W1, W2)
+Cc = fetmodel.Cc_rect(epsS, W1, W2)
 alpha_D = 0
 alpha_G = 1
 
-p = pyfet.param_ballistic_new()
+p = fetmodel.param_ballistic_new()
 p.ems = ems
 p.alpha = alpha
 p.W1 = W1
@@ -37,9 +37,9 @@ p.mmax = 2
 
 
 def func_e0_find(E0, p, Vgs, Vds):
-    n1d_S = pyfet.density1d_rect1dNP_all0(
+    n1d_S = fetmodel.density1d_rect1dNP_all0(
         p.EFermi - E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
-    n1d_D = pyfet.density1d_rect1dNP_all0(
+    n1d_D = fetmodel.density1d_rect1dNP_all0(
         p.EFermi - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
@@ -82,9 +82,9 @@ def func_current1D(Vgs, Vds, p, EFs):
     cur = 0
     for n in nlist:
         for m in mlist:
-            gamma_nm = pyfet.gamma_nm_rect1dNP(
+            gamma_nm = fetmodel.gamma_nm_rect1dNP(
                 p.alpha, p.ems, p.W1, p.W2, int(n), int(m))
-            Enm = pyfet.E_nm_rect1dNP(
+            Enm = fetmodel.E_nm_rect1dNP(
                 p.alpha, p.ems, p.W1, p.W2, int(n), int(m))
             cur1 = func_FD0(EFs-Enm-e0, p.temp)
             cur2 = func_FD0(EFs-Enm-e0-Vds, p.temp)
@@ -102,8 +102,8 @@ Ids4 = np.empty_like(Vds)
 for i, Vds0 in enumerate(Vds):
     Ids1[i] = func_current1D(-0.1, Vds0, p, 0)/(2*(p.W1+p.W2))
     Ids2[i] = func_current1D(0, Vds0, p, 0)/(2*(p.W1+p.W2))
-    Ids3[i] = pyfet.Ids_ballistic1d_rect1dNP(Vds0, -0.1, p, 0)/(2*(p.W1+p.W2))
-    Ids4[i] = pyfet.Ids_ballistic1d_rect1dNP(Vds0, 0, p, 0)/(2*(p.W1+p.W2))
+    Ids3[i] = fetmodel.Ids_ballistic1d_rect1dNP(Vds0, -0.1, p, 0)/(2*(p.W1+p.W2))
+    Ids4[i] = fetmodel.Ids_ballistic1d_rect1dNP(Vds0, 0, p, 0)/(2*(p.W1+p.W2))
 
 plt.plot(Vds, Ids1, label='Ids1')
 plt.plot(Vds, Ids2, label='Ids2')

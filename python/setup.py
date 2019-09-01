@@ -8,14 +8,14 @@ import numpy
 SRC_PATH = os.path.relpath(os.path.join(os.path.dirname(__file__), "src"))
 
 
-pyfet_sources = [
-    'pyfet.i',
-    'pyfet.c',
+fetmodel_sources = [
+    'fetmodel.i',
+    'fetmodel.c',
 ]
 
-ext_pyfet = Extension(
-    '_pyfet',
-    sources=pyfet_sources,
+ext_fetmodel = Extension(
+    '_fetmodel',
+    sources=fetmodel_sources,
     libraries=['gsl', 'gslcblas', 'fetmodel'],
     library_dirs=['/opt/local/lib', '/Users/motohisa/local/lib',
                   '../src/.libs',
@@ -40,12 +40,12 @@ ext_pyfet = Extension(
 
 if __name__ == '__main__':
     setup(
-        name="pyfet",
+        name="fetmodel",
         version="0.0.0",
         description="FET models",
-        ext_modules=[ext_pyfet],
+        ext_modules=[ext_fetmodel],
         include_dirs=[numpy.get_include()],
-        py_modules=['pyfet'],
+        py_modules=['fetmodel'],
         # package_dir={
         #     "": SRC_PATH, },
         # cmdclass={

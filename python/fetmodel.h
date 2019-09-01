@@ -1,5 +1,5 @@
 /*
- *  pyfet.h - last saved: Time-stamp: <Tue Aug 20 10:17:07 JST 2019>
+ *  fetmodel.h - last saved: Time-stamp: <Sun Sep 01 11:58:17 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,17 +26,17 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: pyfet.h 2019-07-12 14:25:09 jmotohisa $
+ *  $Id: fetmodel.h 2019-07-12 14:25:09 jmotohisa $
  */
 
 /*! 
-  @file pyfet.h 
+  @file fetmodel.h 
   @brief 
   @author J. Motohisa
 */
 
-#ifndef _PYFET_H
-#define _PYFET_H
+#ifndef _FETMODEL_H
+#define _FETMODEL_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,4 +70,4 @@ extern "C" {
 }
 #endif
 
-#endif  // _PYFET_H
+#endif  // _FETMODEL_H

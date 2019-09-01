@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import pyfet
+import fetmodel
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,8 +14,8 @@ def density1d_circ1d_all0(EFermi, ems, temp, radius, nmax):
     n0 = 0
     nlist = np.arange(1, nmax+1, dtype=np.int64)
     for n in nlist:
-        Enp = pyfet.Ep_n_radial1d(ems, radius, int(n))
-        nn = pyfet.density1d0(EFermi, Enp, ems, temp)
+        Enp = fetmodel.Ep_n_radial1d(ems, radius, int(n))
+        nn = fetmodel.density1d0(EFermi, Enp, ems, temp)
         n0 += nn
     return(n0)
 
@@ -53,7 +53,7 @@ def func_current_circ1d(Vds, Vgs, p, EFs):
     nlist = np.arange(1, p.nmax+1, dtype=np.int64)
     cur = 0
     for n in nlist:
-        Enp = pyfet.Ep_n_radial1d(p.ems, p.W1, int(n))
+        Enp = fetmodel.Ep_n_radial1d(p.ems, p.W1, int(n))
         cur1 = func_FD0(EFs-Enp-e0.root, p.temp)
         cur2 = func_FD0(EFs-Enp-e0.root-Vds, p.temp)
         cur += cur1-cur2
@@ -85,13 +85,13 @@ if __name__ == '__main__':
     ems = 0.023
     W1 = 10e-9
     W2 = 8e-9
-    alpha = pyfet.alpha_NP(Eg, ems)
-    Cox = pyfet.Cox_radial(epsOX, tOX, W1)
-    Cc = pyfet.Cc_rect(epsS, W1, W1)
+    alpha = fetmodel.alpha_NP(Eg, ems)
+    Cox = fetmodel.Cox_radial(epsOX, tOX, W1)
+    Cc = fetmodel.Cc_rect(epsS, W1, W1)
     alpha_D = 0
     alpha_G = 1
 
-    p = pyfet.param_ballistic_new()
+    p = fetmodel.param_ballistic_new()
     p.ems = ems
     p.alpha = alpha
     p.W1 = W1

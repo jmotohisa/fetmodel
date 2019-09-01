@@ -3,7 +3,7 @@
 
 # test of ballistic FET (using lower level interface)
 
-import pyfet
+import fetmodel
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,14 +17,14 @@ temperature = 300
 ems = 0.067
 W1 = 10e-9
 W2 = 8e-9
-alpha = pyfet.alpha_NP(Eg, ems)
-Cox = pyfet.Cox_rect(epsOX, tOX, W1, W2)
-Cc = pyfet.Cc_rect(epsS, W1, W2)
+alpha = fetmodel.alpha_NP(Eg, ems)
+Cox = fetmodel.Cox_rect(epsOX, tOX, W1, W2)
+Cc = fetmodel.Cc_rect(epsS, W1, W2)
 alpha_D = 0
 alpha_G = 1
 
 
-p = pyfet.param_ballistic_new()
+p = fetmodel.param_ballistic_new()
 p.ems = ems
 p.alpha = alpha
 p.W1 = W1
@@ -40,16 +40,16 @@ p.temp = temperature
 p.nmax = 2
 p.mmax = 2
 
-# print(pyfet.E0_rect1d_root(p))
+# print(fetmodel.E0_rect1d_root(p))
 # print(p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax, p.Ceff)
-# print(pyfet.density1d_rect1dNP_all0(
+# print(fetmodel.density1d_rect1dNP_all0(
 #     0.1, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax))
 
 
 def func_e0_find(E0, p, Vgs, Vds):
-    n1d_S = pyfet.density1d_rect1dNP_all0(
+    n1d_S = fetmodel.density1d_rect1dNP_all0(
         p.EFermi - E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
-    n1d_D = pyfet.density1d_rect1dNP_all0(
+    n1d_D = fetmodel.density1d_rect1dNP_all0(
         p.EFermi - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
@@ -95,9 +95,9 @@ def func_current1D(Vgs, Vds, p, EFs):
     cur = 0
     for n in nlist:
         for m in mlist:
-            Enmp = pyfet.Ep_nm_rect1d(ems, W1, W2, int(n), int(m))
-            gamma_nm = pyfet.gamma_nm_NP(Enmp, p.alpha)
-            Enm = pyfet.E_nm_NP(p.alpha, gamma_nm)
+            Enmp = fetmodel.Ep_nm_rect1d(ems, W1, W2, int(n), int(m))
+            gamma_nm = fetmodel.gamma_nm_NP(Enmp, p.alpha)
+            Enm = fetmodel.E_nm_NP(p.alpha, gamma_nm)
             cur1 = func_FD0(EFs-Enm-e0.root, p.temp)
             cur2 = func_FD0(EFs-Enm-e0.root-Vds, p.temp)
             cur += cur1-cur2

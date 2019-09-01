@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from distutils.core import setup, Extension
 import numpy
+
+SRC_PATH = os.path.relpath(os.path.join(os.path.dirname(__file__), "src"))
+
 
 pyfet_sources = [
     'pyfet.i',
@@ -20,6 +24,20 @@ ext_pyfet = Extension(
                   '/usr/local/include'],
 )
 
+
+# class EggInfoCommand(egg_info):
+
+#     def run(self):
+#         if "build" in self.distribution.command_obj:
+#             build_command = self.distribution.command_obj["build"]
+
+#             self.egg_base = build_command.build_base
+
+#             self.egg_info = os.path.join(
+#                 self.egg_base, os.path.basename(self.egg_info))
+#         egg_info.run(self)
+
+
 if __name__ == '__main__':
     setup(
         name="pyfet",
@@ -28,4 +46,8 @@ if __name__ == '__main__':
         ext_modules=[ext_pyfet],
         include_dirs=[numpy.get_include()],
         py_modules=['pyfet'],
+        # package_dir={
+        #     "": SRC_PATH, },
+        # cmdclass={
+        #     "egg_info": EggInfoCommand,
     )

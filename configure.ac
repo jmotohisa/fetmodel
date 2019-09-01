@@ -4,8 +4,13 @@
 AC_PREREQ(2.56)
 AC_INIT(fetmodel, 0.2a, motohisa@ist.hokudai.ac.jp)
 AC_CONFIG_SRCDIR([src/ccm.c])
+
+SHARED_VERSION_INFO="0:0:0" # CURRENT:REVISION:AGE
+
 AC_CONFIG_HEADER([src/config.h])
 AC_CONFIG_MACRO_DIR([m4])
+AC_SUBST(SHARED_VERSION_INFO)
+
 AM_INIT_AUTOMAKE([1.11])
 dnl LT_INIT
 
@@ -242,9 +247,9 @@ AC_ARG_WITH(python,
 if test "x$with_python" = xno; then
   have_python=no
 else
-  if test "x$have_libctlgeom" = xno; then
-    AC_MSG_ERROR([libctlgeom was not found, is required for Python interface])
-  fi
+  dnl if test "x$have_libctlgeom" = xno; then
+  dnl   AC_MSG_ERROR([libctlgeom was not found, is required for Python interface])
+  dnl fi
 
   if test "$enable_shared" = no; then
      AC_MSG_WARN([Python interface requires --enable-shared; disabling])
@@ -285,6 +290,11 @@ else
       fi
 
       CPPFLAGS=$save_CPPFLAGS
+###	jm test
+	  dnl PY_PREFIX=`$PYTHON -c 'import sys ; print(sys.prefix)'`
+	  dnl PYTHON_LIBS="-lpython$PYTHON_VERSION"
+	  dnl PYTHON_CFLAGS="-I$PY_PREFIX/include/python$PYTHON_VERSION"
+### 
     fi # have_python
 
   fi # enabled_shared
@@ -294,6 +304,10 @@ AC_SUBST(PYTHON_INCLUDES)
 AM_CONDITIONAL(WITH_PYTHON, test x"$have_python" = "xyes")
 AM_CONDITIONAL(WITH_COVERAGE, test x"$have_coverage" = "xyes")
 
+### jm test
+dnl AC_SUBST([PYTHON_LIBS])
+dnl AC_SUBST([PYTHON_CFLAGS])
+###
 ##############################################################################
 
 # Checks for header files.
@@ -307,5 +321,13 @@ AC_TYPE_SIZE_T
 # Checks for library functions.
 AC_CHECK_FUNCS([sqrt])
 
-AC_CONFIG_FILES([Makefile src/Makefile libctl/Makefile libctl/fetmodel.scm])
+if test "x$with_libctl" = xyes; then
+   AC_CONFIG_FILES([libctl/Makefile libctl/fetmodel.scm])
+fi
+
+if test "x$with_python" = xyes; then
+   AC_CONFIG_FILES([python/Makefile])
+fi
+
+AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT

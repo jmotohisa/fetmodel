@@ -46,6 +46,12 @@ python/__pycache__
 python/*.so
 python/build
 python/.ipynb_checkpoints
+python/__init__.py
+python/__init__.py.bak
+python/pyfet-python.c
+python/install_files.txt
+py-compile
+python/pyfet
 
 python/examples/__pycache__
 python/examples/.ipynb_checkpoints

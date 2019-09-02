@@ -70,6 +70,8 @@ for i, e00 in enumerate(e):
     e0[i] = func_e0_find(e00, p, Vgs, Vds)
 
 plt.plot(e, e0)
+plt.xlabel('Energy (eV)')
+plt.ylabel('func_E0_find')
 plt.show()
 
 Vds = 0
@@ -80,6 +82,8 @@ for i, Vgs0 in enumerate(Vgs):
     e0[i] = get_E0(p, Vgs0, Vds)
 
 plt.plot(Vgs, e0)
+plt.xlabel('Gate Voltage (V)')
+plt.ylabel('Top of the barrier height (eV)')
 plt.show()
 
 

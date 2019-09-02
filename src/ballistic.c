@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Fri Aug 30 21:00:27 JST 2019>
+ *  ballistic.c - Time-stamp: <Mon Sep 02 13:35:03 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -323,23 +323,35 @@ double E0_2d_root(param_ballistic p)
 
 // current
 
+double Ids_ballistic2d0_E0(double E0,
+						   double VDS, double VGS,
+						   double EFs, double EFermi,
+						   double alpha_D, double alpha_G,
+						   double Ceff,
+						   double ems, double temp)
+{
+  double Enm=0;
+  double ns0,vinj,f1,f2;
+  ns0=(density2d0(EFs-E0,Enm,ems, temp) + density2d0(EFs-E0-VDS,Enm,ems,temp))/2.;
+  vinj = sqrt(2*kBT0/(MASS(ems)*M_PI))*gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+  f1=1-gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0));
+  f2=1+gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+  return(GSL_CONST_MKS_ELECTRON_VOLT*ns0*vinj*f1/f2);
+  
+}
+
 double Ids_ballistic2d0(double VDS, double VGS,
 						double EFs, double EFermi,
 						double alpha_D, double alpha_G,
 						double Ceff,
 						double ems, double temp)
 {
-  double Enm=0,E0;
-  double vinj,ns0,f1,f2;
+  double E0;
   
   E0=E0_2d_root0(EFermi,VDS, VGS, alpha_D, alpha_G, Ceff,
 				 ems, temp);
-  
-  ns0=density2d0(EFs,Enm,ems, temp);
-  vinj = sqrt(2*kBT0/(MASS(ems)*M_PI))*gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
-  f1=1-gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0));
-  f2=1+gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
-  return(GSL_CONST_MKS_ELECTRON_VOLT*ns0*vinj*f1/f2);
+  return(Ids_ballistic2d0_E0(E0,VDS,VGS,EFs,EFermi,
+							 alpha_D,alpha_G,Ceff,ems,temp));
 }
 
 double Ids_ballistic2d(double VDS, double VGS, param_ballistic p,double EFs)

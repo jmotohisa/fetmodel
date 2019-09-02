@@ -25,46 +25,17 @@ alpha_G = 1
 
 p = fetmodel.param_ballistic_new()
 p.ems = ems
-# p.alpha = alpha
-# p.W1 = W1
-# p.W2 = W2
+p.alpha = alpha
+p.W1 = W1
+p.W2 = W2
 
 p.EFermi = -0.1
 p.alpha_D = alpha_D
 p.alpha_G = alpha_G
 p.Ceff = Cox*Cc/(Cox+Cc)
 p.temp = temperature
-# p.nmax = 2
-# p.mmax = 2
-
-
-EFermi_list = np.arange(-0.1, 0.1, 0.005)
-ns = np.empty_like(EFermi_list)
-for i, EF0 in enumerate(EFermi_list):
-    ns[i] = fetmodel.density2d0(EF0, 0, p.ems, p.temp)
-
-plt.plot(EFermi_list, ns)
-plt.show()
-
-# Vgs = 0
-# Vds = 1
-# e = np.arange(-1, 1, 0.005)
-# e0 = np.empty_like(e)
-# for i, e00 in enumerate(e):
-#     e0[i] = func_e0_find(e00, p, Vgs, Vds)
-
-# plt.plot(e, e0)
-# plt.show()
-
-# Vds = 0
-# Vgs = np.arange(-0.1, 1, 0.01)
-# e0 = np.empty_like(Vgs)
-
-# for i, Vgs0 in enumerate(Vgs):
-#     e0[i] = get_E0(p, Vgs0, Vds)
-
-# plt.plot(Vgs, e0)
-# plt.show()
+p.nmax = 2
+p.mmax = 2
 
 
 Vds = np.arange(0, 1, 0.01)

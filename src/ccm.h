@@ -62,6 +62,7 @@ extern "C" {
 	double	tox;
 	double	eps_ox;
 	double	mue;
+	double Eg;
   } param_cMOSFET;
   
   typedef struct

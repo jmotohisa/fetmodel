@@ -11,7 +11,7 @@ from scipy import optimize
 def func_e0_find(E0, p, Vgs, Vds):
     n2d_S = fetmodel.density2d0(p.EFermi - E0, 0, p.ems, p.temp)
     n2d_D = fetmodel.density2d0(p.EFermi - E0 - Vds, 0, p.ems, p.temp)
-    q0 = 1.6e-19 * (n2d_S + n2d_D) / (2 * p.Ceff)
+    q0 = const.elementary_charge * (n2d_S + n2d_D) / (2 * p.Ceff)
     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 
 

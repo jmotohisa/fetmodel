@@ -6,6 +6,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import optimize
+import scipy.constants as const
 
 
 def density1d_circ1d_all0(EFermi, ems, temp, radius, nmax):
@@ -26,7 +27,7 @@ def func_e0_find_circ1d(E0, p, Vgs, Vds):
     n1d_S = density1d_circ1d_all0(p.EFermi - E0, p.ems, p.temp, p.W1, p.nmax)
     n1d_D = density1d_circ1d_all0(
         p.EFermi - E0 - Vds, p.ems, p.temp, p.W1, p.nmax)
-    q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
+    q0 = const.elementary_charge * (n1d_S + n1d_D) / (2 * p.Ceff)
     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 
 
@@ -41,7 +42,7 @@ def get_E0_circ1d(p, Vgs, Vds):
 def func_FD0(ene, temp):
     """ Fermi-Dirac integral with order 0
     """
-    return math.log(1+math.exp(ene*1.6e-19/(1.38e-23*temp)))
+    return math.log(1+math.exp(ene*const.elementary_charge/(const.Boltzmann*temp)))
 
 
 def func_current_circ1d(Vds, Vgs, p, EFs):
@@ -58,7 +59,7 @@ def func_current_circ1d(Vds, Vgs, p, EFs):
         cur2 = func_FD0(EFs-Enp-e0.root-Vds, p.temp)
         cur += cur1-cur2
 
-    return (cur*2*1.6e-19/6.63e-34*p.temp*1.38e-23)
+    return (cur*2*const.elementary_charge/6.63e-34*p.temp*const.Boltzmann)
 
 
 def determine_EFs_circ1d(p, Vds, Ids):

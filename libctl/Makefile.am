@@ -7,7 +7,7 @@ EXTRA_DIST = $(SPECIFICATION_FILE_EXTRA)
 
 pkgdata_DATA = $(SPECIFICATION_FILE) $(SPECIFICATION_FILE_EXTRA)
 
-LIBFETMODEL = $(top_builddir)/src/libfetmodel.la
+LIBFETMODEL = $(top_builddir)/src/.libs/libfetmodel.a
 
 MY_INCLUDES= 
 MY_SOURCES = cfet_libctl.c ballisticFET1d_libctl.c

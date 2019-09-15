@@ -1,5 +1,5 @@
 /*
- *  density1d.c - Time-stamp: <Sun Sep 15 20:32:25 JST 2019>
+ *  density1d.c - Time-stamp: <Mon Sep 16 05:41:16 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -51,6 +51,10 @@
 
 #define GLOBAL_VALUE_DEFINE
 #include "density1d.h"
+
+double density1d_NP(param_density1d params);
+double density1d_rect1d_all(double EFermi,param_density1d_rect p);
+double density1d_rect1dNP_all(double EFermi,param_density1d_rect p);
 
 /*!
   @brief

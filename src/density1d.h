@@ -1,5 +1,5 @@
 /*
- *  density1d.h - last saved: Time-stamp: <Thu Sep 12 14:13:34 JST 2019>
+ *  density1d.h - last saved: Time-stamp: <Mon Sep 16 06:11:31 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -74,7 +74,6 @@ extern "C" {
 								  double W1, double W2, int n, int m);
   GLOBAL double density1d_rect1d_all0(double EFermi, double ems, double temp,
 									  double W1, double W2, int nmax, int mmax);
-  GLOBAL double density1d_rect1d_all(double EFermi,param_density1d_rect p);
 
   // nonparabolic band
   GLOBAL double density1d_NP0(double EFermi, double Enm, double alpha_nm, double ems_nm, double temp);
@@ -83,8 +82,6 @@ extern "C" {
   GLOBAL double density1d_rect1dNP_all0(double EFermi,double alphaNP, double ems, double temp,
 										double W1, double W2, int nmax, int mmax);
 
-  GLOBAL double density1d_NP(param_density1d params);
-  GLOBAL double density1d_rect1dNP_all(double EFermi,param_density1d_rect p);
 
   // utility functions
   GLOBAL double Ep_nm_rect1d(double ems, double W1, double W2, int n , int m);

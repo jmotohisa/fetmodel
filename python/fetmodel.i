@@ -81,8 +81,15 @@
 
 %pythoncode %{
   from .define_params import (
-							 parameters_ballistic,
-							 parameters_cMOSFET,
-							 )
-  %}
+							  parameters_ballistic,
+							  parameters_cMOSFET,
+							  )
+  from .wrapper import (
+  					  density1d_rect1d_all,
+  					  density1d_rect1dNP_all,
+  					  func_for_findroot_E0_rect1dNP,
+  					  E0_rect1dNP_root,
+  					  Ids_ballistic1d_rect1dNP,
+  					  )
+	%}
   

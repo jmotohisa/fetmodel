@@ -8,8 +8,6 @@ class parameters_ballistic:
 
     def __init__(self,
                  EFermi=0.,
-                 VDS=0.,
-                 VGS=0.,
                  alpha_D=0.,
                  alpha_G=1.,
                  Ceff=-1.,
@@ -22,8 +20,6 @@ class parameters_ballistic:
                  mmax=1):
 
         self.EFermi=EFermi
-        self.VDS=VDS
-        self.VGS=VGS
         self.alpha_D=alpha_D
         self.alpha_G=alpha_G
         self.Ceff=Ceff
@@ -37,8 +33,6 @@ class parameters_ballistic:
 
     def output(self):
         print("EFermi=",self.EFermi)
-        print("VDS=",self.VDS)
-        print("VGS=",self.VGS)
         print("alpha_D=",self.alpha_D)
         print("alpha_G=",self.alpha_G)
         print("Ceff=",self.Ceff)

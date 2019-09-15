@@ -12,31 +12,80 @@ import scipy.constants as const
 from scipy import integrate
 
 
-def func_e0_find(E0, p, Vgs, Vds):
+def func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p):
+    """
+    Python implementation of the function to find top of the barrier
+    based on fetmodel.density1d_rect1dNP_all0
+    Nonparabolic band
+    """
     n1d_S = fetmodel.density1d_rect1dNP_all0(
-        p.EFermi - E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+        p.EFermi - ene0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     n1d_D = fetmodel.density1d_rect1dNP_all0(
-        p.EFermi - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
-    q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
-    return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
+        p.EFermi - ene0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+    q0 = const.elementary_charge * (n1d_S + n1d_D) / (2 * p.Ceff)
+    return ene0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
+# def func_e0_find(E0, p, Vds, Vgs):
+#     n1d_S = fetmodel.density1d_rect1dNP_all0(
+#         p.EFermi - E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+#     n1d_D = fetmodel.density1d_rect1dNP_all0(
+#         p.EFermi - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+#     q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
+#     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 
 
-def get_E0(p, Vgs, Vds):
-    e0 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vds), x0=-0.1, x1=1)
-    return e0.root
+def check_func_for_E0_rect1dNP(E0start,E0stop,Vds,Vgs,p):
+    """
+    Plot function (Python implementation) to find E0
+    Nonparabolic band
+    """
+    ene0_list=np.linspace(E0start,E0stop,endpoint=True)
+    val=np.empty_like(ene0_list)
+    for i,ene0 in enumerate(ene0_list):
+        val[i]=func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p)
+
+    plt.plot(ene0_list,val)
+    plt.show()
+    return val
 
 
-def func_FD0(ene, temp):
-    ene0=ene*1.6e-19/(1.38e-23*temp)
-    if(ene0>100):
-        return ene0
+def check_func_for_E0_rect1dNP_fetmodel(E0start,E0stop,Vds,Vgs,p):
+    """
+    Plot function fo find E0 based on fetmodel.density1d_rect1dNP_all0
+    Nonparabolic band
+    """
+    ene0_list=np.linspace(E0start,E0stop,endpoint=True)
+    val=np.empty_like(ene0_list)
+    for i,ene0 in enumerate(ene0_list):
+        val[i]=fetmodel.func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p)
+
+    plt.plot(ene0_list,val)
+    plt.show()
+    return val
+
+
+def E0_rect1dNP_root(Vds,Vgs,p,left=-0.1,right=0.1):
+    """
+    Get top of the barrier (Python implementation)
+    Nonparabolic band
+    """
+    e0 = optimize.root_scalar(func_for_findroot_E0_rect1dNP,
+                              args=(p,Vds, Vgs), x0=left, x1=right)
+    if e0.converged==True:
+        return e0.root
     else:
-        return math.log(1+math.exp(ene0))
+        print("EFs convergence error !")
+        print(e0)
+        return 0
+# def get_E0(p, Vds, Vgs):
+#     e0 = optimize.root_scalar(func_e0_find, args=(p, Vds, Vgs), x0=-0.1, x1=1)
+#     return e0.root
 
 
-def func_current1D(Vgs, Vds, p, EFs):
-    e0 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
-    # e0=get_E0(p, Vgs, Vds)
+def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs,left=-0.1,right=0.1):
+    e0=E0_rect1d_root(Vds,Vgs,p,left,right)
+    # e00 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
+    # e00=get_E0(p, Vgs, Vds)
+    # e0=e00.root
     nlist = np.arange(1, p.nmax+1, dtype=np.int64)
     mlist = np.arange(1, p.mmax+1, dtype=np.int64)
     cur = 0
@@ -45,12 +94,22 @@ def func_current1D(Vgs, Vds, p, EFs):
             Enmp = fetmodel.Ep_nm_rect1d(p.ems, p.W1, p.W2, int(n), int(m))
             gamma_nm = fetmodel.gamma_nm_NP(Enmp, p.alpha)
             Enm = fetmodel.E_nm_NP(p.alpha, gamma_nm)
-            cur1 = func_FD0(EFs-Enm-e0.root, p.temp)
-            cur2 = func_FD0(EFs-Enm-e0.root-Vds, p.temp)
+            cur1 = func_FD0(EFs-Enm-e0, p.temp)
+            cur2 = func_FD0(EFs-Enm-e0-Vds, p.temp)
             cur += cur1-cur2
 
-    return (cur*2*1.6e-19/6.63e-34*p.temp*1.38e-23)
+    return (cur*2*const.elementary_charge/const.h*p.temp*const.Boltzmann)
 
+####### functions
+def func_FD0(ene, temp):
+    """
+    Fermi-Dirac integral in the zero-th order
+    """
+    ene0=ene*const.elementary_charge/(const.Boltzmann*temp)
+    if(ene0>100):
+        return ene0
+    else:
+        return math.log(1+math.exp(ene0))
 
 def Ep_nm_rect1d(ems, W1, W2, n, m):
     return (math.pi*const.hbar)**2/2*((n/W1)**2+(m/W2)**2)/(ems*const.electron_mass*const.elementary_charge)
@@ -73,7 +132,7 @@ def dos1D_NP_norm(eta,alpha0):
 def func_for_integdensity(eta,etaF,alpha0):
     return 1/(1+math.exp(eta-etaF))*dos1D_NP_norm(eta,alpha0)
 
-def density1d_rect1dNP(EFermi,alpha,ems,temp,W1,W2,n,m):
+def density1d_rect1dNP0(EFermi,alpha,ems,temp,W1,W2,n,m):
     Enm = Ep_nm_rect1d(ems, W1, W2, n, m)
     gamma_nm = gamma_nm_NP(Enm, alpha)
     ems_nm = ems_nm_NP(ems,gamma_nm)
@@ -89,13 +148,77 @@ def density1d_rect1dNP_all0(EFermi, alpha, ems, temp, W1, W2, nmax, mmax):
     n0=0.
     for n in np.arange(0,nmax):
         for m in np.arange(0,mmax):
-            dens=density1d_rect1dNP(EFermi,alpha,ems,temp,W1,W2,int(n)+1,int(m)+1)
+            dens=density1d_rect1dNP0(EFermi,alpha,ems,temp,W1,W2,int(n)+1,int(m)+1)
             print(n,m,dens)
             n0+=dens
 
     return(n0)
-    
-        
+
+def density1d_rect1dNP_all(p):
+    return density1d_rect1dNP_all0(p.EFermi, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+
+#####
+# parabolic band, rectangular NW
+#####
+
+def func_for_findroot_E0_rect1d(ene0, Vds, Vgs, p):
+    """
+    Python implementation of the function to find top of the barrier
+    based on fetmodel.density1d_rect1d_all0
+    Parabolic band
+    """
+    n1d_S = fetmodel.density1d_rect1d_all0(
+        p.EFermi - ene0, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+    n1d_D = fetmodel.density1d_rect1d_all0(
+        p.EFermi - ene0 - Vds, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+    q0 = const.elementary_charge * (n1d_S + n1d_D) / (2 * p.Ceff)
+    return ene0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
+
+
+def check_func_for_E0_rect1d(E0start,E0stop,Vds,Vgs,p):
+    """
+    Plot function (Python implementation) to find E0
+    Parabolic band
+    """
+    ene0_list=np.linspaace(E0start,E0stop,endpoint=True)
+    val=np.empty_like(ene0_list)
+    for i,ene0 in enumerate(ene0_list):
+        val[i]=func_for_findroot_E0_rect1d(ene0, Vds, Vgs, p)
+
+    plt.plot(ene0_list,val)
+    return val
+
+
+def E0_rect1d_root(Vds,Vgs,p,left=-0.1,right=0.1):
+    """
+    Get top of the barrier (Python implementation)
+    Parabolic band
+    """
+    e0 = optimize.root_scalar(func_for_findroot_E0_rect1d,
+                              args=(Vds, Vgs, p), x0=left, x1=right)
+    if e0.converged==True:
+        return e0.root
+    else:
+        print("EFs convergence error !")
+        print(e0)
+        return 0
+
+
+def Ids_ballistic1d_rect1d(Vds, Vgs, p, EFs,left=-0.1,right=0.1):
+    e0=E0_rect1d_root(Vds,Vgs,p,left,right)
+    # e0 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
+    # e0=get_E0(p, Vgs, Vds)
+    nlist = np.arange(1, p.nmax+1, dtype=np.int64)
+    mlist = np.arange(1, p.mmax+1, dtype=np.int64)
+    cur = 0
+    for n in nlist:
+        for m in mlist:
+            Enmp = fetmodel.Ep_nm_rect1d(p.ems, p.W1, p.W2, int(n), int(m))
+            cur1 = func_FD0(EFs-Enmp-e0, p.temp)
+            cur2 = func_FD0(EFs-Enmp-e0-Vds, p.temp)
+            cur += cur1-cur2
+
+    return (cur*2*const.elementary_charge/const.h*p.temp*const.Boltzmann)
 
 
 if __name__ == '__main__':
@@ -113,15 +236,14 @@ if __name__ == '__main__':
     alpha_D = 0
     alpha_G = 1
 
-    p = fetmodel.param_ballistic_new()
+    # p = fetmodel.param_ballistic_new()
+                                       
     p.ems = ems
     p.alpha = alpha
     p.W1 = W1
     p.W2 = W2
 
     p.EFermi = 0
-    p.VDS = 0
-    p.VGS = 0
     p.alpha_D = alpha_D
     p.alpha_G = alpha_G
     p.Ceff = Cox*Cc/(Cox+Cc)

@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Sat Sep 14 14:12:28 JST 2019>
+ *  ballistic.c - Time-stamp: <Mon Sep 16 05:40:40 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -68,6 +68,16 @@ typedef struct param_E0_struct
   
 double func_for_findroot_E0_rect1d(double ene0,param_E0 *p);
 double func_for_findroot_E0_2d(double ene0,param_E0 *p);
+double E0_rect1dNP_root(param_ballistic p);
+double Ids_ballistic1d_rect1dNP(double VDS, double VGS,
+								param_ballistic p,double EFs);
+
+extern double density1d_NP(param_density1d params);
+extern double density1d_rect1d_all(double EFermi,param_density1d_rect p);
+extern double density1d_rect1dNP_all(double EFermi,param_density1d_rect p);
+
+double E0_2d_root(param_ballistic p);
+double Ids_ballistic2d(double VDS, double VGS, param_ballistic p,double EFs);
 
 /*!
   @brief
@@ -79,12 +89,12 @@ double func_for_findroot_E0_2d(double ene0,param_E0 *p);
 
 // 1D, rectangular cross section, with nonparabolicity
 
-double func_for_findroot_E0_rect1d0(double ene0,double EFermi,
-									double VDS, double VGS, 
-									double alpha_D, double alpha_G,
-									double Ceff,
-									double alpha, double ems, double temp,
-									double W1, double W2, int nmax, int mmax)
+double func_for_findroot_E0_rect1dNP0(double ene0,double EFermi,
+									  double VDS, double VGS, 
+									  double alpha_D, double alpha_G,
+									  double Ceff,
+									  double alpha, double ems, double temp,
+									  double W1, double W2, int nmax, int mmax)
 {
   double n1d_S,n1d_D;
   param_density1d_rect p_density1d_rect;
@@ -102,9 +112,9 @@ double func_for_findroot_E0_rect1d0(double ene0,double EFermi,
   return(ene0+alpha_D*VDS + alpha_G*VGS - (n1d_S + n1d_D)/(2*Ceff)*GSL_CONST_MKS_ELECTRON_VOLT);
 }
 
-double func_for_findroot_E0_rect1d(double ene0,param_E0 *p)
+double func_for_findroot_E0_rect1dNP(double ene0,param_E0 *p)
 {
-  return(func_for_findroot_E0_rect1d0(ene0,
+  return(func_for_findroot_E0_rect1dNP0(ene0,
 									  p->EFermi, p->VDS, p->VGS,
 									  p->alpha_D, p->alpha_G,
 									  p->Ceff,
@@ -119,14 +129,14 @@ double func_for_findroot_E0_rect1d(double ene0,param_E0 *p)
   /* return(p->alpha_D*p->VDS + p->alpha_D*p->VGS - (n1d_S + n1d_D)/(2*p->Ceff)*GSL_CONST_MKS_ELECTRON_VOLT); */
 }
 
-double func_for_findroot_E0_rect1d00(double ene0,void *pp)
+double func_for_findroot_E0_rect1dNP00(double ene0,void *pp)
 {
   param_E0 *p = (param_E0 *) pp;
-  double e0=func_for_findroot_E0_rect1d(ene0,p);
+  double e0=func_for_findroot_E0_rect1dNP(ene0,p);
   return(e0);
 }
 
-double E0_rect1d_root_brent(param_E0 params,
+double E0_rect1dNP_root_brent(param_E0 params,
 							double low, double high)
 {
   gsl_function F;
@@ -137,7 +147,7 @@ double E0_rect1d_root_brent(param_E0 params,
   gsl_root_fsolver *s;
   gsl_error_handler_t old_handler,qagiu_handler;
 
-  F.function = &func_for_findroot_E0_rect1d00;
+  F.function = &func_for_findroot_E0_rect1dNP00;
   F.params = &params;
 
   //FindRoots/Q/L=(low) qfunc_cMOSFET,param_cMOSFET;
@@ -157,7 +167,7 @@ double E0_rect1d_root_brent(param_E0 params,
   gsl_root_fsolver_free(s);
   
   if(status!=GSL_SUCCESS) {
-	printf("Error in E0_rect1d_root_brent:status=%d\n",status);
+	printf("Error in E0_rect1dNP_root_brent:status=%d\n",status);
 	GSL_ERROR_VAL("argument lies on singularity",
 				  GSL_ERANGE, GSL_NAN);
   }
@@ -165,10 +175,10 @@ double E0_rect1d_root_brent(param_E0 params,
   return(r);
 }
 
-double E0_rect1d_root0(double EFermi,
-					   double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
-					   double alpha, double ems, double temp,
-					   double W1, double W2, int nmax, int mmax)
+double E0_rect1dNP_root0(double EFermi,
+						 double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
+						 double alpha, double ems, double temp,
+						 double W1, double W2, int nmax, int mmax)
 {
   double low,high;
   param_density1d_rect p_density1d_rect;
@@ -191,13 +201,13 @@ double E0_rect1d_root0(double EFermi,
   params.Ceff = Ceff;
   low=-0.1;
   high=0.1;
-  return(E0_rect1d_root_brent(params, low, high));
+  return(E0_rect1dNP_root_brent(params, low, high));
   
 }
 
-double E0_rect1d_root(param_ballistic p)
+double E0_rect1dNP_root(param_ballistic p)
 {
-  return(E0_rect1d_root0(p.EFermi,p.VDS, p.VGS, p.alpha_D, p.alpha_G, p.Ceff,
+  return(E0_rect1dNP_root0(p.EFermi,p.VDS, p.VGS, p.alpha_D, p.alpha_G, p.Ceff,
 						 p.alpha, p.ems, p.temp,
 						 p.W1, p.W2, p.nmax, p.nmax));
 }
@@ -216,7 +226,7 @@ double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
   double ids,ids1,ids2;
   int n,m;
   ids=0;
-  E0=E0_rect1d_root0(EFermi,VDS, VGS, alpha_D, alpha_G, Ceff,
+  E0=E0_rect1dNP_root0(EFermi,VDS, VGS, alpha_D, alpha_G, Ceff,
 					 alpha, ems, temp,
 					 W1, W2, nmax, nmax);
   
@@ -245,7 +255,7 @@ double Ids_ballistic1d_rect1dNP(double VDS, double VGS, param_ballistic p,double
 
 
 /*!
-  2D, neglect quantum confinment (subbands)
+  2D, neglect quantum confinment (subbands), parabollic band
 */
 double func_for_findroot_E0_2d0(double ene0,double EFermi,
 								double VDS, double VGS, 
@@ -333,7 +343,7 @@ double E0_2d_root0(double EFermi,
   params.Ceff = Ceff;
   low=-1;
   high=1;
-  return(E0_rect1d_root_brent(params, low, high));
+  return(E0_rect1dNP_root_brent(params, low, high));
   
 }
 

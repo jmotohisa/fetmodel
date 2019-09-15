@@ -1,5 +1,5 @@
 /*
- *  ballistic.h - last saved: Time-stamp: <Sat Sep 14 13:22:23 JST 2019>
+ *  ballistic.h - last saved: Time-stamp: <Sun Sep 15 22:22:12 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -65,18 +65,17 @@ typedef struct param_ballistic_struct
   int mmax;
 } param_ballistic;
 
-  GLOBAL double func_for_findroot_E0_rect1d0(double ene0,double EFermi,
+  GLOBAL double func_for_findroot_E0_rect1dNP0(double ene0,double EFermi,
 											 double VDS, double VGS,
 											 double alpha_D, double alpha_G,
 											 double Ceff,
 											 double alpha, double ems, double temp,
 											 double W1, double W2, int nmax, int mmax);
 
-  GLOBAL double E0_rect1d_root0(double EFermi,
+  GLOBAL double E0_rect1dNP_root0(double EFermi,
 								double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
 								double alpha, double ems, double temp,
 								double W1, double W2, int nmax, int mmax);
-  GLOBAL double E0_rect1d_root(param_ballistic p);
   
   GLOBAL double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
 										   double EFs, double EFermi,
@@ -84,8 +83,6 @@ typedef struct param_ballistic_struct
 										   double Ceff,
 										   double alpha, double ems, double temp,
 										   double W1, double W2, int nmax, int mmax);
-  GLOBAL double Ids_ballistic1d_rect1dNP(double VDS, double VGS,
-										 param_ballistic p,double EFs);
 
   // 2d
   GLOBAL double func_for_findroot_E0_2d0(double ene0,double EFermi,
@@ -96,7 +93,6 @@ typedef struct param_ballistic_struct
   GLOBAL double E0_2d_root0(double EFermi,
 							double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
 							double ems, double temp);
-  GLOBAL double E0_2d_root(param_ballistic p);
   GLOBAL double Ids_ballistic2d0_E0(double E0,
 									double VDS, double VGS,
 									double EFs, double EFermi,
@@ -109,7 +105,6 @@ typedef struct param_ballistic_struct
 								 double Ceff,
 								 double ems, double temp);
   
-  GLOBAL double Ids_ballistic2d(double VDS, double VGS, param_ballistic p,double EFs);
   
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

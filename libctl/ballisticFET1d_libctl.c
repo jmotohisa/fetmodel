@@ -1,5 +1,5 @@
 /*
- *  ballisticFET1d_libctl.c - Time-stamp: <Wed Aug 21 11:44:01 JST 2019>
+ *  ballisticFET1d_libctl.c - Time-stamp: <Sun Sep 15 22:26:47 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -137,11 +137,11 @@ number func_e0_find(number ene0, number VGS, number VDS)
   double Cc  = Cc_rect(p.eps_s,W1,W2);
   double Ceff = Cox*Cc/(Cox+Cc);
   // b.C_eff is overridden
-  val = func_for_findroot_E0_rect1d0(ene0,b.Fermi_Energy,
-									 VDS, VGS, 
-									 b.alpha_D, b.alpha_G, Ceff,
-									 p.alpha_nonparabolicity, p.effective_mass, temperature,
-									 W1, W2, p.n_max, p.m_max);
+  val = func_for_findroot_E0_rect1dNP0(ene0,b.Fermi_Energy,
+									   VDS, VGS, 
+									   b.alpha_D, b.alpha_G, Ceff,
+									   p.alpha_nonparabolicity, p.effective_mass, temperature,
+									   W1, W2, p.n_max, p.m_max);
   return (val);
 }
 
@@ -157,10 +157,10 @@ number E0_rect1d(number VDS, number VGS)
   double Ceff = Cox*Cc/(Cox+Cc);
   // b.C_eff is overridden
   
-  E0=E0_rect1d_root0(b.Fermi_Energy, VDS, VGS,
-					 b.alpha_D, b.alpha_G, Ceff,
-					 p.alpha_nonparabolicity, p.effective_mass, temperature,
-					 W1, W2, p.n_max, p.m_max);
+  E0=E0_rect1dNP_root0(b.Fermi_Energy, VDS, VGS,
+					   b.alpha_D, b.alpha_G, Ceff,
+					   p.alpha_nonparabolicity, p.effective_mass, temperature,
+					   W1, W2, p.n_max, p.m_max);
   return(E0);
 }				 
 

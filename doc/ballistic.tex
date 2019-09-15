@@ -1,0 +1,153 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+\documentclass[11pt,uplatex,a4paper]{jsarticle}
+%% file: fem2dp-2.tex
+%% author: Junichi Motohisa
+%% created: 2017-11-21 18:32:34
+%% last saved : Time-stamp: <Sat Sep 14 20:06:54 JST 2019>
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{multicol}
+\usepackage{cite}
+%\usepackage{mathptmx}
+%\usepackage{color}
+\usepackage{lscape}
+% \usepackage{dcolumn}
+\usepackage{moreverb}
+% \usepackage[a4paper,margin=1in]{geometry}
+\usepackage[driver=dvipdfmx,truedimen]{geometry}
+% \geometry{left=30truemm,right=25truemm,top=25truemm,bottom=25truemm}
+\geometry{margin=1truein}
+% \usepackage[a4paper,margin=1in]{geometry}
+
+%% taken from https://github.com/ryseto/emacs_and_tex/blob/master/template.tex
+%% begin
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{bm}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\usepackage{siunitx}
+\usepackage{xcolor}
+%\usepackage[pdftex]{graphicx}
+%\usepackage[pdftex,bookmarks,colorlinks]{hyperref}
+% \usepackage[dvipdfmx]{hyperref}
+% \usepackage{pxjahyper}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newtxtext}
+\usepackage[varg]{newtxmath}
+\usepackage{booktabs}
+\usepackage{datetime}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{cleveref}
+\usepackage[numbers]{natbib}
+
+% \bibliographystyle{abbrvnat}
+\setlist{itemsep=-3pt}
+%% end
+
+\def\d#1#2{\frac{d #1}{d #2}}
+\def\dd#1#2{\frac{d^2 #1}{d #2^2}}
+\def\pd#1#2{\frac{\partial #1}{\partial #2}}
+\def\pdd#1#2{\frac{\partial^2 #1}{\partial #2^2}}
+\def\Ene{\varepsilon}
+\def\DOS{\mathcal{D}}
+\def\vec#1{{\bm{#1}}}
+\def\kvec{\bm{k}}
+\def\kvecp{{\bm{k}'}}
+\def\subvec#1{{\boldsymbol{\small #1}}}
+ 
+\def\GP{{\vec{G}_\parallel}}
+\def\GPP{{\vec{G}^\prime_\parallel}}
+\def\KP{{\vec{k}_\parallel}}
+\def\KP{{\vec{k}_\parallel}}
+\def\XP{{\vec{x}_\parallel}}
+
+\def\EneK{\varepsilon_{\kvec}}
+\def\EneKp{\varepsilon_{\kvec^{'}}}
+\def\EneKn{\varepsilon_{\kvec n}}
+\def\EneKnp{\varepsilon_{\kvec^{'} n^{'}}}
+\def\EneKm{\varepsilon_{m \vec{k}}}
+\def\EneKmp{\varepsilon_{m' \vec{k}'}}
+
+\def\bra#1{{\langle #1 |}}
+\def\ket#1{{| #1 \rangle}}
+\def\braket#1#2{{\langle #1 | #2 \rangle}}
+\def\av#1{{\langle #1 \rangle}}
+
+\def\sinc{\mathrm{sinc}}
+\def\sgn{\mathrm{sgn}_{n,p}}
+\def\Tr{{\mathrm{Tr}\, }}
+
+\def\micon{\mathrm{\mu m}}
+\def\nm{\mathrm{nm}}
+
+\begin{document}
+
+\title{Title}
+\author{J.~Motohisa\\Graduate School of IST, Hokkaido University}
+\date{\shortdate\today \, \ampmtime }
+\maketitle
+
+\section{Introduction}
+
+\section{Ballistic FET in 2D}
+Top of the Barrierのエネルギー$E_0$は
+\begin{equation}
+ E_0 + \alpha_D q V_{DS} + \alpha_G q V_{GS} -
+  q^2\frac{n_{2D}(E_F - E_0)+n_{2D}(E_F-E_0-qV_{DS})}{2 C_{eff}}=0
+  \label{eqn:tob}
+\end{equation}
+を解くことによって求めることができる。
+ここで
+\begin{equation}
+ n_{2D}(E) = \mathcal{D}_{2D}k_B T \ln (1+\exp(\frac{E}{k_B T}))
+\end{equation}
+であり、また$\mathcal{D}_{2D}$は2次元の状態密度であり$\mathcal{D}_{2D}=m^*/\pi \hbar^2$である。
+
+  \subsection{近似}
+式(\ref{eqn:tob})を近似すると
+\begin{equation}
+ E_0 + \alpha_D q V_{DS} + \alpha_G q V_{GS} -
+  q^2\frac{\mathcal{D}_{2D}(E_F - E_0)+\mathcal{D}_{2D}(E_F-E_0-qV_{DS})}{2 C_{eff}}=0
+\end{equation}
+と書ける。
+ この式を解くと
+ \begin{equation}
+  \frac{E_0}{q} = -\frac{\alpha_G V_{GS} + \alpha_D V_{DS}}{1+C}
+   + \frac{C}{1+C} (\frac{E_{F}}{q}-\frac{V_{DS}}{2})
+ \end{equation}
+ ここで
+\begin{equation}
+ C=\frac{q^2}{C_{eff}}\mathcal{D}_{2D} = \frac{q^2m^*}{C_{eff}\pi \hbar^2}
+\end{equation}
+である。
+さらに実際top of the barrierにおける電子密度$N_{2D}$は
+\begin{equation}
+ \begin{split}
+ N_{2D} &= \frac{1}{2}
+  (n_{2D}(E_F-E_0) + n_{2D}(E_F-E_0-qV_{DS})) \\
+  &\sim \frac{C C_{eff}}{q} (\frac{E_F - E_0}{q} - \frac{V_{DS}}{2}) \\
+  &\propto \frac{1}{q}\frac{C}{1+C} \alpha_G C_{eff} V_{GS}
+  = \frac{1}{q}\frac{1}{1+1/C} \alpha_G C_{eff} V_{GS}
+ \end{split}
+\end{equation}
+これらの式から、有効質量$m^*$が大きくなった場合、
+状態密度の増大によるキャリア密度の増大効果と、
+Top of the barrierのエネルギー$E_0$の低下量が小さくなる効果がほぼ総裁し、
+電流は増加する可能性があるものmerginal な増加であり、
+実際には、injection velocityが低下すると考えられるため、
+電流が減少すると予想される。
+
+% $V_{GS}$ top of the barrier $E_0$の
+% $V_{GS}$の増加に対する
+% このため$V_{GS}$に対する電流の増加は小さくなることがわかる。
+
+\appendix
+
+ \begin{thebibliography}{99}
+     
+ \end{thebibliography}
+%% \bibliography{/Users/motohisa/Dropbox/Papers/rse}
+
+\end{document}
+

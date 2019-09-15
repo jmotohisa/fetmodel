@@ -1,5 +1,5 @@
 /*
- *  ccm.h - last saved: Time-stamp: <Mon Aug 19 10:21:19 JST 2019>
+ *  ccm.h - last saved: Time-stamp: <Sun Sep 15 07:32:57 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -62,7 +62,7 @@ extern "C" {
 	double	tox;
 	double	eps_ox;
 	double	mue;
-	double Eg;
+	/* double Eg; */
   } param_cMOSFET;
   
   typedef struct

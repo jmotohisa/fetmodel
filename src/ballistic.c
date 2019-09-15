@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Mon Sep 02 21:38:20 JST 2019>
+ *  ballistic.c - Time-stamp: <Sat Sep 14 14:12:28 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -54,6 +54,20 @@
 
 #define GLOBAL_VALUE_DEFINE
 #include "ballistic.h"
+
+typedef struct param_E0_struct
+{
+  double EFermi;
+  double VDS;
+  double VGS;
+  double alpha_D;
+  double alpha_G;
+  double Ceff;
+  param_density1d_rect p_density1d_rect;
+} param_E0;
+  
+double func_for_findroot_E0_rect1d(double ene0,param_E0 *p);
+double func_for_findroot_E0_2d(double ene0,param_E0 *p);
 
 /*!
   @brief
@@ -121,6 +135,7 @@ double E0_rect1d_root_brent(param_E0 params,
   double r;
   const gsl_root_fsolver_type *T;
   gsl_root_fsolver *s;
+  gsl_error_handler_t old_handler,qagiu_handler;
 
   F.function = &func_for_findroot_E0_rect1d00;
   F.params = &params;
@@ -139,7 +154,14 @@ double E0_rect1d_root_brent(param_E0 params,
         high = gsl_root_fsolver_x_upper(s);
         status = gsl_root_test_interval(low,high,0,0.001);
   } while (status==GSL_CONTINUE && iter < max_iter);
-
+  gsl_root_fsolver_free(s);
+  
+  if(status!=GSL_SUCCESS) {
+	printf("Error in E0_rect1d_root_brent:status=%d\n",status);
+	GSL_ERROR_VAL("argument lies on singularity",
+				  GSL_ERANGE, GSL_NAN);
+  }
+  
   return(r);
 }
 
@@ -167,8 +189,8 @@ double E0_rect1d_root0(double EFermi,
   params.alpha_D = alpha_D;
   params.alpha_G = alpha_G;
   params.Ceff = Ceff;
-  low=-1;
-  high=1;
+  low=-0.1;
+  high=0.1;
   return(E0_rect1d_root_brent(params, low, high));
   
 }
@@ -222,9 +244,9 @@ double Ids_ballistic1d_rect1dNP(double VDS, double VGS, param_ballistic p,double
 }
 
 
-//////////////////////////////////////////////////
-// 2D, neglect quantum confinment (subbands)
-
+/*!
+  2D, neglect quantum confinment (subbands)
+*/
 double func_for_findroot_E0_2d0(double ene0,double EFermi,
 								double VDS, double VGS, 
 								double alpha_D, double alpha_G,

@@ -55,3 +55,8 @@ python/fetmodel
 
 python/examples/__pycache__
 python/examples/.ipynb_checkpoints
+
+doc/*.aux
+doc/*.pdf
+doc/*.synctex.gz
+doc/*.log

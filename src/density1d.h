@@ -1,5 +1,5 @@
 /*
- *  density1d.h - last saved: Time-stamp: <Mon Sep 02 12:56:09 JST 2019>
+ *  density1d.h - last saved: Time-stamp: <Thu Sep 12 14:13:34 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -89,6 +89,7 @@ extern "C" {
   // utility functions
   GLOBAL double Ep_nm_rect1d(double ems, double W1, double W2, int n , int m);
   GLOBAL double Ep_n_radial1d(double ems,double radius,int n);
+  GLOBAL double Ep_nm_radial1d(double ems,double radius,int n, int m);
 
   GLOBAL double alpha_NP(double Eg, double ems);
   GLOBAL double E_nm_NP(double alphaNP, double gamma_nm);

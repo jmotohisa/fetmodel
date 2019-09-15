@@ -2,13 +2,19 @@
 # -*- coding: utf-8 -*-
 
 """
-Analysis of Short channel MOSFET
+Analysis of Short channel MOSFET: subthreshold slope, Vth rolloff
 
-Reference
+References
 [1] B. Yu et al., IEEE Trans. Electon Dev. 56(10) 2357 (2009):
 A Two-Dimensional Analytical Solution of Short-Channel Effects in Nanowire MOSFETs
 
-[2] Auth, C. P., & Plummer, J. D. (1997). Scaling theory for cylindrical, fully-depleted, surrounding-gate MOSFET’s. IEEE Electron Device Letters, 18(2), 74–76. https://doi.org/10.1109/55.553049
+[2] Auth, C. P., & Plummer, J. D. (1997).
+Scaling theory for cylindrical, fully-depleted, surrounding-gate MOSFET’s.
+IEEE Electron Device Letters, 18(2), 74–76. https://doi.org/10.1109/55.553049
+
+[3] Guanghui Mei et al 2011 Jpn. J. Appl. Phys. 50 074202
+DOI: https://doi.org/10.1143/JJAP.50.074202
+Analytical Model for Subthreshold Swing and Threshold Voltage of Surrounding Gate Metal–Oxide–Semiconductor Field-Effect Transistors
 """
 
 import numpy as np

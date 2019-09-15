@@ -1,5 +1,5 @@
 /*
- *  density1d.c - Time-stamp: <Tue Aug 20 05:58:06 JST 2019>
+ *  density1d.c - Time-stamp: <Sun Sep 15 20:32:25 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -45,6 +45,7 @@
 #include <gsl/gsl_const_mks.h>
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_sf_bessel.h>
+#include <gsl/gsl_errno.h>
 
 #include "ballistic_common.h"
 
@@ -73,6 +74,14 @@ double Ep_n_radial1d(double ems,double radius,int n)
 {
   double ene;
   double jzero=gsl_sf_bessel_zero_J0(n);
+  ene=(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR)/(2*MASS(ems)*GSL_CONST_MKS_ELECTRON_VOLT);
+  return(ene*(jzero*jzero)/(radius*radius));
+}
+
+double Ep_nm_radial1d(double ems,double radius,int n, int m)
+{
+  double ene;
+  double jzero=gsl_sf_bessel_zero_Jnu ((double) m, n);
   ene=(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR)/(2*MASS(ems)*GSL_CONST_MKS_ELECTRON_VOLT);
   return(ene*(jzero*jzero)/(radius*radius));
 }
@@ -217,15 +226,27 @@ double density1d_NP(param_density1d params)
   size_t limit=1000;
   double result, abserr;
   double temp=params.temp;
-
+  int status;
+  gsl_error_handler_t old_handler,qagiu_handler;
+  
   F.function=&func_for_integ_density_1d;
   F.params = &params;
-/* int gsl_integration_qagiu (gsl_function * f, double a, double epsabs, double epsrel, size_t limit, gsl_integration_workspace * workspace, double *result, double *abserr); */
-
-  gsl_integration_qagiu(&F,0,epsabs,epsrel,limit,w,&result,&abserr);
-
+  /* int gsl_integration_qagiu (gsl_function * f, double a, double epsabs, double epsrel, size_t limit, gsl_integration_workspace * workspace, double *result, double *abserr); */
+  
+  gsl_set_error_handler_off();
+  /* old_handler = gsl_set_error_handler(&qagiu_handler); */
+  
+  status=gsl_integration_qagiu(&F,0,epsabs,epsrel,limit,w,&result,&abserr);
   gsl_integration_workspace_free(w);
+  /* printf("%d\n",status); */
+  if(status!=GSL_SUCCESS) {
+	printf("Error in density1d_NP:status=%d\n",status);
+	GSL_ERROR_VAL("argument lies on singularity",
+				  GSL_ERANGE, GSL_NAN);
+	}
+  gsl_set_error_handler(NULL);
   double d0=sqrt(2*MASS(params.emsnm)*kBT0)/(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*M_PI);
+  /* gsl_set_error_handler(old_handler); */
   return(d0*result);
 }
 				  

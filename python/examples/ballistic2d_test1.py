@@ -40,7 +40,6 @@ p.temp = temperature
 p.nmax = 2
 p.mmax = 2
 
-
 # Vgs = 0
 # Vds = 0
 # e = np.arange(-0.1, 0.1, 0.005)

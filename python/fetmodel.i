@@ -79,3 +79,10 @@
   }
   %}
 
+%pythoncode %{
+  from .define_params import (
+							 parameters_ballistic,
+							 parameters_cMOSFET,
+							 )
+  %}
+  

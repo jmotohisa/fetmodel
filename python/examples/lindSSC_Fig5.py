@@ -67,7 +67,7 @@ def check_func_det_EFs2(p, Vds, Ids_cutoff, left=0.2, right=0.3):
     return val
 
 if __name__=='__main__':
-    EFermi=-0.1
+    EFermi=0
     Eg = 0.36
     epsOX = 20
     epsS = 15.15
@@ -124,6 +124,7 @@ if __name__=='__main__':
     # ballistic1d.check_func_for_E0_rect1dNP_fetmodel(-0.2,0.2,Vds,Vgs,p)
 
     Ids_cutoff=100e-9*1e6
+    p.EFermi=0.2
 
     check_func_det_EFs(p, Vds, Ids_cutoff)
     print("Determine EFs using fetmodel")
@@ -144,20 +145,68 @@ if __name__=='__main__':
     dVgs = 0.005
     Vgs = np.arange(0, 0.6, dVgs)
     Ids1 = np.empty_like(Vgs)
+    Ids2 = np.empty_like(Vgs)
+    Ids3 = np.empty_like(Vgs)
+
+    p.nmax=2
+    p.mmax=1
     for i, Vgs0 in enumerate(Vgs):
         # Ids1[i] = fetmodel.Ids_ballistic1d_rect1dNP(
         #     Vds, Vgs0, p, EFs)/(2*(p.W1+p.W2))*1e-3
         Ids1[i] = ballistic1d.Ids_ballistic1d_rect1dNP(
             Vds, Vgs0, p, EFs2)/(2*(p.W1+p.W2))*1e-3
-        
-    gm1 = np.gradient(Ids1, dVgs)
+    lstr1='(n,m)='+str(p.nmax)+','+str(p.mmax)+')'
 
-    plt.plot(Vgs, Ids1, label='Ids1')
+    p.nmax=2
+    p.mmax=2
+    for i, Vgs0 in enumerate(Vgs):
+        # Ids1[i] = fetmodel.Ids_ballistic1d_rect1dNP(
+        #     Vds, Vgs0, p, EFs)/(2*(p.W1+p.W2))*1e-3
+        Ids2[i] = ballistic1d.Ids_ballistic1d_rect1dNP(
+            Vds, Vgs0, p, EFs2)/(2*(p.W1+p.W2))*1e-3
+    lstr2='(n,m)='+str(p.nmax)+','+str(p.mmax)+')'
+
+    p.nmax=3
+    p.mmax=2
+    for i, Vgs0 in enumerate(Vgs):
+        # Ids1[i] = fetmodel.Ids_ballistic1d_rect1dNP(
+        #     Vds, Vgs0, p, EFs)/(2*(p.W1+p.W2))*1e-3
+        Ids3[i] = ballistic1d.Ids_ballistic1d_rect1dNP(
+            Vds, Vgs0, p, EFs2)/(2*(p.W1+p.W2))*1e-3
+    lstr3='(n,m)=('+str(p.nmax)+','+str(p.mmax)+')'
+
+    gm1 = np.gradient(Ids1, dVgs)
+    gm2 = np.gradient(Ids2, dVgs)
+    gm3 = np.gradient(Ids3, dVgs)
+
+    plt.figure()
+    plt.plot(Vgs, Ids1, label=lstr1)
+    plt.plot(Vgs, Ids2, label=lstr2)
+    plt.plot(Vgs, Ids3, label=lstr3)
     plt.xlabel('Vgs - Vth (V)')
     plt.ylabel('Ids (mA/um)')
-    plt.show()
-    
-    plt.plot(Vgs, gm1, label='gm')
+    plt.legend(loc='best')
+    plt.title('Vds='+str(Vds)+' V')
+
+    fig, ax = plt.subplots()
+    ax.plot(Vgs, Ids1, label=lstr1)
+    ax.plot(Vgs, Ids2, label=lstr2)
+    ax.plot(Vgs, Ids3, label=lstr3)
+    ax.set_yscale("log")
+    plt.xlabel('Vgs - Vth (V)')
+    plt.ylabel('Ids (mA/um)')
+    plt.legend(loc='best')
+    plt.hlines([Ids_cutoff*1e-3], min(Vgs),max(Vgs), "blue", linestyles='dashed')
+    plt.title('Vds='+str(Vds)+' V')
+
+    ## transconductance
+    plt.figure()
+    plt.plot(Vgs, gm1, label=lstr1)
+    plt.plot(Vgs, gm2, label=lstr2)
+    plt.plot(Vgs, gm3, label=lstr3)
     plt.xlabel('Vgs - Vth (V)')
     plt.ylabel('Transconductance (mS/um)')
+    plt.legend(loc='best')
+    plt.title('Vds='+str(Vds)+' V')
+
     plt.show()

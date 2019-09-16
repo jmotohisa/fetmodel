@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Mon Sep 16 05:40:40 JST 2019>
+ *  ballistic.c - Time-stamp: <Mon Sep 16 17:53:28 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -137,7 +137,7 @@ double func_for_findroot_E0_rect1dNP00(double ene0,void *pp)
 }
 
 double E0_rect1dNP_root_brent(param_E0 params,
-							double low, double high)
+							  double low, double high)
 {
   gsl_function F;
   int status;
@@ -199,8 +199,8 @@ double E0_rect1dNP_root0(double EFermi,
   params.alpha_D = alpha_D;
   params.alpha_G = alpha_G;
   params.Ceff = Ceff;
-  low=-0.1;
-  high=0.1;
+  low=-(VDS*alpha_D+VGS*alpha_G)-0.2;
+  high=-(VDS*alpha_D+VGS*alpha_G);
   return(E0_rect1dNP_root_brent(params, low, high));
   
 }

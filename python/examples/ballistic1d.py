@@ -34,12 +34,16 @@ def func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p):
 #     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 
 
-def check_func_for_E0_rect1dNP(Vds,Vgs,p,left=-0.1,right=0.1):
+def check_func_for_E0_rect1dNP(Vds,Vgs,p,left=-0.2,right=0):
     """
     Plot function (Python implementation) to find E0
     Nonparabolic band
     """
-    ene0_list=np.linspace(left,right,endpoint=True)
+    left0 = -(p.alpha_D*Vds+p.alpha_G*Vgs) - 0.2
+    left2=min([left,left0])
+    right0=-(p.alpha_D*Vds+p.alpha_G*Vgs)
+    right2=max([right,right0])
+    ene0_list=np.linspace(left2,right2,endpoint=True)
     val=np.empty_like(ene0_list)
     for i,ene0 in enumerate(ene0_list):
         val[i]=func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p)
@@ -49,12 +53,16 @@ def check_func_for_E0_rect1dNP(Vds,Vgs,p,left=-0.1,right=0.1):
     return val
 
 
-def check_func_for_E0_rect1dNP_fetmodel(Vds,Vgs,p,left=-0.1,right=0.1):
+def check_func_for_E0_rect1dNP_fetmodel(Vds,Vgs,p,left=-0.2,right=0):
     """
     Plot function fo find E0 based on fetmodel.density1d_rect1dNP_all0
     Nonparabolic band
     """
-    ene0_list=np.linspace(left,right,endpoint=True)
+    left0 = -(p.alpha_D*Vds+p.alpha_G*Vgs) - 0.2
+    left2=min([left,left0])
+    right0=-(p.alpha_D*Vds+p.alpha_G*Vgs)
+    right2=max([right,right0])
+    ene0_list=np.linspace(left2,right2,endpoint=True)
     val=np.empty_like(ene0_list)
     for i,ene0 in enumerate(ene0_list):
         val[i]=fetmodel.func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p)
@@ -64,13 +72,17 @@ def check_func_for_E0_rect1dNP_fetmodel(Vds,Vgs,p,left=-0.1,right=0.1):
     return val
 
 
-def E0_rect1dNP_root(Vds,Vgs,p,left=-0.1,right=0.1):
+def E0_rect1dNP_root(Vds,Vgs,p,left=-0.2,right=0):
     """
     Get top of the barrier (Python implementation)
     Nonparabolic band
     """
+    left0 = -(p.alpha_D*Vds+p.alpha_G*Vgs) - 0.2
+    left2=min([left,left0])
+    right0=-(p.alpha_D*Vds+p.alpha_G*Vgs)
+    right2=max([right,right0])
     e0 = optimize.root_scalar(func_for_findroot_E0_rect1dNP,
-                              args=(Vds, Vgs, p), x0=left, x1=right)
+                              args=(Vds, Vgs, p), x0=left2, x1=right2)
     if e0.converged==True:
         return e0.root
     else:
@@ -82,7 +94,7 @@ def E0_rect1dNP_root(Vds,Vgs,p,left=-0.1,right=0.1):
 #     return e0.root
 
 
-def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs,left=-0.1,right=0.1):
+def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs,left=-0.2,right=0):
     e0=E0_rect1d_root(Vds,Vgs,p,left,right)
     # e00 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
     # e00=get_E0(p, Vgs, Vds)
@@ -190,13 +202,17 @@ def check_func_for_E0_rect1d(E0start,E0stop,Vds,Vgs,p):
     return val
 
 
-def E0_rect1d_root(Vds,Vgs,p,left=-0.1,right=0.1):
+def E0_rect1d_root(Vds,Vgs,p,left=-0.2,right=0):
     """
     Get top of the barrier (Python implementation)
     Parabolic band
     """
+    left0 = -(p.alpha_D*Vds+p.alpha_G*Vgs) - 0.2
+    left2=min([left,left0])
+    right0=-p.alpha_D*Vds-p.alpha_G*Vgs;
+    right2=max([right,right0])
     e0 = optimize.root_scalar(func_for_findroot_E0_rect1d,
-                              args=(Vds, Vgs, p), x0=left, x1=right)
+                              args=(Vds, Vgs, p), x0=left2, x1=right2)
     if e0.converged==True:
         return e0.root
     else:
@@ -205,7 +221,7 @@ def E0_rect1d_root(Vds,Vgs,p,left=-0.1,right=0.1):
         return 0
 
 
-def Ids_ballistic1d_rect1d(Vds, Vgs, p, EFs,left=-0.1,right=0.1):
+def Ids_ballistic1d_rect1d(Vds, Vgs, p, EFs,left=-0.2,right=0):
     e0=E0_rect1d_root(Vds,Vgs,p,left,right)
     # e0 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
     # e0=get_E0(p, Vgs, Vds)

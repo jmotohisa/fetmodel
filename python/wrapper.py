@@ -16,14 +16,14 @@ def density1d_rect1d_all(p):
     p: class of parameters_ballistic
     Wrapper function for density1d_rect1d_all0
     """
-    return density1d_rect1d_all0(p.EFermi, p.ems, p.temp, p.W1, p.W2, p. nmax, p.mmax)
+    return fetmodel.density1d_rect1d_all0(p.EFermi, p.ems, p.temp, p.W1, p.W2, int(p.nmax), int(p.mmax))
 
 def density1d_rect1dNP_all(p):
     """
     p: class of parameters_ballistic
     Wrapper function for density1d_rect1dNP_all0
     """
-    return density1d_rect1dNP_all0(p.EFermi, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+    return fetmodel.density1d_rect1dNP_all0(p.EFermi, p.alpha, p.ems, p.temp, p.W1, p.W2, int(p.nmax), int(p.mmax))
 
 ## from ballistic.c
 ## 1D
@@ -36,7 +36,7 @@ def func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p):
     """
     return fetmodel.func_for_findroot_E0_rect1dNP0(ene0, p.EFermi, Vds, Vgs, p.alpha_D, p.alpha_G,
                                                    p.Ceff, p.alpha, p.ems,
-                                                   p.temp, p.W1, p.W2, p.nmax, p.mmax)
+                                                   p.temp, p.W1, p.W2, int(p.nmax), int(p.mmax))
 
 
 def E0_rect1dNP_root(Vds,Vgs,p):
@@ -45,8 +45,8 @@ def E0_rect1dNP_root(Vds,Vgs,p):
     p: class of parameters_ballistic
     Nonparabolic band
     """
-    return fetmodel.E0_rect1d_root0(p.EFermi, Vds, Vgs, p.alpha_D, p.alpha_G, p.Ceff, p.alpha,
-                                    p.ems, p.temp,p.W1,p.W2,p.nmax,p.mmax)
+    return fetmodel.E0_rect1dNP_root0(p.EFermi, Vds, Vgs, p.alpha_D, p.alpha_G, p.Ceff, p.alpha,
+                                      p.ems, p.temp,p.W1,p.W2,int(p.nmax),int(p.mmax))
 
 
 def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs):
@@ -55,6 +55,6 @@ def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs):
     (wrapper)
     """
     return(fetmodel.Ids_ballistic1d_rect1dNP0(Vds, Vgs, EFs, p.EFermi, p.alpha_D, p.alpha_G, p.Ceff,
-                                              p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax))
+                                              p.alpha, p.ems, p.temp, p.W1, p.W2, int(p.nmax), int(p.mmax)))
     
 

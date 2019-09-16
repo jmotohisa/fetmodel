@@ -1,5 +1,5 @@
 /*
- *  density1d.c - Time-stamp: <Mon Sep 16 05:41:16 JST 2019>
+ *  density1d.c - Time-stamp: <Mon Sep 16 11:25:24 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -93,7 +93,9 @@ double Ep_nm_radial1d(double ems,double radius,int n, int m)
 double density1d0(double EFermi, double Enm, double ems,double temp)
 {
   double d0=sqrt(2*MASS(ems)*kBT0/M_PI)/GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR;
-  return (d0*gsl_sf_fermi_dirac_mhalf ((EFermi-Enm)/kBT));
+  double ene=(EFermi-Enm)/kBT;
+  double val=gsl_sf_fermi_dirac_mhalf (ene);
+  return (d0*val);
 }
 
 double density1d_rect1d0(double EFermi, double ems,double temp,

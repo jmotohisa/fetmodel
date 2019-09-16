@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from scipy import optimize
 import scipy.constants as const
 import ballistic1d
-import ballistic_lindSSC1
+import lindSSC_Fig5
 import pdb
 
 def func_ems(Eg,q20=20):

@@ -66,22 +66,24 @@ def check_func_det_EFs2(p, Vds, Ids_cutoff, left=0.2, right=0.3):
     plt.show()
     return val
 
-
 if __name__=='__main__':
+    EFermi=-0.1
     Eg = 0.36
     epsOX = 20
     epsS = 15.15
     tOX = 3e-9
     temperature = 300
     ems = 0.023
-    W1 = 5e-9
+    W1 = 10e-9
     W2 = 8e-9
     alpha = fetmodel.alpha_NP(Eg, ems)
     Cox = fetmodel.Cox_rect(epsOX, tOX, W1, W2)
     Cc = fetmodel.Cc_rect(epsS, W1, W2)
-    alpha_D = 0
-    alpha_G = 1
-    p=fetmodel.parameters_ballistic(alpha=alpha,
+    # alpha_D = 0
+    # alpha_G = 1
+    print(Cox,Cc)
+    p=fetmodel.parameters_ballistic(EFermi=EFermi,
+                                    alpha=alpha,
                                     Ceff=Cox*Cc/(Cox+Cc),
                                     ems=ems,
                                     W1=W1,

@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import optimize
 import ballistic1d
+import argparse
 
 # determine EFs to set appropriate Vth
 # Ids = 100 nA/um at Vgs=0
@@ -40,7 +41,7 @@ def check_func_det_EFs(p, Vds, Ids_cutoff, left=0.2, right=0.3):
 
 def determine_EFs2(p,Vds,Ids_cutoff, left=0.2, right=0.3):
     e0 = optimize.root_scalar(
-        func_det_EFs2, args=(p, Vds, Ids_cutoff), x0=left, x1=right)
+        func_det_EFs2, args=(p, Vds, Ids_cutoff), method='brentq',bracket=[-0.1,0.5], x0=left, x1=right)
     if(e0.converged==True):
         return e0.root
     else:
@@ -66,7 +67,35 @@ def check_func_det_EFs2(p, Vds, Ids_cutoff, left=0.2, right=0.3):
     plt.show()
     return val
 
+def get_args():
+    # 準備
+    parser = argparse.ArgumentParser(
+        description='Rerpoduce Figs. 5(a) and (b) in E.Lind')
+    
+    # 標準入力以外の場合
+    parser.add_argument('-n', '--nmax',
+                        nargs='?',
+                        type=int,
+                        help='nmax',
+                        default=5)
+    parser.add_argument('-m', '--mmax',
+                        nargs='?',
+                        type=int,
+                        help='mmax',
+                        default=5)
+    # parser.add_argument("--alert", help="optional", action="store_true")
+    
+    # 結果を受ける
+    args = parser.parse_args()
+    
+    return(args)
+
+
 if __name__=='__main__':
+    args = get_args()
+    nmax = args.nmax
+    mmax = args.mmax
+
     EFermi=0
     Eg = 0.36
     epsOX = 20
@@ -88,8 +117,8 @@ if __name__=='__main__':
                                     ems=ems,
                                     W1=W1,
                                     W2=W2,
-                                    nmax=3,
-                                    mmax=4)
+                                    nmax=nmax,
+                                    mmax=mmax)
     p.output()
     print("")
     
@@ -166,8 +195,8 @@ if __name__=='__main__':
             Vds, Vgs0, p, EFs2)/(2*(p.W1+p.W2))*1e-3
     lstr2='(n,m)='+str(p.nmax)+','+str(p.mmax)+')'
 
-    p.nmax=3
-    p.mmax=2
+    p.nmax=nmax
+    p.mmax=mmax
     for i, Vgs0 in enumerate(Vgs):
         # Ids1[i] = fetmodel.Ids_ballistic1d_rect1dNP(
         #     Vds, Vgs0, p, EFs)/(2*(p.W1+p.W2))*1e-3

@@ -1,5 +1,5 @@
 /*
- *  density1d.c - Time-stamp: <Mon Sep 16 11:25:24 JST 2019>
+ *  density1d.c - Time-stamp: <Mon Sep 16 21:55:49 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -52,6 +52,8 @@
 #define GLOBAL_VALUE_DEFINE
 #include "density1d.h"
 
+#include "fd.h"
+
 double density1d_NP(param_density1d params);
 double density1d_rect1d_all(double EFermi,param_density1d_rect p);
 double density1d_rect1dNP_all(double EFermi,param_density1d_rect p);
@@ -94,8 +96,10 @@ double density1d0(double EFermi, double Enm, double ems,double temp)
 {
   double d0=sqrt(2*MASS(ems)*kBT0/M_PI)/GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR;
   double ene=(EFermi-Enm)/kBT;
-  double val=gsl_sf_fermi_dirac_mhalf (ene);
-  return (d0*val);
+  double retval;
+  retval=fd_mhalf(ene);
+  /* retval=gsl_sf_fermi_dirac_mhalf (ene); */
+  return (d0*retval);
 }
 
 double density1d_rect1d0(double EFermi, double ems,double temp,

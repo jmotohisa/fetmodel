@@ -5,7 +5,7 @@
 # Semiconductor Science and Technology, 31(9), 93005–93014.
 # https://doi.org/10.1088/0268-1242/31/9/093005
 
-# Fig. 6(a)
+# Fig. 6(a) (and check of number of subband required)
 
 import fetmodel
 import math
@@ -15,7 +15,10 @@ from scipy import optimize
 import scipy.constants as const
 import ballistic1d
 from lindSSC_Fig5 import *
-import pdb
+# import pdb
+import sys
+import argparse
+
 
 def func_ems(Eg,q20=20):
     return 1/(1+q20/Eg)
@@ -36,8 +39,37 @@ def IdsVgs(p,Vds,Vgs_list,EFs):
         Ids[i]=ballistic1d.Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, EFs)/(2*(p.W1+p.W2))
     return Ids
     
-
+def get_args():
+    # 準備
+    parser = argparse.ArgumentParser(
+        description='Plot transmission/reflectivity/absorption spectra calculatec by pcsmatrix.')
+    
+    # 標準入力以外の場合
+    parser.add_argument('-n', '--nmax',
+                        nargs='?',
+                        type=int,
+                        help='nmax',
+                        default=5)
+    parser.add_argument('-m', '--mmax',
+                        nargs='?',
+                        type=int,
+                        help='mmax',
+                        default=5)
+    # parser.add_argument("--alert", help="optional", action="store_true")
+    
+    # 結果を受ける
+    args = parser.parse_args()
+    
+    return(args)
+            
+            
+            
 if __name__ == '__main__':
+    args = get_args()
+    nmax = args.nmax
+    mmax = args.mmax
+    # print(nmax,mmax)
+o    
     EFermi=0
     Eg = 0.36
     epsOX = 20
@@ -59,8 +91,8 @@ if __name__ == '__main__':
                                     ems=ems,
                                     W1=W1,
                                     W2=W2,
-                                    nmax=3,
-                                    mmax=4)
+                                    nmax=nmax,
+                                    mmax=mmax)
     p.output()
     print("")
     Ids_cutoff=100e-9*1e6
@@ -72,8 +104,8 @@ if __name__ == '__main__':
     Ion1=np.empty_like(Eg_list)
     Ion2=np.empty_like(Eg_list)
     Ion3=np.empty_like(Eg_list)
-    nmax=3
-    mmax=3
+    # nmax=11
+    # mmax=11
     for i, Eg in enumerate(Eg_list):
         W2=8e-9
         set_p(p,Eg,W2,nmax,mmax)
@@ -106,7 +138,7 @@ if __name__ == '__main__':
     plt.ylabel('Ion (mA/um)',fontsize=18)
     plt.legend(loc='best',fontsize=18)
     plt.tick_params(labelsize=18)
-    plt.ylim([0.4,1.4])
+    # plt.ylim([0.8,1.6])
     plt.title('(n,m)=('+str(p.nmax)+','+str(p.mmax)+')',fontsize=18)
     plt.tight_layout()
     plt.show()
@@ -117,17 +149,27 @@ if __name__ == '__main__':
     Vgs=np.linspace(-0.2,2,endpoint=True)
 
     Eg=3.4
-    set_p(p,Eg,W2,3,3)
     p.output()
+    
+    set_p(p,Eg,W2,nmax,mmax)
+    str1='(n,m)=('+str(p.nmax)+','+str(p.mmax)+')'
     EFs2 = determine_EFs2(p, Vds, Ids_cutoff)
     Ids1=IdsVgs(p,Vds,Vgs,EFs2)
-    set_p(p,Eg,W2,5,5)
+    
+    set_p(p,Eg,W2,nmax,mmax+1)
+    str2='(n,m)=('+str(p.nmax)+','+str(p.mmax)+')'
     EFs2 = determine_EFs2(p, Vds, Ids_cutoff)
     Ids2=IdsVgs(p,Vds,Vgs,EFs2)
 
+    set_p(p,Eg,W2,nmax+1,mmax+1)
+    str3='(n,m)=('+str(p.nmax)+','+str(p.mmax)+')'
+    EFs2 = determine_EFs2(p, Vds, Ids_cutoff)
+    Ids3=IdsVgs(p,Vds,Vgs,EFs2)
+
     fig, ax = plt.subplots()
-    ax.plot(Vgs, Ids1, label='3,3')
-    ax.plot(Vgs, Ids2, label='4,4')
+    ax.plot(Vgs, Ids1, label=str1)
+    ax.plot(Vgs, Ids2, label=str2)
+    ax.plot(Vgs, Ids3, label=str3)
     ax.set_yscale("log")
     plt.xlabel('Gate Voltage Vgs-Vth',fontsize=18)
     plt.ylabel('Ids (uA/um)',fontsize=18)

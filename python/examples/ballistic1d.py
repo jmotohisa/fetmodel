@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from scipy import optimize
 import scipy.constants as const
 from scipy import integrate
-import pdb
+# import pdb
 
 
 def func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p):
@@ -95,7 +95,7 @@ def E0_rect1dNP_root(Vds,Vgs,p,left=-0.2,right=0):
 
 
 def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs,left=-0.2,right=0):
-    e0=E0_rect1d_root(Vds,Vgs,p,left,right)
+    e0=E0_rect1dNP_root(Vds,Vgs,p,left,right)
     # e00 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
     # e00=get_E0(p, Vgs, Vds)
     # e0=e00.root
@@ -107,6 +107,7 @@ def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs,left=-0.2,right=0):
             Enmp = fetmodel.Ep_nm_rect1d(p.ems, p.W1, p.W2, int(n), int(m))
             gamma_nm = fetmodel.gamma_nm_NP(Enmp, p.alpha)
             Enm = fetmodel.E_nm_NP(p.alpha, gamma_nm)
+            print('parabolic, nonparabolic',Enmp,Enm)
             cur1 = func_FD0(EFs-Enm-e0, p.temp)
             cur2 = func_FD0(EFs-Enm-e0-Vds, p.temp)
             cur += cur1-cur2

@@ -3,7 +3,7 @@
 %% file: fem2dp-2.tex
 %% author: Junichi Motohisa
 %% created: 2017-11-21 18:32:34
-%% last saved : Time-stamp: <Sat Sep 14 20:06:54 JST 2019>
+%% last saved : Time-stamp: <Wed Sep 18 11:35:31 JST 2019>
 \usepackage[dvipdfmx]{graphicx}
 \usepackage{multicol}
 \usepackage{cite}
@@ -143,9 +143,63 @@ Top of the barrierのエネルギー$E_0$の低下量が小さくなる効果が
 % このため$V_{GS}$に対する電流の増加は小さくなることがわかる。
 
 \appendix
+\section{Notes on band nonparablicity}
+2バンドモデルでは\cite{mikoshiba}
+\begin{equation}
+ \frac{m^*}{m_0} = \frac{E_G}{E_P+E_G} = \frac{1}{1+E_P/E_G}
+\end{equation}
+および
+\begin{equation}
+ \frac{\hbar^2k^2}{2m^*} \sim
+  E \left[ 1 + \frac{E_p^2}{E_G(E_G+E_p)^2}E + \cdots
+	\right]
+\end{equation}
+となる。ここで$E_P$はKaneのパラメータである。
+\begin{equation}
+ E_P = \frac{4 m_0}{3 \hbar^2}|P|^2
+\end{equation}
+\begin{equation}
+ P=-i\frac{i\hbar^2}{m_0}\langle x | p_x| X\rangle
+\end{equation}
+である。
+これより
+\begin{equation}
+ \alpha = \frac{E_P^2}{E_G(E_G+E_p)^2} = \frac{1}{E_G}(1+\frac{E_G}{E_P})^{-2}
+\end{equation}
+となる。
+また、
+\begin{equation}
+ \frac{E_P}{E_G} = \frac{m_0}{m^*}-1
+\end{equation}
+となるから
+\begin{equation}
+ \alpha = \frac{1}{E_G} (1+\frac{1}{m_0/m^*-1})^{-2}
+  = \frac{1}{E_G} (1-\frac{m^*}{m_0})^2
+\end{equation}
+
+ところで\cite{Vurgaftman}では
+\begin{equation}
+ E_{P,V}=\frac{2\hbar^2}{m_0}|P|^2
+\end{equation}
+となっているので
+\begin{equation}
+ E_P =\frac{2}{3}E_{P,V}
+\end{equation}
+である。よって
+\begin{equation}
+ \frac{m^*}{m_0} =  \frac{1}{1+2E_{P,V}/3E_G}
+\end{equation}
+
+実効的なサブバンド有効質量はエネルギーとともに増加し、
+実効的な非サブバンド非放物線性はエネルギーとともに減少する
+
+The effective sub-band mass increases with energy, and the effective non-parabolicity factor decreases
+
+
 
  \begin{thebibliography}{99}
-     
+ \bibitem{mikoshiba} 御子柴 半導体の物理
+ \bibitem{Vurgaftman} Vurgaftman
  \end{thebibliography}
 %% \bibliography{/Users/motohisa/Dropbox/Papers/rse}
 

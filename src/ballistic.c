@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Mon Sep 16 17:53:28 JST 2019>
+ *  ballistic.c - Time-stamp: <Tue Sep 17 00:37:25 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -155,6 +155,10 @@ double E0_rect1dNP_root_brent(param_E0 params,
   T= gsl_root_fsolver_brent;
   s = gsl_root_fsolver_alloc(T);
 
+  /* printf("low=%le, high=%le\n",low,high); */
+  /* printf("F(low)=%le, F(high)=%le\n",GSL_FN_EVAL(&F,low),GSL_FN_EVAL(&F,high)); */
+  
+  gsl_set_error_handler_off();
   gsl_root_fsolver_set(s,&F,low,high);
   do {
         iter++;
@@ -164,12 +168,12 @@ double E0_rect1dNP_root_brent(param_E0 params,
         high = gsl_root_fsolver_x_upper(s);
         status = gsl_root_test_interval(low,high,0,0.001);
   } while (status==GSL_CONTINUE && iter < max_iter);
+  gsl_set_error_handler(NULL);
   gsl_root_fsolver_free(s);
-  
+
   if(status!=GSL_SUCCESS) {
-	printf("Error in E0_rect1dNP_root_brent:status=%d\n",status);
-	GSL_ERROR_VAL("argument lies on singularity",
-				  GSL_ERANGE, GSL_NAN);
+	printf ("Error in E0_rect1dNP_root_brent: %s\n", gsl_strerror (status));
+	return(GSL_NAN);
   }
   
   return(r);
@@ -200,7 +204,7 @@ double E0_rect1dNP_root0(double EFermi,
   params.alpha_G = alpha_G;
   params.Ceff = Ceff;
   low=-(VDS*alpha_D+VGS*alpha_G)-0.2;
-  high=-(VDS*alpha_D+VGS*alpha_G);
+  high=-(VDS*alpha_D+VGS*alpha_G)+0.1;
   return(E0_rect1dNP_root_brent(params, low, high));
   
 }

@@ -1,5 +1,5 @@
 /*
- *  ballistic.h - last saved: Time-stamp: <Sun Sep 15 22:22:12 JST 2019>
+ *  ballistic.h - last saved: Time-stamp: <Thu Sep 26 09:45:24 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -66,24 +66,24 @@ typedef struct param_ballistic_struct
 } param_ballistic;
 
   GLOBAL double func_for_findroot_E0_rect1dNP0(double ene0,double EFermi,
-											 double VDS, double VGS,
-											 double alpha_D, double alpha_G,
-											 double Ceff,
-											 double alpha, double ems, double temp,
-											 double W1, double W2, int nmax, int mmax);
-
-  GLOBAL double E0_rect1dNP_root0(double EFermi,
-								double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
-								double alpha, double ems, double temp,
-								double W1, double W2, int nmax, int mmax);
+											   double VDS, double VGS,
+											   double alpha_D, double alpha_G,
+											   double Ceff,
+											   double alpha, double ems, double temp,
+											   double W1, double W2, int nmax, int mmax);
   
-  GLOBAL double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
-										   double EFs, double EFermi,
-										   double alpha_D, double alpha_G,
-										   double Ceff,
-										   double alpha, double ems, double temp,
-										   double W1, double W2, int nmax, int mmax);
-
+  GLOBAL double E0_rect1dNP_root0(double EFermi,
+								  double VDS, double VGS,
+								  double alpha_D, double alpha_G, double Ceff,
+								  double alpha, double ems, double temp,
+								  double W1, double W2, int nmax, int mmax);
+  
+  GLOBAL double Ids_ballistic1d_rect1dNP0(double VDS, double VGS, double EFs, 
+										  double alpha_D, double alpha_G,
+										  double Ceff,
+										  double alpha, double ems, double temp,
+										  double W1, double W2, int nmax, int mmax);
+  
   // 2d
   GLOBAL double func_for_findroot_E0_2d0(double ene0,double EFermi,
 										 double VDS, double VGS, 
@@ -94,14 +94,12 @@ typedef struct param_ballistic_struct
 							double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
 							double ems, double temp);
   GLOBAL double Ids_ballistic2d0_E0(double E0,
-									double VDS, double VGS,
-									double EFs, double EFermi,
-									double alpha_D, double alpha_G,
+									double VDS, double VGS, double EFs,
+ 									double alpha_D, double alpha_G,
 									double Ceff,
 									double ems, double temp);
-  GLOBAL double Ids_ballistic2d0(double VDS, double VGS,
-								 double EFs, double EFermi,
-								 double alpha_D, double alpha_G,
+  GLOBAL double Ids_ballistic2d0(double VDS, double VGS, double EFs,
+ 								 double alpha_D, double alpha_G,
 								 double Ceff,
 								 double ems, double temp);
   

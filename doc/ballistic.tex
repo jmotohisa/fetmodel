@@ -3,7 +3,7 @@
 %% file: fem2dp-2.tex
 %% author: Junichi Motohisa
 %% created: 2017-11-21 18:32:34
-%% last saved : Time-stamp: <Wed Sep 18 11:35:31 JST 2019>
+%% last saved : Time-stamp: <Thu Sep 26 09:14:31 JST 2019>
 \usepackage[dvipdfmx]{graphicx}
 \usepackage{multicol}
 \usepackage{cite}
@@ -91,6 +91,68 @@
 \section{Introduction}
 
 \section{Ballistic FET in 2D}
+\subsection{Top of the barrier}
+Top of the barrierの位置を定める式は
+\begin{equation}
+ E_0 = -q(\alpha_G V_G + \alpha_D V_D + \alpha_S V_S) + \frac{q^2}{C_{\Sigma}} n_s
+  \label{eqn:tob2D1}
+\end{equation}
+ここで
+\begin{equation}
+ n_s = \frac{\mathcal{D}_{2D}k_B T}{2}
+  \left[
+   F_0(\frac{E_F - E_0}{k_B T})+
+   F_0(\frac{E_F -q V_D- E_0}{k_B T})
+										 \right]
+  \label{eqn:2degdens}
+\end{equation}
+であり、ここで$F_j(\eta)$は第$j$次のフェルミ--ディラック積分、$\mathcal{D}_{2D}$は2次元電子の状態密度
+\begin{equation}
+ \mathcal{D}_{2D} = \frac{m^*_{DOS}}{\pi \hbar^2}
+\end{equation}
+また
+\begin{equation}
+ \alpha_{G} = \frac{C_G}{C_{\Sigma}}, \quad
+  \alpha_{D} = \frac{C_D}{C_{\Sigma}}, \quad
+   \alpha_{S} = \frac{C_S}{C_{\Sigma}}, \quad
+\end{equation}
+および
+\begin{equation}
+ C_{\Sigma} = C_{G} + C_{D} + C_{S}
+\end{equation}
+である。\footnote{ここで$C_S$はソース--チャネル間との容量であり、半導体容量ではない。}
+ここで$V_{G}=V_{GS}+V_{S}$、$V_{D}=V_{DS}+V_{S}$とおくと式(\ref{eqn:tob2D1})は
+$\alpha_G + \alpha_D + \alpha_S =1$を使って
+\begin{equation}
+ E_0 + q V_S = -q(\alpha_G V_{GS} + \alpha_D V_{DS}) + \frac{q^2}{C_{\Sigma}} n_s
+\end{equation}
+この左辺を$E'_0$とおいて、$E_0 = E'_0 - q V_{S}$を式(\ref{eqn:2degdens})に代入すると
+\begin{equation}
+ n_s = \frac{\mathcal{D}_{2D}k_B T}{2}
+  \left[
+   F_0(\frac{E_F + q V_S - E'_0}{k_B T})+
+   F_0(\frac{E_F + q V_S - q V_D- E'_0}{k_B T})
+									 \right]
+\end{equation}
+よって$E_{Fs}=E_F+ q V_S$とおいて$E'_0$をあらためて$E_0$と置けば
+\begin{equation}
+ E_0 = -q(\alpha_G V_{GS} + \alpha_D V_{DS}) + \frac{q^2}{C_{\Sigma}} n_s
+\end{equation}
+ならびに
+\begin{equation}
+ n_s = \frac{\mathcal{D}_{2D}k_B T}{2}
+  \left[
+   F_0(\frac{E_{Fs} - E_0}{k_B T})+
+   F_0(\frac{E_{Fs} - q V_D- E_0}{k_B T})
+									 \right]
+\end{equation}
+がTop of the barrier を求める際に解くべき式となる。
+この時点でパラメータは$C_{G} (=C_{OX}), C_{D}, C_{S}, E_{Fs}$もしくは
+$\alpha_{G}, \alpha_{D}, C_{\Sigma}, E_{Fs}$
+の組に集約される。
+
+
+
 Top of the Barrierのエネルギー$E_0$は
 \begin{equation}
  E_0 + \alpha_D q V_{DS} + \alpha_G q V_{GS} -
@@ -198,6 +260,7 @@ The effective sub-band mass increases with energy, and the effective non-parabol
 
 
  \begin{thebibliography}{99}
+  \bibitem{LG} Lundostrom and Gao Ballistic Nanotransistors
  \bibitem{mikoshiba} 御子柴 半導体の物理
  \bibitem{Vurgaftman} Vurgaftman
  \end{thebibliography}

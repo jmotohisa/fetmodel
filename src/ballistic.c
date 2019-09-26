@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Tue Sep 17 00:37:25 JST 2019>
+ *  ballistic.c - Time-stamp: <Thu Sep 26 09:44:08 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -48,6 +48,7 @@
 #include <gsl/gsl_multiroots.h>
 #include <gsl/gsl_sf_fermi_dirac.h>
 
+#include "config.h"
 #include "ballistic_common.h"
 #include "density1d.h"
 #include "density2d.h"
@@ -155,10 +156,12 @@ double E0_rect1dNP_root_brent(param_E0 params,
   T= gsl_root_fsolver_brent;
   s = gsl_root_fsolver_alloc(T);
 
-  /* printf("low=%le, high=%le\n",low,high); */
-  /* printf("F(low)=%le, F(high)=%le\n",GSL_FN_EVAL(&F,low),GSL_FN_EVAL(&F,high)); */
+#ifdef DEBUG  
+  printf("low=%le, high=%le\n",low,high);
+  printf("F(low)=%le, F(high)=%le\n",GSL_FN_EVAL(&F,low),GSL_FN_EVAL(&F,high));
+#endif
   
-  gsl_set_error_handler_off();
+  /* gsl_set_error_handler_off(); */
   gsl_root_fsolver_set(s,&F,low,high);
   do {
         iter++;
@@ -168,7 +171,7 @@ double E0_rect1dNP_root_brent(param_E0 params,
         high = gsl_root_fsolver_x_upper(s);
         status = gsl_root_test_interval(low,high,0,0.001);
   } while (status==GSL_CONTINUE && iter < max_iter);
-  gsl_set_error_handler(NULL);
+  /* gsl_set_error_handler(NULL); */
   gsl_root_fsolver_free(s);
 
   if(status!=GSL_SUCCESS) {
@@ -184,9 +187,12 @@ double E0_rect1dNP_root0(double EFermi,
 						 double alpha, double ems, double temp,
 						 double W1, double W2, int nmax, int mmax)
 {
-  double low,high;
   param_density1d_rect p_density1d_rect;
   param_E0 params;
+  double low,high;
+  low=-(VDS*alpha_D+VGS*alpha_G)-0.2;
+  /* high=-(VDS*alpha_D+VGS*alpha_G)+0.5; */
+  high=1;
   
   p_density1d_rect.alpha=alpha;
   p_density1d_rect.ems=ems;
@@ -203,8 +209,6 @@ double E0_rect1dNP_root0(double EFermi,
   params.alpha_D = alpha_D;
   params.alpha_G = alpha_G;
   params.Ceff = Ceff;
-  low=-(VDS*alpha_D+VGS*alpha_G)-0.2;
-  high=-(VDS*alpha_D+VGS*alpha_G)+0.1;
   return(E0_rect1dNP_root_brent(params, low, high));
   
 }
@@ -217,9 +221,7 @@ double E0_rect1dNP_root(param_ballistic p)
 }
 
 // current
-
-double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
-								double EFs, double EFermi,
+double Ids_ballistic1d_rect1dNP0(double VDS, double VGS, double EFs, 
 								double alpha_D, double alpha_G,
 								double Ceff,
 								double alpha, double ems, double temp,
@@ -229,10 +231,12 @@ double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
   //  double gamma_nm,Enmp;
   double ids,ids1,ids2;
   int n,m;
+  gsl_set_error_handler_off();
+
   ids=0;
-  E0=E0_rect1dNP_root0(EFermi,VDS, VGS, alpha_D, alpha_G, Ceff,
-					 alpha, ems, temp,
-					 W1, W2, nmax, nmax);
+  E0=E0_rect1dNP_root0(EFs, VDS, VGS, alpha_D, alpha_G, Ceff,
+					   alpha, ems, temp,
+					   W1, W2, nmax, nmax);
   
   for(n=1;n<=nmax;n++)
     for(m=1;m<=mmax;m++)
@@ -251,7 +255,7 @@ double Ids_ballistic1d_rect1dNP0(double VDS, double VGS,
 
 double Ids_ballistic1d_rect1dNP(double VDS, double VGS, param_ballistic p,double EFs)
 {
-  return(Ids_ballistic1d_rect1dNP0(VDS,VGS,EFs,p.EFermi,
+  return(Ids_ballistic1d_rect1dNP0(VDS,VGS,EFs,
 									p.alpha_D, p.alpha_G, p.Ceff,
 									p.alpha, p.ems, p.temp,
 									p.W1, p.W2, p.nmax, p.nmax));
@@ -360,8 +364,7 @@ double E0_2d_root(param_ballistic p)
 // current
 
 double Ids_ballistic2d0_E0(double E0,
-						   double VDS, double VGS,
-						   double EFs, double EFermi,
+						   double VDS, double VGS, double EFs, 
 						   double alpha_D, double alpha_G,
 						   double Ceff,
 						   double ems, double temp)
@@ -381,23 +384,22 @@ double Ids_ballistic2d0_E0(double E0,
   
 }
 
-double Ids_ballistic2d0(double VDS, double VGS,
-						double EFs, double EFermi,
-						double alpha_D, double alpha_G,
+double Ids_ballistic2d0(double VDS, double VGS,	double EFs,
+ 						double alpha_D, double alpha_G,
 						double Ceff,
 						double ems, double temp)
 {
   double E0;
   
-  E0=E0_2d_root0(EFermi,VDS, VGS, alpha_D, alpha_G, Ceff,
+  E0=E0_2d_root0(EFs,VDS, VGS, alpha_D, alpha_G, Ceff,
 				 ems, temp);
-  return(Ids_ballistic2d0_E0(E0,VDS,VGS,EFs,EFermi,
+  return(Ids_ballistic2d0_E0(E0,VDS,VGS,EFs,
 							 alpha_D,alpha_G,Ceff,ems,temp));
 }
 
 double Ids_ballistic2d(double VDS, double VGS, param_ballistic p,double EFs)
 {
-  return(Ids_ballistic2d0(VDS,VGS,EFs,p.EFermi,
+  return(Ids_ballistic2d0(VDS,VGS,EFs,
 						  p.alpha_D, p.alpha_G, p.Ceff,
 						  p.ems, p.temp));
 }

@@ -11,10 +11,10 @@ from scipy import optimize
 from ballistic1d import *
 
 
-def e0Vgs(p,Vds,Vgs_list):
+def e0Vgs(p,Vds,Vgs_list, EFs):
     e0=np.empty_like(Vgs_list)
     for i,Vgs0 in enumerate(Vgs_list):
-        e0[i]=E0_rect1dNP_root(Vds,Vgs0,p)
+        e0[i]=E0_rect1dNP_root(Vds,Vgs0,EFs,p)
 
     return e0
 
@@ -56,7 +56,6 @@ def IdsVgsE0(Vds,Vgs_list,E0_list,EFs):
 
 
 if __name__ == '__main__':
-    EFermi=0
     # Eg = 0.36
     # epsOX = 8.5
     # epsS = 8.9
@@ -76,8 +75,7 @@ if __name__ == '__main__':
     # alpha_D = 0
     # alpha_G = 1
     print(Cox,Cc)
-    p=fetmodel.parameters_ballistic(EFermi=EFermi,
-                                    alpha=alpha,
+    p=fetmodel.parameters_ballistic(alpha=alpha,
                                     Ceff=Cox*Cc/(Cox+Cc),
                                     ems=ems,
                                     W1=W1,
@@ -89,22 +87,23 @@ if __name__ == '__main__':
 
     Vds=0.5
     Vgs_list=np.linspace(0.0,0.5,endpoint=True)
+    EFs=0.
     Eg=3.4
     W2=8e-9
     nmax=3
     mmax=3
     set_p(p,Eg,W2,nmax,nmax)
-    E01=e0Vgs(p,Vds,Vgs_list)
+    E01=e0Vgs(p,Vds,Vgs_list,EFs)
     Ids1=IdsVgsE0(Vds,Vgs_list,E01,0)/(2*(p.W1+p.W2))
 
     W2=16e-9
     set_p(p,Eg,W2,nmax,nmax)
-    E02=e0Vgs(p,Vds,Vgs_list)
+    E02=e0Vgs(p,Vds,Vgs_list,EFs)
     Ids2=IdsVgsE0(Vds,Vgs_list,E02,0)/(2*(p.W1+p.W2))
 
     W2=24e-9
     set_p(p,Eg,W2,nmax,nmax)
-    E03=e0Vgs(p,Vds,Vgs_list)
+    E03=e0Vgs(p,Vds,Vgs_list,EFs)
     Ids3=IdsVgsE0(Vds,Vgs_list,E02,0)/(2*(p.W1+p.W2))
 
     fig=plt.figure()

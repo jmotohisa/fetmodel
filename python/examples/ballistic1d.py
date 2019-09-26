@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# test of ballistic FET (using lower level interface)
+# Test of 1D Ballistic FET (with implementation using lower level interfaces)
 
 import fetmodel
 import math
@@ -13,28 +13,28 @@ from scipy import integrate
 # import pdb
 
 
-def func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p):
+def func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, EFs, p):
     """
     Python implementation of the function to find top of the barrier
     based on fetmodel.density1d_rect1dNP_all0
     Nonparabolic band
     """
     n1d_S = fetmodel.density1d_rect1dNP_all0(
-        p.EFermi - ene0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+        EFs - ene0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     n1d_D = fetmodel.density1d_rect1dNP_all0(
-        p.EFermi - ene0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+        EFs - ene0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     q0 = const.elementary_charge * (n1d_S + n1d_D) / (2 * p.Ceff)
     return ene0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 # def func_e0_find(E0, p, Vds, Vgs):
 #     n1d_S = fetmodel.density1d_rect1dNP_all0(
-#         p.EFermi - E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+#         EFs- E0, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
 #     n1d_D = fetmodel.density1d_rect1dNP_all0(
-#         p.EFermi - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+#         EFs - E0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
 #     q0 = 1.6e-19 * (n1d_S + n1d_D) / (2 * p.Ceff)
 #     return E0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 
 
-def check_func_for_E0_rect1dNP(Vds,Vgs,p,left=-0.2,right=0):
+def check_func_for_E0_rect1dNP(Vds,Vgs,EFs,p,left=-0.2,right=0):
     """
     Plot function (Python implementation) to find E0
     Nonparabolic band
@@ -46,14 +46,14 @@ def check_func_for_E0_rect1dNP(Vds,Vgs,p,left=-0.2,right=0):
     ene0_list=np.linspace(left2,right2,endpoint=True)
     val=np.empty_like(ene0_list)
     for i,ene0 in enumerate(ene0_list):
-        val[i]=func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p)
+        val[i]=func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, EFs, p)
 
     plt.plot(ene0_list,val)
     plt.show()
     return val
 
 
-def check_func_for_E0_rect1dNP_fetmodel(Vds,Vgs,p,left=-0.2,right=0):
+def check_func_for_E0_rect1dNP_fetmodel(Vds,Vgs,EFs, p,left=-0.2,right=0):
     """
     Plot function fo find E0 based on fetmodel.density1d_rect1dNP_all0
     Nonparabolic band
@@ -65,16 +65,16 @@ def check_func_for_E0_rect1dNP_fetmodel(Vds,Vgs,p,left=-0.2,right=0):
     ene0_list=np.linspace(left2,right2,endpoint=True)
     val=np.empty_like(ene0_list)
     for i,ene0 in enumerate(ene0_list):
-        val[i]=fetmodel.func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, p)
+        val[i]=fetmodel.func_for_findroot_E0_rect1dNP(ene0, Vds, Vgs, EFs, p)
 
     plt.plot(ene0_list,val)
     plt.show()
     return val
 
 
-def E0_rect1dNP_root(Vds,Vgs,p,left=-0.2,right=0):
+def E0_rect1dNP_root(Vds,Vgs,EFs, p,left=-0.2,right=0):
     """
-    Get top of the barrier (Python implementation)
+    Get top of the barrier (Python implementation)  (rectangular cross section)
     Nonparabolic band
     """
     left0 = -(p.alpha_D*Vds+p.alpha_G*Vgs) - 0.2
@@ -82,7 +82,7 @@ def E0_rect1dNP_root(Vds,Vgs,p,left=-0.2,right=0):
     right0=-(p.alpha_D*Vds+p.alpha_G*Vgs)
     right2=max([right,right0])
     e0 = optimize.root_scalar(func_for_findroot_E0_rect1dNP,
-                              args=(Vds, Vgs, p), x0=left2, x1=right2)
+                              args=(Vds, Vgs, EFs, p), x0=left2, x1=right2)
     if e0.converged==True:
         return e0.root
     else:
@@ -95,7 +95,11 @@ def E0_rect1dNP_root(Vds,Vgs,p,left=-0.2,right=0):
 
 
 def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs,left=-0.2,right=0):
-    e0=E0_rect1dNP_root(Vds,Vgs,p,left,right)
+    """
+    Drain Current in 1D ballistic transistor (rectangular cross section)
+    Nonparabolic band
+    """
+    e0=E0_rect1dNP_root(Vds,Vgs,EFs,p,left,right)
     # e00 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
     # e00=get_E0(p, Vgs, Vds)
     # e0=e00.root
@@ -107,7 +111,7 @@ def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs,left=-0.2,right=0):
             Enmp = fetmodel.Ep_nm_rect1d(p.ems, p.W1, p.W2, int(n), int(m))
             gamma_nm = fetmodel.gamma_nm_NP(Enmp, p.alpha)
             Enm = fetmodel.E_nm_NP(p.alpha, gamma_nm)
-            print('parabolic, nonparabolic',Enmp,Enm)
+            # print('parabolic, nonparabolic',Enmp,Enm)
             cur1 = func_FD0(EFs-Enm-e0, p.temp)
             cur2 = func_FD0(EFs-Enm-e0-Vds, p.temp)
             cur += cur1-cur2
@@ -168,28 +172,28 @@ def density1d_rect1dNP_all0(EFermi, alpha, ems, temp, W1, W2, nmax, mmax):
 
     return(n0)
 
-def density1d_rect1dNP_all(p):
-    return density1d_rect1dNP_all0(p.EFermi, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+def density1d_rect1dNP_all(EFermi,p):
+    return density1d_rect1dNP_all0(EFermi, p.alpha, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
 
 #####
 # parabolic band, rectangular NW
 #####
 
-def func_for_findroot_E0_rect1d(ene0, Vds, Vgs, p):
+def func_for_findroot_E0_rect1d(ene0, Vds, Vgs, EFs, p):
     """
     Python implementation of the function to find top of the barrier
     based on fetmodel.density1d_rect1d_all0
     Parabolic band
     """
     n1d_S = fetmodel.density1d_rect1d_all0(
-        p.EFermi - ene0, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+        EFs - ene0, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     n1d_D = fetmodel.density1d_rect1d_all0(
-        p.EFermi - ene0 - Vds, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
+        EFs - ene0 - Vds, p.ems, p.temp, p.W1, p.W2, p.nmax, p.mmax)
     q0 = const.elementary_charge * (n1d_S + n1d_D) / (2 * p.Ceff)
     return ene0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 
 
-def check_func_for_E0_rect1d(E0start,E0stop,Vds,Vgs,p):
+def check_func_for_E0_rect1d(E0start,E0stop,Vds,Vgs,EFs, p):
     """
     Plot function (Python implementation) to find E0
     Parabolic band
@@ -197,15 +201,15 @@ def check_func_for_E0_rect1d(E0start,E0stop,Vds,Vgs,p):
     ene0_list=np.linspaace(E0start,E0stop,endpoint=True)
     val=np.empty_like(ene0_list)
     for i,ene0 in enumerate(ene0_list):
-        val[i]=func_for_findroot_E0_rect1d(ene0, Vds, Vgs, p)
+        val[i]=func_for_findroot_E0_rect1d(ene0, Vds, Vgs, EFs, p)
 
     plt.plot(ene0_list,val)
     return val
 
 
-def E0_rect1d_root(Vds,Vgs,p,left=-0.2,right=0):
+def E0_rect1d_root(Vds,Vgs,EFs,p,left=-0.2,right=0):
     """
-    Get top of the barrier (Python implementation)
+    Get top of the barrier (Python implementation) (rectangular cross section)
     Parabolic band
     """
     left0 = -(p.alpha_D*Vds+p.alpha_G*Vgs) - 0.2
@@ -213,7 +217,7 @@ def E0_rect1d_root(Vds,Vgs,p,left=-0.2,right=0):
     right0=-p.alpha_D*Vds-p.alpha_G*Vgs;
     right2=max([right,right0])
     e0 = optimize.root_scalar(func_for_findroot_E0_rect1d,
-                              args=(Vds, Vgs, p), x0=left2, x1=right2)
+                              args=(Vds, Vgs, EFs, p), x0=left2, x1=right2)
     if e0.converged==True:
         return e0.root
     else:
@@ -223,7 +227,11 @@ def E0_rect1d_root(Vds,Vgs,p,left=-0.2,right=0):
 
 
 def Ids_ballistic1d_rect1d(Vds, Vgs, p, EFs,left=-0.2,right=0):
-    e0=E0_rect1d_root(Vds,Vgs,p,left,right)
+    """
+    Drain Current in 1D ballistic transistor (rectangular cross section)
+    Parabolic band
+    """
+    e0=E0_rect1d_root(Vds,Vgs,EFs,p,left,right)
     # e0 = optimize.root_scalar(func_e0_find, args=(p, Vgs, Vgs), x0=-0.1, x1=1)
     # e0=get_E0(p, Vgs, Vds)
     nlist = np.arange(1, p.nmax+1, dtype=np.int64)
@@ -260,8 +268,7 @@ if __name__ == '__main__':
     # alpha_D = 0
     # alpha_G = 1
     print(Cox,Cc)
-    p=fetmodel.parameters_ballistic(EFermi=EFermi,
-                                    alpha=alpha,
+    p=fetmodel.parameters_ballistic(alpha=alpha,
                                     Ceff=Cox*Cc/(Cox+Cc),
                                     ems=ems,
                                     W1=W1,
@@ -269,10 +276,9 @@ if __name__ == '__main__':
                                     nmax=3,
                                     mmax=4)
     p.output()
-    print("Test of density1d: nonparabolic band")
+    print("Test of ballistic1d: parabolic and nonparabolic band")
 
     # p = fetmodel.param_ballistic_new()
-    # p.EFermi = 0
     # p.ems = ems
     # p.alpha = alpha
     # p.W1 = W1
@@ -284,44 +290,56 @@ if __name__ == '__main__':
     # p.nmax = 3
     # p.mmax = 3
 
-    ### 1DEG density
-    EFermi=np.linspace(-0.1,0.5,endpoint=True)
-    n1=np.empty_like(EFermi)
-    n2=np.empty_like(EFermi)
-    n3=np.empty_like(EFermi)
+    ### Function for top of the Barrier: comparison of fetmodel and low-level function
+    Vds=0
+    Vgs=0.2
+    left=-0.3
+    right=0.0
+    ene0_list=np.linspace(left,right,endpoint=True)
+    val1=np.empty_like(ene0_list)
+    val2=np.empty_like(ene0_list)
+    val3=np.empty_like(ene0_list)
+    val4=np.empty_like(ene0_list)
 
-    # ## parabollic band
-    # for i,EFermi0 in enumerate(EFermi):
-    #     # pdb.set_trace()
-    #     p.EFermi=EFermi0
-    #     n1[i]=fetmodel.density1d_rect1d_all0(EFermi0, p.ems, p.temp, W1, 8e-9, p.nmax, p.mmax)
-    #     n2[i]=fetmodel.density1d_rect1d_all0(EFermi0, p.ems, p.temp, W1, 16e-9, p.nmax, p.mmax)
-    #     n3[i]=fetmodel.density1d_rect1d_all0(EFermi0, p.ems, p.temp, W1, 24e-9, p.nmax, p.mmax)
-
-    # fig = plt.figure()
-    # plt.plot(EFermi,n1,label="8nm, parabollic")
-    # plt.plot(EFermi,n2,label="16nm, parabollic")
-    # plt.plot(EFermi,n3,label="24nm, parabollic")
-    # plt.xlabel('Fermi Energy (eV)')
-    # plt.ylabel('1DEG Density (cm$^{-1}$)')
-    # plt.legend(loc='best')
-    
-    ## nonparabollic band
-    for i,EFermi0 in enumerate(EFermi):
-        n1[i]=fetmodel.density1d_rect1dNP_all0(
-            EFermi0, p.alpha, p.ems, p.temp, W1, 8e-9, p.nmax, p.mmax)
-        n2[i]=fetmodel.density1d_rect1dNP_all0(
-            EFermi0, p.alpha, p.ems, p.temp, W1, 16e-9, p.nmax, p.mmax)
-        n3[i]=fetmodel.density1d_rect1dNP_all0(
-            EFermi0, p.alpha, p.ems, p.temp, W1, 24e-9, p.nmax, p.mmax)
+    EFs=0.
+    for i,ene0 in enumerate(ene0_list):
+        val1[i]=fetmodel.func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,EFs, p)
+        val2[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,EFs, p)
+        # val3[i]=fetmodel.func_for_findroot_E0_rect1d(ene0,Vds,Vgs,EFs, p)
+        val4[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,EFs, p)
 
     fig = plt.figure()
-    plt.plot(EFermi,n1,label="8nm, nonparabollic")
-    plt.plot(EFermi,n2,label="16nm, nonparabollic")
-    plt.plot(EFermi,n3,label="24nm, nonparabollic")
+    plt.plot(ene0_list,val1,label="fetmodel",color='yellow')
+    plt.plot(ene0_list,val2,label="ballistic1d",linestyle='dashed',color='black')
+    # plt.plot(ene0_list,val3,label="fetmodel,parabolic",color='green')
+    plt.plot(ene0_list,val4,label="ballistic1d,parabolic",linestyle='dashed',color='magenta')
+    plt.xlabel('E0 (eV)')
+    plt.ylabel('value')
+    plt.hlines([0], left,right, "blue", linestyles='dashed')
     plt.legend(loc='best')
-    plt.xlabel('Fermi Energy (eV)')
-    plt.ylabel('1DEG Density (cm$^{-1}$)')
+
+    Vds = 0.
+    Vgs = np.linspace(0, 1,endpoint=True)
+    val1 = np.empty_like(Vgs)
+    val2 = np.empty_like(Vgs)
+    val3 = np.empty_like(Vgs)
+    val4 = np.empty_like(Vgs)
+    for i, Vgs0 in enumerate(Vgs):
+       val1[i] = fetmodel.E0_rect1dNP_root(Vds,Vgs0,EFs,p)
+       val2[i] = E0_rect1dNP_root(Vds,Vgs0,EFs,p)
+       # val3[i] = fetmodel.E0_rect1d_root(Vds,Vgs0,p)
+       val4[i] = E0_rect1d_root(Vds,Vgs0,EFs,p)
+
+    fig = plt.figure()
+    plt.plot(Vgs,val1,label="fetmodel",color='yellow')
+    plt.plot(Vgs,val2,label="ballistic1d",linestyle='dashed',color='black')
+    # plt.plot(Vgs,val3,label="fetmodel, parabolic",color='green')
+    plt.plot(Vgs,val4,label="ballistic1d, parabolic",linestyle='dashed',color='magenta')
+    plt.xlabel('Gate Voltage (V)')
+    plt.ylabel('Top of the Barrier (eV)')
+    # plt.hlines([0], left,right, "blue", linestyles='dashed')
+    plt.legend(loc='best')
+    
     plt.show()
 
     ### EFeremi dependencde of the Top of the barrier
@@ -329,33 +347,34 @@ if __name__ == '__main__':
     Vgs=0.2
     left=-0.3
     right=0.0
-    # check_func_for_E0_rect1dNP(Vds,Vgs,p,left=-0.1,right=0.1)
+    # check_func_for_E0_rect1dNP(Vds,Vgs,EFs,p,left=-0.1,right=0.1)
     ene0_list=np.linspace(left,right,endpoint=True)
     val1=np.empty_like(ene0_list)
     val2=np.empty_like(ene0_list)
     val3=np.empty_like(ene0_list)
 
-    p.EFermi=-0.2
+    EFs=-0.2
     for i,ene0 in enumerate(ene0_list):
-        val1[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,p)
-        # val1[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,p)
+        val1[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,EFs, p)
+        # val1[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,EFs, p)
 
-    p.EFermi=0
+    EFs=0
     for i,ene0 in enumerate(ene0_list):
-        val2[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,p)
-        # val2[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,p)
+        val2[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,EFs,p)
+        # val2[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,EFs,p)
 
-    p.EFermi=0.2
+    EFs=0.2
     for i,ene0 in enumerate(ene0_list):
-        val3[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,p)
-        # val3[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,p)
+        val3[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,EFs,p)
+        # val3[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,EFs,p)
         
-
     fig = plt.figure()
-    plt.plot(ene0_list,val1,label="-0.2")
-    plt.plot(ene0_list,val2,label="0")
-    plt.plot(ene0_list,val3,label="0.2")
+    plt.plot(ene0_list,val1,label="E$_{Fs}$=-0.2 eV")
+    plt.plot(ene0_list,val2,label="E$_{Fs}$=0 eV")
+    plt.plot(ene0_list,val3,label="E$_{Fs}$=0.2 eV")
     plt.hlines([0], left,right, "blue", linestyles='dashed')
+    plt.xlabel('E$_0$ (eV)')
+    plt.ylabel('value')
     plt.legend(loc='best')
     
     Vds = 0.
@@ -364,29 +383,30 @@ if __name__ == '__main__':
     val2 = np.empty_like(Vgs)
     val3 = np.empty_like(Vgs)
     
-    p.EFermi=-0.2
+    EFs=-0.2
     for i, Vgs0 in enumerate(Vgs):
-       val1[i] = E0_rect1dNP_root(Vds,Vgs0,p)
-        # val1[i] = E0_rect1d_root(Vds,Vgs0,p)
-#         val1[i] = fetmodel.E0_rect1dNP_root(Vds,Vgs0,p)
+       val1[i] = E0_rect1dNP_root(Vds,Vgs0,EFs,p)
+        # val1[i] = E0_rect1d_root(Vds,Vgs0,EFs,p)
+#         val1[i] = fetmodel.E0_rect1dNP_root(Vds,Vgs0,EFs,p)
     
-    p.EFermi=0
+    EFs=0
     for i, Vgs0 in enumerate(Vgs):
-       val2[i] = E0_rect1dNP_root(Vds,Vgs0,p)
-        # val2[i] = E0_rect1d_root(Vds,Vgs0,p)
+       val2[i] = E0_rect1dNP_root(Vds,Vgs0,EFs,p)
+        # val2[i] = E0_rect1d_root(Vds,Vgs0,EFs,p)
     
-    p.EFermi=0.2
+    EFs=0.2
     for i, Vgs0 in enumerate(Vgs):
-       val3[i] = E0_rect1dNP_root(Vds,Vgs0,p)
-        # val3[i] = E0_rect1d_root(Vds,Vgs0,p)
+       val3[i] = E0_rect1dNP_root(Vds,Vgs0,EFs, p)
+        # val3[i] = E0_rect1d_root(Vds,Vgs0,EFs, p)
 
     fig = plt.figure()
-    plt.plot(Vgs, val1,label="-0.2")
-    plt.plot(Vgs, val2,label="0")
-    plt.plot(Vgs, val3,label="0.2")
+    plt.plot(Vgs, val1,label="E$_{Fs}$=-0.2 eV")
+    plt.plot(Vgs, val2,label="E$_{Fs}$=0 eV")
+    plt.plot(Vgs, val3,label="E$_{Fs}$=0.2 eV")
     plt.xlabel('Gate Voltage (V)')
     plt.ylabel('Top of the barrier height (eV)')
     plt.legend(loc='best')
+
     plt.show()
 
     ## current
@@ -395,24 +415,30 @@ if __name__ == '__main__':
     val1 = np.empty_like(Vgs)
     val2 = np.empty_like(Vgs)
     val3 = np.empty_like(Vgs)
+    val4 = np.empty_like(Vgs)
+    val5 = np.empty_like(Vgs)
+    val6 = np.empty_like(Vgs)
     
-    p.EFermi=-0.2
+    EFs=-0.2
     for i, Vgs0 in enumerate(Vgs):
         val1[i] = Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-        # val1[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-    p.EFermi=0
+        val4[i] = fetmodel.Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
+    EFs=0
     for i, Vgs0 in enumerate(Vgs):
         val2[i] = Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-        # val2[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-    p.EFermi=0.2
+        val5[i] = fetmodel.Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
+    EFs=0.2
     for i, Vgs0 in enumerate(Vgs):
         val3[i] = Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-        # val3[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
+        val6[i] = fetmodel.Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
 
     fig, ax = plt.subplots()
-    ax.plot(Vgs, val1, label='EF=-0.2 eV')
-    ax.plot(Vgs, val2, label='EF=0 eV')
-    ax.plot(Vgs, val3, label='EF=0.2 eV')
+    ax.plot(Vgs, val1, label='E$_{Fs}$=-0.2 eV')
+    ax.plot(Vgs, val2, label='E$_{Fs}$=0 eV')
+    ax.plot(Vgs, val3, label='E$_{Fs}$=0.2 eV')
+    ax.plot(Vgs, val4, label='E$_{Fs}$=-0.2 eV', linestyle='dashed')
+    ax.plot(Vgs, val5, label='E$_{Fs}$=0 eV', linestyle='dashed')
+    ax.plot(Vgs, val6, label='E$_{Fs}$=0.2 eV', linestyle='dashed')
     ax.set_yscale("log")
     plt.hlines([100e-3], min(Vgs),max(Vgs), "blue", linestyles='dashed')
     plt.xlabel('Gate Voltage (V)')
@@ -420,7 +446,7 @@ if __name__ == '__main__':
     plt.legend(loc='best')
         
     Vds=0.5
-    p.EFermi=0
+    EFs=0
     Vds = np.arange(0, 1, 0.01)
     Ids1 = np.empty_like(Vds)
     Ids2 = np.empty_like(Vds)
@@ -440,5 +466,6 @@ if __name__ == '__main__':
     plt.xlabel('Drain Voltage (V)')
     plt.ylabel('Drain Current (uA/um)')
     plt.legend(loc='best')
+
 
     plt.show()

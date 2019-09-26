@@ -1,5 +1,5 @@
 /*
- *  ballisticFET1d_libctl.c - Time-stamp: <Sun Sep 15 22:26:47 JST 2019>
+ *  ballisticFET1d_libctl.c - Time-stamp: <Thu Sep 26 09:46:29 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -41,8 +41,10 @@
 #include <complex.h>
 #include <tgmath.h>
 #include <gsl/gsl_const_mks.h>
+#include <gsl/gsl_errno.h>
 #include <ctl.h>
 #include "ctl-io.h"
+
 
 #include "../src/density1d.h"
 #include "../src/ballistic.h"
@@ -154,9 +156,12 @@ number E0_rect1d(number VDS, number VGS)
   double W2 = get_radius2(p);
   double Cox = Cox_rect(p.eps_ox,p.tox,W1,W2);
   double Cc  = Cc_rect(p.eps_s,W1,W2);
-  double Ceff = Cox*Cc/(Cox+Cc);
-  // b.C_eff is overridden
-  
+  double Ceff = Cox*Cc/(Cox+Cc);  // b.C_eff is overridden
+  /* double low,high; */
+  /* low=-(VDS*b.alpha_D+VGS*b.alpha_G)-0.2; */
+  /* /\* high=-(VDS*alpha_D+VGS*alpha_G)+0.5; *\/ */
+  /* high=1; */
+    
   E0=E0_rect1dNP_root0(b.Fermi_Energy, VDS, VGS,
 					   b.alpha_D, b.alpha_G, Ceff,
 					   p.alpha_nonparabolicity, p.effective_mass, temperature,
@@ -176,7 +181,6 @@ number Ids_ballistic_rect1d(number VDS, number VGS, number EFs)
   // b.C_eff is overridden
   double ids;
   ids=Ids_ballistic1d_rect1dNP0(VDS, VGS, EFs,
-								b.Fermi_Energy,
 								b.alpha_D, b.alpha_G, Ceff,
 								p.alpha_nonparabolicity, p.effective_mass, temperature,
 								W1, W2, p.n_max, p.m_max);

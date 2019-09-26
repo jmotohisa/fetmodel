@@ -163,7 +163,7 @@
 ;; Ballistic MOSFET: 1D
 
 ;; electorn density
-;; (density1d EFermi Enm ems temperature)
+;; (density1d0 EFermi Enm ems temperature)
 (define-external-function density1d0 false false 'number
   'number 'number 'number 'number)
 ;; (density1d-rect1d-all0 EFermi ems temperature W1 W2 nmax mmax)

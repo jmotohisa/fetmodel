@@ -11,7 +11,6 @@ from ballistic1d import *
 
 
 if __name__ == '__main__':
-    EFermi=0
     # Eg = 0.36
     # epsOX = 8.5
     # epsS = 8.9
@@ -31,8 +30,7 @@ if __name__ == '__main__':
     # alpha_D = 0
     # alpha_G = 1
     print(Cox,Cc)
-    p=fetmodel.parameters_ballistic(EFermi=EFermi,
-                                    alpha=alpha,
+    p=fetmodel.parameters_ballistic(alpha=alpha,
                                     Ceff=Cox*Cc/(Cox+Cc),
                                     ems=ems,
                                     W1=W1,
@@ -42,7 +40,6 @@ if __name__ == '__main__':
     p.output()
     print("Test of density1d: parabolic band")
     # p = fetmodel.param_ballistic_new()
-    # p.EFermi = 0
     # p.ems = ems
     # p.alpha = alpha
     # p.W1 = W1
@@ -87,20 +84,20 @@ if __name__ == '__main__':
     val2=np.empty_like(ene0_list)
     val3=np.empty_like(ene0_list)
 
-    p.EFermi=-0.2
+    EFermi=-0.2
     for i,ene0 in enumerate(ene0_list):
         # val1[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,p)
-        val1[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,p)
+        val1[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,EFermi,p)
 
-    p.EFermi=0
+    EFermi=0
     for i,ene0 in enumerate(ene0_list):
         # val2[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,p)
-        val2[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,p)
+        val2[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,EFermi,p)
 
-    p.EFermi=0.2
+    EFermi=0.2
     for i,ene0 in enumerate(ene0_list):
         # val3[i]=func_for_findroot_E0_rect1dNP(ene0,Vds,Vgs,p)
-        val3[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,p)
+        val3[i]=func_for_findroot_E0_rect1d(ene0,Vds,Vgs,EFermi,p)
         
 
     fig = plt.figure()
@@ -116,21 +113,21 @@ if __name__ == '__main__':
     val2 = np.empty_like(Vgs)
     val3 = np.empty_like(Vgs)
     
-    p.EFermi=-0.2
+    EFermi=-0.2
     for i, Vgs0 in enumerate(Vgs):
 #        val1[i] = E0_rect1dNP_root(Vds,Vgs0,p)
-        val1[i] = E0_rect1d_root(Vds,Vgs0,p)
+        val1[i] = E0_rect1d_root(Vds,Vgs0,EFermi,p)
 #         val1[i] = fetmodel.E0_rect1dNP_root(Vds,Vgs0,p)
     
-    p.EFermi=0
+    EFermi=0
     for i, Vgs0 in enumerate(Vgs):
 #        val2[i] = E0_rect1dNP_root(Vds,Vgs0,p)
-        val2[i] = E0_rect1d_root(Vds,Vgs0,p)
+        val2[i] = E0_rect1d_root(Vds,Vgs0,EFermi,p)
     
-    p.EFermi=0.2
+    EFermi=0.2
     for i, Vgs0 in enumerate(Vgs):
 #        val3[i] = E0_rect1dNP_root(Vds,Vgs0,p)
-        val3[i] = E0_rect1d_root(Vds,Vgs0,p)
+        val3[i] = E0_rect1d_root(Vds,Vgs0,EFermi,p)
 
     fig = plt.figure()
     plt.plot(Vgs, val1,label="-0.2")
@@ -147,23 +144,23 @@ if __name__ == '__main__':
     val2 = np.empty_like(Vgs)
     val3 = np.empty_like(Vgs)
     
-    p.EFermi=-0.2
+    EFs=-0.2
     for i, Vgs0 in enumerate(Vgs):
         # val1[i] = Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-        val1[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-    p.EFermi=0
+        val1[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, EFs)/(2*(p.W1+p.W2))
+    EFs=0
     for i, Vgs0 in enumerate(Vgs):
         # val2[i] = Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-        val2[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-    p.EFermi=0.2
+        val2[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, EFs)/(2*(p.W1+p.W2))
+    EFs=0.2
     for i, Vgs0 in enumerate(Vgs):
         # val3[i] = Ids_ballistic1d_rect1dNP(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
-        val3[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, 0)/(2*(p.W1+p.W2))
+        val3[i] = Ids_ballistic1d_rect1d(Vds, Vgs0, p, EFs)/(2*(p.W1+p.W2))
 
     fig, ax = plt.subplots()
-    ax.plot(Vgs, val1, label='EF=-0.2 eV')
-    ax.plot(Vgs, val2, label='EF=0 eV')
-    ax.plot(Vgs, val3, label='EF=0.2 eV')
+    ax.plot(Vgs, val1, label='E$_{Fs}$=-0.2 eV')
+    ax.plot(Vgs, val2, label='E$_{Fs}$=0 eV')
+    ax.plot(Vgs, val3, label='E$_{Fs}$=0.2 eV')
     ax.set_yscale("log")
     plt.hlines([100e-3], min(Vgs),max(Vgs), "blue", linestyles='dashed')
     plt.xlabel('Gate Voltage (V)')
@@ -171,19 +168,19 @@ if __name__ == '__main__':
     plt.legend(loc='best')
         
     Vds=0.5
-    p.EFermi=0
+    EFs=0
     Vds = np.arange(0, 1, 0.01)
     Ids1 = np.empty_like(Vds)
     Ids2 = np.empty_like(Vds)
     Vgs=0.5
     for i, Vds0 in enumerate(Vds):
         # Ids1[i] = Ids_ballistic1d_rect1dNP(Vds0, Vgs, p, 0)/(2*(p.W1+p.W2))
-        Ids1[i] = Ids_ballistic1d_rect1d(Vds0, Vgs, p, 0)/(2*(p.W1+p.W2))
+        Ids1[i] = Ids_ballistic1d_rect1d(Vds0, Vgs, p, EFs)/(2*(p.W1+p.W2))
     Vgs=1
     for i, Vds0 in enumerate(Vds):
         # Ids2[i] = Ids_ballistic1d_rect1dNP(Vds0, Vgs, p, 0)/(2*(p.W1+p.W2))
         # Ids2[i] = fetmodel.Ids_ballistic1d_rect1dNP(Vds0, Vgs, p, 0)
-        Ids2[i] = Ids_ballistic1d_rect1d(Vds0, Vgs, p, 0)/(2*(p.W1+p.W2))
+        Ids2[i] = Ids_ballistic1d_rect1d(Vds0, Vgs, p, EFs)/(2*(p.W1+p.W2))
 
     fig = plt.figure()
     plt.plot(Vds, Ids1, label='Vgs=0.5 V')

@@ -46,14 +46,16 @@ dens2 = np.empty_like(ene)
 dens3 = np.empty_like(ene)
 for i, e in enumerate(ene):
     dens1[i] = fetmodel.density1d_rect1dNP_all0(e, alpha, ems, temperature,
-                                                5e-3, 8e-3, 2, 3)
+                                                5e-9, 8e-9, 2, 3)
     dens2[i] = fetmodel.density1d_rect1dNP_all0(e, alpha, ems, temperature,
-                                                5e-3, 16e-3, 2, 3)
+                                                5e-9, 16e-9, 2, 3)
     dens3[i] = fetmodel.density1d_rect1dNP_all0(e, alpha, ems, temperature,
-                                                5e-3, 24e-3, 2, 3)
+                                                5e-9, 24e-9, 2, 3)
     
 plt.plot(ene, dens1,label="W2=8nm")
 plt.plot(ene, dens2,label="W2=16nm")
 plt.plot(ene, dens3,label="W2=24nm")
 plt.legend(loc='best')
+plt.xlim([-0.1,0.2])
+plt.ylim([0,1.5e9])
 plt.show()

@@ -68,9 +68,8 @@ if __name__ == '__main__':
     args = get_args()
     nmax = args.nmax
     mmax = args.mmax
-    # print(nmax,mmax)
-o    
-    EFermi=0
+    # print(nmax,mmax, EFermi)
+    
     Eg = 0.36
     epsOX = 20
     epsS = 15.15
@@ -85,8 +84,7 @@ o
     # alpha_D = 0
     # alpha_G = 1
     print(Cox,Cc)
-    p=fetmodel.parameters_ballistic(EFermi=EFermi,
-                                    alpha=alpha,
+    p=fetmodel.parameters_ballistic(alpha=alpha,
                                     Ceff=Cox*Cc/(Cox+Cc),
                                     ems=ems,
                                     W1=W1,
@@ -141,6 +139,8 @@ o
     # plt.ylim([0.8,1.6])
     plt.title('(n,m)=('+str(p.nmax)+','+str(p.mmax)+')',fontsize=18)
     plt.tight_layout()
+    plt.xlim([0,3])
+    plt.ylim([0.95,1.25])
     plt.show()
 
     ####
@@ -154,16 +154,19 @@ o
     set_p(p,Eg,W2,nmax,mmax)
     str1='(n,m)=('+str(p.nmax)+','+str(p.mmax)+')'
     EFs2 = determine_EFs2(p, Vds, Ids_cutoff)
+    print(EFs2)
     Ids1=IdsVgs(p,Vds,Vgs,EFs2)
     
     set_p(p,Eg,W2,nmax,mmax+1)
     str2='(n,m)=('+str(p.nmax)+','+str(p.mmax)+')'
     EFs2 = determine_EFs2(p, Vds, Ids_cutoff)
+    print(EFs2)
     Ids2=IdsVgs(p,Vds,Vgs,EFs2)
 
     set_p(p,Eg,W2,nmax+1,mmax+1)
     str3='(n,m)=('+str(p.nmax)+','+str(p.mmax)+')'
     EFs2 = determine_EFs2(p, Vds, Ids_cutoff)
+    print(EFs2)
     Ids3=IdsVgs(p,Vds,Vgs,EFs2)
 
     fig, ax = plt.subplots()
@@ -171,6 +174,17 @@ o
     ax.plot(Vgs, Ids2, label=str2)
     ax.plot(Vgs, Ids3, label=str3)
     ax.set_yscale("log")
+    plt.xlabel('Gate Voltage Vgs-Vth',fontsize=18)
+    plt.ylabel('Ids (uA/um)',fontsize=18)
+    plt.legend(loc='best',fontsize=18)
+    plt.tick_params(labelsize=18)
+    plt.title('Eg='+str(Eg)+' eV',fontsize=18)
+    plt.tight_layout()
+
+    fig, ax = plt.subplots()
+    ax.plot(Vgs, Ids1, label=str1)
+    ax.plot(Vgs, Ids2, label=str2)
+    ax.plot(Vgs, Ids3, label=str3)
     plt.xlabel('Gate Voltage Vgs-Vth',fontsize=18)
     plt.ylabel('Ids (uA/um)',fontsize=18)
     plt.legend(loc='best',fontsize=18)

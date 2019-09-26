@@ -28,21 +28,21 @@ def density1d_circ1d_all0(EFermi, ems, temp, radius, nmax, mmax):
 
     return(n0)
 
-def density1d_circ1d_all(p):
-    return density1d_circ1d_all0(p.EFermi, p.ems, p.temp, p.W1/2, p.nmax, p.mmax)
+def density1d_circ1d_all(EFermi, p):
+    return density1d_circ1d_all0(EFermi, p.ems, p.temp, p.W1/2, p.nmax, p.mmax)
     
 
-def func_for_findroot_E0_circ1d(ene0, Vds, Vgs, p):
+def func_for_findroot_E0_circ1d(ene0, Vds, Vgs, EFermi, p):
     """ function to find find energy of the top of the barrier in circular NW
     """
-    n1d_S = density1d_circ1d_all0(p.EFermi - ene0, p.ems, p.temp, p.W1/2, p.nmax,p.mmax)
+    n1d_S = density1d_circ1d_all0(EFermi - ene0, p.ems, p.temp, p.W1/2, p.nmax,p.mmax)
     n1d_D = density1d_circ1d_all0(
-        p.EFermi - ene0 - Vds, p.ems, p.temp, p.W1/2, p.nmax,p.mmax)
+        EFermi - ene0 - Vds, p.ems, p.temp, p.W1/2, p.nmax,p.mmax)
     q0 = const.elementary_charge * (n1d_S + n1d_D) / (2 * p.Ceff)
     return ene0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 
 
-def check_func_for_E0_circ1d(Vds,Vgs,p,left=-0.2,right=0):
+def check_func_for_E0_circ1d(Vds,Vgs,EFermi,p,left=-0.2,right=0):
     """
     Plot function (Python implementation) to find E0
     Parabolic band
@@ -54,14 +54,14 @@ def check_func_for_E0_circ1d(Vds,Vgs,p,left=-0.2,right=0):
     ene0_list=np.linspace(left2,right2,endpoint=True)
     val=np.empty_like(ene0_list)
     for i,ene0 in enumerate(ene0_list):
-        val[i]=func_for_findroot_E0_circ1d(ene0, Vds, Vgs, p)
+        val[i]=func_for_findroot_E0_circ1d(ene0, Vds, Vgs, EFermi, p)
 
     plt.plot(ene0_list,val)
     plt.show()
     return val
 
 
-def E0_circ1d_root(Vds,Vgs,p,left=-0.2,right=0):
+def E0_circ1d_root(Vds,Vgs,EFermi,p,left=-0.2,right=0):
     """ get energy of the top of the barrier
     """
     left0 = -(p.alpha_D*Vds+p.alpha_G*Vgs) - 0.2
@@ -70,7 +70,7 @@ def E0_circ1d_root(Vds,Vgs,p,left=-0.2,right=0):
     right2=max([right,right0])
 
     e0 = optimize.root_scalar(
-        func_for_findroot_E0_circ1d, args=(Vds, Vgs, p), x0=-0.0, x1=0.15)
+        func_for_findroot_E0_circ1d, args=(Vds, Vgs, EFermi, p), x0=-0.0, x1=0.15)
     if(e0.converged==True):
         return e0.root
     else:
@@ -82,7 +82,7 @@ def E0_circ1d_root(Vds,Vgs,p,left=-0.2,right=0):
 def Ids_ballistic1d_circ1d(Vds, Vgs, p, EFs,left=-0.2,right=0):
     """ current of ballistic FET with circular 1d NW
     """
-    e0=E0_circ1d_root(Vds,Vgs,p,left,right)
+    e0=E0_circ1d_root(Vds,Vgs,EFs,p,left,right)
     # e00 = optimize.root_scalar(
     #     func_e0_find_circ1d, args=(Vgs, Vds, p), x0=-0.1, x1=1)
     # e0=e00.root
@@ -121,21 +121,21 @@ def density1d_circ1dNP_all0(EFermi, alpha, ems, temp, radius, nmax, mmax):
 
     return(n0)
 
-def density1d_circ1dNP_all(p):
-    return density1d_circ1d_all0(p.EFermi, p.alpha, p.ems, p.temp, p.W1/2, p.nmax, p.mmax)
+def density1d_circ1dNP_all(EFermi,p):
+    return density1d_circ1d_all0(EFermi, p.alpha, p.ems, p.temp, p.W1/2, p.nmax, p.mmax)
     
 
-def func_for_findroot_E0_circ1dNP(ene0, Vds, Vgs, p):
+def func_for_findroot_E0_circ1dNP(ene0, Vds, Vgs, EFermi, p):
     """ function to find find energy of the top of the barrier in circular NW
     """
-    n1d_S = density1d_circ1dNP_all0(p.EFermi - ene0, p.alpha, p.ems, p.temp, p.W1, p.nmax,p.mmax)
+    n1d_S = density1d_circ1dNP_all0(EFermi - ene0, p.alpha, p.ems, p.temp, p.W1, p.nmax,p.mmax)
     n1d_D = density1d_circ1dNP_all0(
-        p.EFermi - ene0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.nmax,p.mmax)
+        EFermi - ene0 - Vds, p.alpha, p.ems, p.temp, p.W1, p.nmax,p.mmax)
     q0 = const.elementary_charge * (n1d_S + n1d_D) / (2 * p.Ceff)
     return ene0 + (p.alpha_D * Vds + p.alpha_G * Vgs - q0)
 
 
-def check_func_for_E0_circ1dNP(Vds,Vgs,p,left=-0.2,right=0):
+def check_func_for_E0_circ1dNP(Vds,Vgs,EFermi,p,left=-0.2,right=0):
     """
     Plot function (Python implementation) to find E0
     Parabolic band
@@ -147,14 +147,14 @@ def check_func_for_E0_circ1dNP(Vds,Vgs,p,left=-0.2,right=0):
     ene0_list=np.linspace(left2,right2,endpoint=True)
     val=np.empty_like(ene0_list)
     for i,ene0 in enumerate(ene0_list):
-        val[i]=func_for_findroot_E0_circ1dNP(ene0, Vds, Vgs, p)
+        val[i]=func_for_findroot_E0_circ1dNP(ene0, Vds, Vgs, EFermi, p)
 
     plt.plot(ene0_list,val)
     plt.show()
     return val
 
 
-def E0_circ1dNP_root(Vds,Vgs,p,left=-0.2,right=0):
+def E0_circ1dNP_root(Vds,Vgs,EFermi, p,left=-0.2,right=0):
     """ get energy of the top of the barrier
     """
     left0 = -(p.alpha_D*Vds+p.alpha_G*Vgs) - 0.2
@@ -163,7 +163,7 @@ def E0_circ1dNP_root(Vds,Vgs,p,left=-0.2,right=0):
     right2=max([right,right0])
 
     e0 = optimize.root_scalar(
-        func_for_findroot_E0_circ1dNP, args=(Vgs, Vds, p), x0=-0.0, x1=0.15)
+        func_for_findroot_E0_circ1dNP, args=(Vgs, Vds, EFermi, p), x0=-0.0, x1=0.15)
     if(e0.converged==True):
         return e0.root
     else:
@@ -175,7 +175,7 @@ def E0_circ1dNP_root(Vds,Vgs,p,left=-0.2,right=0):
 def Ids_ballistic1d_circ1dNP(Vds, Vgs, p, EFs,left=-0.2,right=0):
     """ current of ballistic FET with circular 1d NW
     """
-    e0=E0_circ1dNP_root(Vds,Vgs,p,left,right)
+    e0=E0_circ1dNP_root(Vds,Vgs,EFermi,p,left,right)
     # e00 = optimize.root_scalar(
     #     func_e0_find_circ1d, args=(Vgs, Vds, p), x0=-0.1, x1=1)
     # e0=e00.root
@@ -287,8 +287,7 @@ if __name__ == '__main__':
     nmax=5
     mmax=5
     print('Cox=', Cox,', Cc=', Cc)
-    p=fetmodel.parameters_ballistic(EFermi=EFermi,
-                                    alpha=alpha,
+    p=fetmodel.parameters_ballistic(alpha=alpha,
                                     Ceff=Cox*Cc/(Cox+Cc),
                                     ems=ems,
                                     W1=W1,

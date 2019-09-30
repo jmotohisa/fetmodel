@@ -57,16 +57,27 @@ def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs):
     return(fetmodel.Ids_ballistic1d_rect1dNP0(Vds, Vgs, EFs, p.alpha_D, p.alpha_G, p.Ceff,
                                               p.alpha, p.ems, p.temp, p.W1, p.W2, int(p.nmax), int(p.mmax)))
     
+## 2D
 
 def func_for_findroot_E0_2d(ene0, Vds, Vgs, EFs, p):
+    """
+    C-implementation of the function to find top of the barrier in 2D ballistic FET (wrapper) 
+    p: class of parameters_ballistic
+    Single paraolic band
+    """
     return fetmodel.func_for_findroot_E0_2d0(ene0, EFs, Vds, Vgs,
                                              p.alpha_D, p.alpha_G, p.Ceff,  p.ems, p.temp)
 
-def E0_2d_root(EFermi, Vds, Vgs, p):
+def E0_2d_root(Vds, Vgs, EFermi, p):
+    """
+    Get top of the barrier in 2D ballistic FET (C-implementation, wrapper)
+    p: class of parameters_ballistic
+    Single paraolic band
+    """
     return fetmodel.E0_2d_root0(EFermi,Vds, Vgs, p.alpha_D, p.alpha_G, p.Ceff,p.ems, p.temp)
                 
 def Ids_ballistic2d_E0(E0,Vds, Vgs, p, EFs):
-    return fetmodel.Ids_ballistic2d0_E0(E0,Vds, Vgs, EFs,p.alpha_D, p.alpha_G,Ceff,ems, p.temp)
+    return fetmodel.Ids_ballistic2d0_E0(E0, Vds, Vgs, EFs,p.alpha_D, p.alpha_G,Ceff,ems, p.temp)
 
 def Ids_ballistic2d(Vds, Vgs, p, EFs):
     return fetmodel.Ids_ballistic2d0(Vds, Vgs, EFs,p.alpha_D, p.alpha_G,p.Ceff,p.ems, p.temp)

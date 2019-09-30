@@ -1,0 +1,248 @@
+; Copyright (C) 1999, 2000, 2001, 2002, Massachusetts Institute of Technology.
+;
+; This program is free software; you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation; either version 2 of the License, or
+; (at your option) any later version.
+;
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+; ****************************************************************
+
+;***************************************************
+; scm file for fetmodel
+; by J. Motohisa
+;
+;***************************************************
+
+(define (procedure-num-args p) 
+  (let ((arity (procedure-property p 'arity)))
+    (if arity (car arity) 1)))
+
+; ****************************************************************
+
+(define-class material-type no-parent
+  (define-property epsilon 12 'number positive?)
+  (define-property conductivity 0.0 'number)
+  (define-property id 0 ' integer)
+  )
+
+(define infinity 1.0e20) ; big number for infinite dimensions of objects
+
+;(define-class dielectric material-type)
+
+;(define-class metal material-type)
+
+; use the solid geometry classes, variables, etcetera in libgeom:
+; (one specifications file can include another specifications file)
+;(include "@LIBCTL_DIR@/utils/geom.scm")
+
+;(define-class dielectric material-type
+;  (define-property epsilon no-default 'number positive?))
+
+; ****************************************************************
+; predefinde funcion
+
+(define-input-var temperature 300 'number)
+
+(define-class NW-sizes no-parent)
+
+(define-class NW-rect NW-sizes
+  (define-property W1 10e-8 'number)
+  (define-property W2 8e-8 'number)
+  )
+
+(define-class NW-radial NW-sizes
+  (define-property radius 5e-9 'number)
+  )
+
+(define NW-default (make NW-rect))
+
+(define (Cox-func-default x) 0.0233)
+;; (define-input-var Cox 0.0233 'number) ; gate capacitance, F/m^2
+
+(define-class params-NWFET no-parent
+  (define-property sizes NW-default 'NW-sizes) ;; NW shape and size
+  (define-property tox 10e-9 'number) ;; oxide thickness
+  (define-property eps-ox 8.5 'number) ;; dielectric constant of gate oxide
+  (define-property eps-s 8.6 'number) ;; dielectric constant of semiconductor
+  (define-property bandgap 0.36  'number) ;; bandgap energy
+  (define-property effective-mass 0.2 'number) ;; band edge effective mass
+  (define-property nonparabolic? false 'boolean)
+  (define-property alpha-nonparabolicity 0 'number) ;; nonparabolicity parameter
+  (define-property n-max 2 'integer) ;; number of subbands to consider
+  (define-property m-max 2 'integer)
+  (define-property mobility 0.04 'number) ;; mobility
+  (define-property Lg 1e-6 'number) ;; gate length
+  )
+
+; input variable for cylindirical-NW MOSFET
+(define-class params-cMOSFET params-NWFET
+  (define-property ni 1.45e16 'number) ; intrinsic carrier concentration, m^-3
+  (define-property dphi 0 'number) ; work function difference, eV
+  (define-property use-Cox-func? false 'boolean) 
+  (define-property Cox-func Cox-func-default 'function)  ;; gate capacitance, use if use-func-Cox? is true
+  )
+
+;; input Variable for cylindirical-NW MESFET
+(define-class params-cMESFET params-NWFET
+  (define-property Nd 2.3e24 'number) ; doping density, m^-3
+  (define-property Vbi 0.34 'number) ; built in potential, eV
+)  
+
+;; input variables for ballistic FET
+(define-class params-ballisticFET no-parent
+  (define-property Fermi-Energy 0 'number)
+  (define-property alpha-D 0 'number)
+  (define-property alpha-G 1 'number)
+  (define-property C-eff 1 'number)
+  )
+
+;; parasitic component
+(define-class parasitic-component no-parent
+  (define-property Rs 0 'number) ; source resistance
+  (define-property Rd 0 'number) ; drain resistance
+  )
+
+;; input
+(define FET-params-default
+  (make params-NWFET))
+
+(define-input-var FET-params FET-params-default
+  'params-NWFET)
+(define-input-var params-parasitic
+  (make parasitic-component) 'parasitic-component)
+(define-input-var ballistic-params
+  (make params-ballisticFET) 'params-ballisticFET)
+
+; ****************************************************************
+
+;; (define-input-var radius 50e-9 'number) ; nanowire diameter, m
+;; (define-input-var Lg 1e-6 'number) ; gate length, m
+;; ;; (define-input-var eps-semi 11.6 'number) ; dielectric constant
+
+; ****************************************************************
+; external functions
+; ****************************************************************
+
+;; simulation main functions
+
+;; Cylindrical 1D MOSFET
+(define-external-function func-Qapprox-cMOSFET true true
+  'number 'number)
+
+(define-external-function func-Q-cMOSFET true true
+  'number 'number)
+
+(define-external-function func-Ids-cMOSFET true true
+  'number 'number 'number)
+
+(define-external-function func-Ids0-cMOSFET true true
+  'number 'number 'number)
+
+(define-external-function func-Ids-cMOSFET-R true true
+  'number 'number 'number)
+
+(define-external-function func-Ids0-cMOSFET-R true true
+  'number 'number 'number)
+
+;; Cylindrical 1D MESFET
+(define-external-function func-Ids-cMESFET true true
+  'number 'number 'number)
+(define-external-function func-Ids-cMESFET-R true true
+  'number 'number 'number)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Ballistic MOSFET: 1D
+
+;; electorn density
+;; (density1d0 EFermi Enm ems temperature)
+(define-external-function density1d0 false false 'number
+  'number 'number 'number 'number)
+;; (density1d-rect1d-all0 EFermi ems temperature W1 W2 nmax mmax)
+(define-external-function density1d-rect1d-all0 false false 'number
+  'number 'number 'number 'number 'number 'integer 'integer)
+;; (density1d-NP0 EFermi Enm alpha_nm ems_nm temperature)
+(define-external-function density1d-NP0 false false 'number
+  'number 'number 'number 'number 'number)
+;; (density1d-rect1dNP-all0 EFermi alpha ems temperature W1 W2 nmax mmax)
+(define-external-function density1d-rect1dNP-all0 false false 'number
+  'number 'number 'number 'number 'number 'number 'integer 'integer)
+;; (density1d EFermi 'params-NWFET)
+(define-external-function density1d true false 'number
+  'number 'params-NWFET)
+
+;; function to find E0
+;; (func-e0-find ene0 VGS VDS)
+(define-external-function func-e0-find true false 'number
+  'number 'number 'number)
+;; top of the barrier E0: (E0-rect1d VDS VGS);
+(define-external-function E0-rect1d true false 'number
+  'number 'number)
+;; ('params-NWFET FET-params 'params-ballisticFET ballistic-params should be set)
+
+;; Ids current
+(define-external-function Ids-ballistic-rect1d true true 'number
+  'number 'number 'number)
+  
+;; Capactitance
+;; (Cox-rect eps-OX tOX W1 W2)
+;; (Cc-rect epsS W1 W2)
+;; (Cox-radial eps-OX tOX radius)
+(define-external-function Cox-rect false false 'number
+  'number 'number 'number 'number)
+(define-external-function Cc-rect false false 'number
+  'number 'number 'number)
+(define-external-function Cox-radial false false 'number
+  'number 'number 'number)
+
+;; (Ep-nm-rect1d ems W1 W2 n m)
+(define-external-function Ep-nm-rect1d false false 'number
+  'number 'number 'number 'integer 'integer)
+;; (Ep-n-radial1d ems radius n)
+(define-external-function Ep-n-radial1d false false 'number
+  'number 'number 'integer)
+;; (alpha-NP Eg ems)
+(define-external-function alpha-NP false false 'number
+  'number 'number)
+;; (E-nm-NP alphaNP gamma-nm)
+(define-external-function E-nm-NP false false 'number
+  'number 'number)
+;; (alpha-nm-NP alphaNP gamma-nm)
+(define-external-function alpha-nm-NP false false 'number
+  'number 'number)
+;; (ems-nm-NP ems gamma-nm)
+(define-external-function ems-nm-NP false false 'number
+  'number 'number)
+;; (gamma-nm-NP Enm alphaNP)
+(define-external-function gamma-nm-NP false false 'number
+  'number 'number)
+
+;; (gamma-nm-rect1dNP alphaNP ems W1 W2 n m)
+(define-external-function gamma-nm-rect1dNP false false 'number
+  'number 'number 'number 'number 'integer 'integer)
+;; (E-nm-rect1dNP alphaNP ems W1 W2 n m)
+(define-external-function E-nm-rect1dNP false false 'number
+  'number 'number 'number 'number 'integer 'integer)
+
+;; ****************************************************************
+
+;; Load GNU Readline support, for easier command-line editing support.
+;; This is not loaded in by default in Guile 1.3.2+ because readline
+;; is licensed under the GPL, which would have caused Guile to effectively
+;; be under the GPL itself.  However, since the MIT Photonic Bands package
+;; is under the GPL too, we can load Readline by default with no problems.
+
+@ACTIVATE_READLINE@  ;; command to activate readline is determined by configure
+
+(ctl-set-prompt! "fetmodel> ")
+
+;; ****************************************************************
+

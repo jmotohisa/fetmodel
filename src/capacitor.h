@@ -1,5 +1,5 @@
 /*
- *  pycfet.h - last saved: Time-stamp: <Thu Jul 18 10:45:05 JST 2019>
+ *  capacitor.h - last saved: Time-stamp: <Mon Aug 19 12:29:14 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,17 +26,17 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: pycfet.h 2019-07-12 14:25:09 jmotohisa $
+ *  $Id: capacitor.h 2019-08-10 10:10:31 jmotohisa $
  */
 
 /*! 
-  @file pycfet.h 
+  @file capacitor.h 
   @brief 
   @author J. Motohisa
 */
 
-#ifndef _PYCFET_H
-#define _PYCFET_H
+#ifndef _CAPACITOR_H
+#define _CAPACITOR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,19 +47,12 @@ extern "C" {
 #else
 #define	GLOBAL extern
 #endif
-  GLOBAL param_cMOSFET *param_cMOSFET_new(void );  
-  GLOBAL param_cMESFET *param_cMESFET_new(void );  
 
-  /* GLOBAL void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p); */
-  /* GLOBAL void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p); */
-
-  /* GLOBAL void Ids0_cMOS_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p); */
-  /* GLOBAL void Ids_cMOS_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p); */
-  /* GLOBAL void Ids0_cMOS_R_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p); */
-  /* GLOBAL void Ids_cMOS_R_func(double *in_array,double *out_array, int size, double Vds,param_cMOSFET p); */
-  
-  /* GLOBAL void Ids_cMES_func(double *in_array,double *out_array, int size, double Vds,param_cMESFET p); */
-  /* GLOBAL void Ids_cMES_R_func(double *in_array,double *out_array, int size, double Vds,param_cMESFET p); */
+  GLOBAL double Cox_rect(double epsOX,double tOX,double W1, double W2);
+  GLOBAL double Cox_rect_area(double epsOX,double tOX,double W1, double W2);
+  GLOBAL double Cc_rect(double epsS, double W1, double W2);
+  GLOBAL double Cox_radial(double epsOX, double tOX, double radius);
+  GLOBAL double Cox_radial_area(double epsOX, double tOX, double radius);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL
@@ -68,4 +61,4 @@ extern "C" {
 }
 #endif
 
-#endif  // _PYCFET_H
+#endif  // _CAPACITOR_H

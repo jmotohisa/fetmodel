@@ -1,5 +1,5 @@
 /*
- *  pycfet.c - Time-stamp: <Thu Jul 18 09:55:32 JST 2019>
+ *  fetmodel.c - Time-stamp: <Sun Sep 01 11:58:02 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,11 +26,11 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: pycfet.c 2019-07-12 14:25:01 jmotohisa $
+ *  $Id: fetmodel.c 2019-07-12 14:25:01 jmotohisa $
  */
 
 /*! 
-  @file pycfet.c 
+  @file fetmodel.c 
   @brief 
   @author J. Motohisa
   @date
@@ -40,10 +40,12 @@
 #include <stdlib.h>
 #include <complex.h>
 #include <tgmath.h>
-#include "../ccm.h"
+#include "../src/ccm.h"
+#include "../src/density1d.h"
+#include "../src/ballistic.h"
 
 #define GLOBAL_VALUE_DEFINE
-#include "pycfet.h"
+#include "fetmodel.h"
 
 /*!
   @brief
@@ -52,6 +54,17 @@
   @param[in,out]
   @return
 */
+
+#define DEFINE_CONSTRUCTOR(STRUCT)				\
+  STRUCT * STRUCT_new()						\
+  {												\
+	STRUCT *p = malloc(sizeof(STRUCT));			\
+	if(p ==NULL) {								\
+	  perror("malloc");							\
+	  exit(1);									\
+	}											\
+	return(p);									\
+  }
 
 param_cMOSFET *param_cMOSFET_new()
 {
@@ -141,4 +154,14 @@ void Ids_cMES_R_func(double *in_array, double *out_array, int size,
 	*(out_array+i)=Ids_cMESFET_R(Vds,*(in_array+i),p);
 }
 
-
+// ballistic FET
+// DEFINE_CONSTRUCTOR(param_ballistic);
+param_ballistic *param_ballistic_new()
+{
+  param_ballistic *p = malloc(sizeof(param_ballistic));
+  if(p ==NULL) {
+	perror("malloc");
+	exit(1);
+  }
+  return(p);
+}

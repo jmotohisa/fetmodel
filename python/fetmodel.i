@@ -1,10 +1,14 @@
-%module pycfet
+%module(docstring="I-V characteritics of various FETs") fetmodel
 
 %{
 #define SWIG_FILE_WITH_INIT
   
-  #include "../ccm.h"
-  #include "pycfet.h"
+#include "../src/ccm.h"
+#include "../src/density1d.h"
+#include "../src/density2d.h"
+#include "../src/ballistic.h"
+#include "../src/capacitor.h"
+#include "fetmodel.h"
 
   extern void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
   extern void Q_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
@@ -24,8 +28,14 @@
   import_array();
 %}
 
-%include "../ccm.h"
-%include "pycfet.h"
+%feature("autodoc","1");
+
+%include "../src/ccm.h"
+%include "../src/density1d.h"
+%include "../src/density2d.h"
+%include "../src/ballistic.h"
+%include "../src/capacitor.h"
+%include "fetmodel.h"
 
 %apply (double* IN_ARRAY1, int DIM1) {(double * in_array, int size_in)}
 /* %apply (double* ARGOUT_ARRAY1, int DIM1) {(double * out_array, int size_out)} */
@@ -69,3 +79,21 @@
   }
   %}
 
+%pythoncode %{
+  from .define_params import (
+							  parameters_ballistic,
+							  parameters_cMOSFET,
+							  )
+  from .wrapper import (
+  					  density1d_rect1d_all,
+  					  density1d_rect1dNP_all,
+  					  func_for_findroot_E0_rect1dNP,
+  					  E0_rect1dNP_root,
+  					  Ids_ballistic1d_rect1dNP,
+					  func_for_findroot_E0_2d,
+					  E0_2d_root,
+					  Ids_ballistic2d_E0,
+					  Ids_ballistic2d,
+  					  )
+%}
+  

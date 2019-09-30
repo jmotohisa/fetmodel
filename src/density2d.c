@@ -1,5 +1,5 @@
 /*
- *  ccm.h - last saved: Time-stamp: <Thu Jul 18 08:46:04 JST 2019>
+ *  density2d.c - Time-stamp: <Thu Sep 26 09:50:16 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -26,77 +26,40 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: ccm.h 2019-07-12 16:06:01 jmotohisa $
+ *  $Id: density2d.c 2019-08-02 21:18:09 jmotohisa $
  */
 
 /*! 
-  @file ccm.h 
+  @file density2d.c 
   @brief 
   @author J. Motohisa
+  @date
 */
 
-#ifndef _CCM_H
-#define _CCM_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <complex.h>
+#include <tgmath.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <gsl/gsl_sf_fermi_dirac.h>
+#include <gsl/gsl_const_mks.h>
+#include <gsl/gsl_integration.h>
 
-#ifdef	GLOBAL_VALUE_DEFINE
-#define	GLOBAL
-#else
-#define	GLOBAL extern
-#endif
+#include "ballistic_common.h"
 
-  typedef struct
-  {
-	double	radius;
-	double	Lg;
-	double	eps_semi;
-	double	Rs;
-	double	Rd;
-	double	Cox;
-	double	temp;
-	double	ni;
-	double	dphi;
-	double	tox;
-	double	eps_ox;
-	double	mue;
-  } param_cMOSFET;
-  
-  typedef struct
-  {
-	double	radius;
-	double	Lg;
-	double	eps_semi;
-	double	Rs;
-	double	Rd;
-	/* double	Cox; */
-	/* double	temp; */
-	/* double	ni; */
-	/* double	dphi; */
-	/* double	tox; */
-	/* double	eps_ox; */
-	/* double	mue; */
-  	double	Nd;
-	double	Vbi;
-  } param_cMESFET;
+#define GLOBAL_VALUE_DEFINE
+#include "density2d.h"
 
-  GLOBAL double Q_cMOSFET(double Vgs, param_cMOSFET p);
-  GLOBAL double Qapprox_cMOSFET(double Vgs, param_cMOSFET p);
-  GLOBAL double Ids_cMOSFET(double Vds,double Vgs,param_cMOSFET p);
-  GLOBAL double Ids_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS);
-  GLOBAL double Ids0_cMOSFET(double Vds,double Vgs,param_cMOSFET p);
-  GLOBAL double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET p);
+/*!
+  @brief
+  @param[in]
+  @param[out]
+  @param[in,out]
+  @return
+*/
 
-  GLOBAL double Ids_cMESFET(double Vds,double Vgs,param_cMESFET cMES);
-  GLOBAL double Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET cMES);
-
-#undef GLOBAL_VALUE_DEFINE
-#undef GLOBAL
-
-#ifdef __cplusplus
+double density2d0(double EFermi,double Enm, double ems, double temp)
+{
+  double dos2D=MASS(ems)/(M_PI*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR)*kBT0;
+  return (dos2D*gsl_sf_fermi_dirac_0((EFermi-Enm)*BETA));
 }
-#endif
-
-#endif  // _CCM_H

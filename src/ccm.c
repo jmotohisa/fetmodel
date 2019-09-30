@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Thu Jul 18 16:29:52 JST 2019>
+ *  ccm.c - Time-stamp: <Tue Aug 20 12:46:58 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -73,7 +73,6 @@
 
 #include <math.h>
 #include "PhysicalConstants.h"
-/* #include "ctl-io.h" */
 
 double Ids00_cMOSFET(double , double );
 double n_intrinsic(double , double , double ,double ,double );
@@ -171,12 +170,12 @@ void set_global_cMESFET(param_cMESFET p)
   Rs=p.Rs;
   Rd=p.Rd;
   /* Cox=Cox; */
-  /* temp=temp; */
+  temp=p.temp;
   /* ni=ni; */
   /* dphi=dphi; */
   /* tox=tox; */
   /* eps_ox=eps_ox; */
-  /* mue=mue; */
+  mue=p.mue;
   Nd=p.Nd;
   Vbi=p.Vbi;
 }
@@ -462,6 +461,9 @@ double qroot_newton(double V,double Vgs)
 double qfunc_cMOSFET(double qq,double V, double Vgs)
 {
   double qqq1,qqq2;
+  // dirty hack
+  if(qq<0)
+	qq=fabs(qq)/10;
   qqq1 = Vgs-dphi-V-Vth*log(8/(delta*POW2(radius)));
   qqq2 =(qq/Cox + Vth*(log(qq/Q0)+log(1+(qq/Q0))));
   return(qqq1-qqq2);
@@ -857,7 +859,6 @@ double Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET pMES)
   gsl_vector_free(x);
   return(idsmod);
 }
-   
 	
 int Ids_cMESFET_RmodFunc(gsl_vector *x, void *p, gsl_vector *f)
 {

@@ -156,7 +156,6 @@ if __name__=='__main__':
     # ballistic1d.check_func_for_E0_rect1dNP_fetmodel(-0.2,0.2,Vds,Vgs,p)
 
     Ids_cutoff=100e-9*1e6
-    p.EFermi=0.0
 
     check_func_det_EFs(p, Vds, Ids_cutoff)
     print("Determine EFs using fetmodel")
@@ -254,3 +253,6 @@ if __name__=='__main__':
     plt.tight_layout()
 
     plt.show()
+
+    for i, Vgs0 in enumerate(Vgs):
+        print(Vgs0,Ids1[i],Ids2[i],Ids3[i],gm1[i],gm2[i],gm3[i])

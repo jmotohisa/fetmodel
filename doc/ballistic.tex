@@ -3,7 +3,7 @@
 %% file: fem2dp-2.tex
 %% author: Junichi Motohisa
 %% created: 2017-11-21 18:32:34
-%% last saved : Time-stamp: <Thu Sep 26 09:14:31 JST 2019>
+%% last saved : Time-stamp: <Fri Sep 27 13:37:01 JST 2019>
 \usepackage[dvipdfmx]{graphicx}
 \usepackage{multicol}
 \usepackage{cite}
@@ -257,13 +257,70 @@ Top of the barrierのエネルギー$E_0$の低下量が小さくなる効果が
 
 The effective sub-band mass increases with energy, and the effective non-parabolicity factor decreases
 
+\section{Density of States}
+3次元において状態密度は
+\begin{equation}
+\mathcal{D}_{3D}(E) = \frac{2}{(2 \pi)^3} \int \frac{dS_{E(k)}}{\nabla_k E(k)}
+\end{equation}
+により計算される\cite{kittel}。積分は等エネルギー面上で行う。同様に2次元では
+\begin{equation}
+\mathcal{D}_{2D}(E) = \frac{2}{(2 \pi)^2} \int \frac{ds_{E(k)}}{\nabla_k E(k)}
+\end{equation}
+で積分を等エネルギー線上で行い、さらに1次元では
+\begin{equation}
+ \mathcal{D}_{1D}(E) = \frac{2}{2 \pi} [
+  (\d{E}{k})^{-1}|_{E(k)}
+  +(\d{E}{k})^{-1}|_{E(-k)}
+  ]
+\end{equation}
+となる。
 
+1次元の場合に
+\begin{equation}
+ E(1+\alpha E) = \frac{\hbar^2 k^2}{2 m^*}\equiv \Ene_k
+  \label{eqn:dispersion}
+\end{equation}
+として計算してみる。式(\ref{eqn:dispersion})より
+\begin{equation}
+ E=\frac{\sqrt{1+4\alpha \Ene_k}-1}{2\alpha}
+\end{equation}
+であるから
+\begin{equation}
+ \d{E}{k} = \frac{1}{2\alpha 2 \sqrt{1+4\alpha \Ene_k}} 4 \alpha \frac{\hbar^2 k }{m^*} =
+  \frac{\hbar^2}{m^*} \frac{k}{\sqrt{1+4\alpha \Ene_k}}
+  = \frac{\hbar^2}{m^*} \frac{k}{1+2\alpha E}
+\end{equation}
+となる。\footnote{式(\protect{\ref{eqn:dispersion}})を直接微分しても得られる。}
+よって
+\begin{subequations}
+\begin{align}
+ \mathcal{D}_{1D}(E)
+ &= \frac{1}{\pi}((\d{E}{k})^{-1}) \times 2 \\
+ & = \frac{2}{\pi} \frac{m^*}{\hbar^2} \frac{1+2\alpha E}{\sqrt{2 m^* E(1+\alpha E)}/\hbar} \\
+ &= \frac{\sqrt{2 m^*}}{\pi \hbar} 
+ \frac{1+2 \alpha E}{\sqrt{E(1+\alpha E)}}
+ \end{align}
+\end{subequations}
+これは\cite{Godoy}や\cite{Lind}の式と同じとなる。
 
- \begin{thebibliography}{99}
+2次元では
+\begin{subequations}
+\begin{align}
+ \mathcal{D}_{2D}(E)
+ & = \frac{1}{2\pi^2}((\d{E}{k})^{-1}) \times 2 \pi k \\
+ & = \frac{m^*}{\pi\hbar^2} (1+2 \alpha E)
+\end{align}
+\end{subequations}
+となる。
+
+\begin{thebibliography}{99}
   \bibitem{LG} Lundostrom and Gao Ballistic Nanotransistors
- \bibitem{mikoshiba} 御子柴 半導体の物理
- \bibitem{Vurgaftman} Vurgaftman
- \end{thebibliography}
+  \bibitem{Lind} ﻿Lind, E. (2016). High frequency III{\textendash}V nanowire MOSFETs. Semiconductor Science and Technology, 31(9), 93005–93014. https://doi.org/10.1088/0268-1242/31/9/093005
+  \bibitem{mikoshiba} 御子柴 半導体の物理
+  \bibitem{Vurgaftman} Vurgaftman
+  \bibitem{kittel} C. Kittel, 固体物理学入門
+  \bibitem{Godoy} Andr\'es Godoy, Zhicheng Yang, Umberto Ravaioli, Francisco Gámiz. (2005) Effects of nonparabolic bands in quantum wires. Journal of Applied Physics 98:1, 013702. 
+\end{thebibliography}
 %% \bibliography{/Users/motohisa/Dropbox/Papers/rse}
 
 \end{document}

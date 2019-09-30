@@ -90,6 +90,10 @@
   					  func_for_findroot_E0_rect1dNP,
   					  E0_rect1dNP_root,
   					  Ids_ballistic1d_rect1dNP,
+					  func_for_findroot_E0_2d,
+					  E0_2d_root,
+					  Ids_ballistic2d_E0,
+					  Ids_ballistic2d,
   					  )
 %}
   

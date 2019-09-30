@@ -85,8 +85,8 @@ Ids2 = np.empty_like(Vgs)
 Vds = 0.5
 
 for i, Vgs0 in enumerate(Vgs):
-    Ids1[i] = ballistic2d.Ids_ballistic2d(Vds, Vgs0, p, 0)*1e-3
-    Ids2[i] = ballistic2d.Ids_ballistic2d0(Vds, Vgs0, p, 0)*1e-3
+    Ids1[i] = fetmodel.Ids_ballistic2d(Vds, Vgs0, p, 0)*1e-3
+    Ids2[i] = ballistic2d.Ids_ballistic2d(Vds, Vgs0, p, 0)*1e-3
 
 fig, ax = plt.subplots()
 ax.plot(Vgs, Ids1, label='Ids1')

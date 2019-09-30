@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Thu Sep 26 09:44:08 JST 2019>
+ *  ballistic.c - Time-stamp: <Mon Sep 30 12:04:51 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -263,7 +263,7 @@ double Ids_ballistic1d_rect1dNP(double VDS, double VGS, param_ballistic p,double
 
 
 /*!
-  2D, neglect quantum confinment (subbands), parabollic band
+  2D, neglecting quantum confinment (subbands), parabollic band
 */
 double func_for_findroot_E0_2d0(double ene0,double EFermi,
 								double VDS, double VGS, 
@@ -351,8 +351,7 @@ double E0_2d_root0(double EFermi,
   params.Ceff = Ceff;
   low=-1;
   high=1;
-  return(E0_rect1dNP_root_brent(params, low, high));
-  
+  return(E0_2d_root_brent(params, low, high));
 }
 
 double E0_2d_root(param_ballistic p)

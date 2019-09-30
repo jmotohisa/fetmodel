@@ -1,5 +1,5 @@
 /*
- *  density1d.c - Time-stamp: <Mon Sep 16 21:55:49 JST 2019>
+ *  density1d.c - Time-stamp: <Mon Sep 30 12:01:06 JST 2019>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -250,9 +250,7 @@ double density1d_NP(param_density1d params)
   gsl_integration_workspace_free(w);
   /* printf("%d\n",status); */
   if(status!=GSL_SUCCESS) {
-	printf("Error in density1d_NP:status=%d\n",status);
-	GSL_ERROR_VAL("argument lies on singularity",
-				  GSL_ERANGE, GSL_NAN);
+	printf("Error in density1d_NP: %s\n",gsl_strerror(status));
 	}
   gsl_set_error_handler(NULL);
   double d0=sqrt(2*MASS(params.emsnm)*kBT0)/(GSL_CONST_MKS_PLANCKS_CONSTANT_HBAR*M_PI);

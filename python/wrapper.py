@@ -58,3 +58,15 @@ def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs):
                                               p.alpha, p.ems, p.temp, p.W1, p.W2, int(p.nmax), int(p.mmax)))
     
 
+def func_for_findroot_E0_2d(ene0, Vds, Vgs, EFs, p):
+    return fetmodel.func_for_findroot_E0_2d0(ene0, EFs, Vds, Vgs,
+                                             p.alpha_D, p.alpha_G, p.Ceff,  p.ems, p.temp)
+
+def E0_2d_root(EFermi, Vds, Vgs, p):
+    return fetmodel.E0_2d_root0(EFermi,Vds, Vgs, p.alpha_D, p.alpha_G, p.Ceff,p.ems, p.temp)
+                
+def Ids_ballistic2d_E0(E0,Vds, Vgs, p, EFs):
+    return fetmodel.Ids_ballistic2d0_E0(E0,Vds, Vgs, EFs,p.alpha_D, p.alpha_G,Ceff,ems, p.temp)
+
+def Ids_ballistic2d(Vds, Vgs, p, EFs):
+    return fetmodel.Ids_ballistic2d0(Vds, Vgs, EFs,p.alpha_D, p.alpha_G,p.Ceff,p.ems, p.temp)

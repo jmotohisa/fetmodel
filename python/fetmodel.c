@@ -1,5 +1,5 @@
 /*
- *  fetmodel.c - Time-stamp: <Sun Sep 01 11:58:02 JST 2019>
+ *  fetmodel.c - Time-stamp: <Sat Feb 29 07:59:19 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -55,36 +55,36 @@
   @return
 */
 
-#define DEFINE_CONSTRUCTOR(STRUCT)				\
-  STRUCT * STRUCT_new()						\
-  {												\
-	STRUCT *p = malloc(sizeof(STRUCT));			\
-	if(p ==NULL) {								\
-	  perror("malloc");							\
-	  exit(1);									\
-	}											\
-	return(p);									\
-  }
+/* #define DEFINE_CONSTRUCTOR(STRUCT)				\ */
+/*   STRUCT * STRUCT_new()						\ */
+/*   {												\ */
+/* 	STRUCT *p = malloc(sizeof(STRUCT));			\ */
+/* 	if(p ==NULL) {								\ */
+/* 	  perror("malloc");							\ */
+/* 	  exit(1);									\ */
+/* 	}											\ */
+/* 	return(p);									\ */
+/*   } */
 
-param_cMOSFET *param_cMOSFET_new()
-{
-  param_cMOSFET *p = malloc(sizeof(param_cMOSFET));
-  if(p ==NULL) {
-	perror("malloc");
-	exit(1);
-  }
-  return(p);
-}
+/* param_cMOSFET *param_cMOSFET_new() */
+/* { */
+/*   param_cMOSFET *p = malloc(sizeof(param_cMOSFET)); */
+/*   if(p ==NULL) { */
+/* 	perror("malloc"); */
+/* 	exit(1); */
+/*   } */
+/*   return(p); */
+/* } */
 
-param_cMESFET *param_cMESFET_new()
-{
-  param_cMESFET *p = malloc(sizeof(param_cMESFET));
-  if(p ==NULL) {
-	perror("malloc");
-	exit(1);
-  }
-  return(p);
-}
+/* param_cMESFET *param_cMESFET_new() */
+/* { */
+/*   param_cMESFET *p = malloc(sizeof(param_cMESFET)); */
+/*   if(p ==NULL) { */
+/* 	perror("malloc"); */
+/* 	exit(1); */
+/*   } */
+/*   return(p); */
+/* } */
 
 // Cylindrical MOSFET
 // charges:: numpy compatible
@@ -155,13 +155,13 @@ void Ids_cMES_R_func(double *in_array, double *out_array, int size,
 }
 
 // ballistic FET
-// DEFINE_CONSTRUCTOR(param_ballistic);
-param_ballistic *param_ballistic_new()
-{
-  param_ballistic *p = malloc(sizeof(param_ballistic));
-  if(p ==NULL) {
-	perror("malloc");
-	exit(1);
-  }
-  return(p);
-}
+/* // DEFINE_CONSTRUCTOR(param_ballistic); */
+/* param_ballistic *param_ballistic_new() */
+/* { */
+/*   param_ballistic *p = malloc(sizeof(param_ballistic)); */
+/*   if(p ==NULL) { */
+/* 	perror("malloc"); */
+/* 	exit(1); */
+/*   } */
+/*   return(p); */
+/* } */

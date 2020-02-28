@@ -37,7 +37,7 @@ if __name__ == '__main__':
                                     mmax=4)
     p.output()
 
-    # p = fetmodel.param_ballistic_new()
+    # p = fetmodel.param_ballistic()
     # p.ems = ems
     # p.alpha = alpha
     # p.W1 = W1

@@ -1,0 +1,217 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+\documentclass[11pt,uplatex,a4paper]{jsarticle}
+%% file: fem2dp-2.tex
+%% author: Junichi Motohisa
+%% created: 2017-11-21 18:32:34
+%% last saved : Time-stamp: <Fri Feb 28 18:28:27 JST 2020>
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{multicol}
+\usepackage{cite}
+%\usepackage{mathptmx}
+%\usepackage{color}
+\usepackage{lscape}
+% \usepackage{dcolumn}
+\usepackage{moreverb}
+% \usepackage[a4paper,margin=1in]{geometry}
+\usepackage[driver=dvipdfmx,truedimen]{geometry}
+% \geometry{left=30truemm,right=25truemm,top=25truemm,bottom=25truemm}
+\geometry{margin=1truein}
+% \usepackage[a4paper,margin=1in]{geometry}
+
+%% taken from https://github.com/ryseto/emacs_and_tex/blob/master/template.tex
+%% begin
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{bm}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\usepackage{siunitx}
+\usepackage{xcolor}
+%\usepackage[pdftex]{graphicx}
+%\usepackage[pdftex,bookmarks,colorlinks]{hyperref}
+% \usepackage[dvipdfmx]{hyperref}
+% \usepackage{pxjahyper}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newtxtext}
+\usepackage[varg]{newtxmath}
+\usepackage{booktabs}
+\usepackage{datetime}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{cleveref}
+\usepackage[numbers]{natbib}
+
+% \bibliographystyle{abbrvnat}
+\setlist{itemsep=-3pt}
+%% end
+
+\def\d#1#2{\frac{d #1}{d #2}}
+\def\dd#1#2{\frac{d^2 #1}{d #2^2}}
+\def\pd#1#2{\frac{\partial #1}{\partial #2}}
+\def\pdd#1#2{\frac{\partial^2 #1}{\partial #2^2}}
+\def\Ene{\varepsilon}
+\def\DOS{\mathcal{D}}
+\def\vec#1{{\bm{#1}}}
+\def\kvec{\bm{k}}
+\def\kvecp{{\bm{k}'}}
+\def\subvec#1{{\boldsymbol{\small #1}}}
+ 
+\def\GP{{\vec{G}_\parallel}}
+\def\GPP{{\vec{G}^\prime_\parallel}}
+\def\KP{{\vec{k}_\parallel}}
+\def\KP{{\vec{k}_\parallel}}
+\def\XP{{\vec{x}_\parallel}}
+
+\def\EneK{\varepsilon_{\kvec}}
+\def\EneKp{\varepsilon_{\kvec^{'}}}
+\def\EneKn{\varepsilon_{\kvec n}}
+\def\EneKnp{\varepsilon_{\kvec^{'} n^{'}}}
+\def\EneKm{\varepsilon_{m \vec{k}}}
+\def\EneKmp{\varepsilon_{m' \vec{k}'}}
+
+\def\bra#1{{\langle #1 |}}
+\def\ket#1{{| #1 \rangle}}
+\def\braket#1#2{{\langle #1 | #2 \rangle}}
+\def\av#1{{\langle #1 \rangle}}
+
+\def\sinc{\mathrm{sinc}}
+\def\sgn{\mathrm{sgn}_{n,p}}
+\def\Tr{{\mathrm{Tr}\, }}
+
+\def\micon{\mathrm{\mu m}}
+\def\nm{\mathrm{nm}}
+
+\begin{document}
+
+\title{Title}
+\author{J.~Motohisa\\Graduate School of IST, Hokkaido University}
+\date{\shortdate\today \, \ampmtime }
+\maketitle
+
+\section{Introduction}
+\section{Models for Current-Voltage Characteristics of Nanowire FETs}
+\label{sec:ivmodel}
+\subsection{Explicit Continuous Model for Long-channel FETs}
+In this appendix, we introduce two models for calculating current-voltage characteristics of NW-FETs.
+The first one is explicit continuous model for long-channel undoped SG MOSFETs with
+cylindrical cross section having radius $R$, which is derived by I\~n\'iguez \textit{et al.} \cite{Iniguez:2005ub}.
+The drain current $I_{\mathrm{DS}}$ in their model is calculated by the following equation; 
+%%%%%%%%%%%%% Eq. (9)
+\begin{equation}
+ I_{\mathrm{DS}} = \frac{2 \pi R}{L_{\mathrm{G}}} \mu
+  \left[
+   2 \varphi_{\mathrm{th}} (Q_{\mathrm{S}} - Q_{\mathrm{D}}) + \frac{Q_{\mathrm{S}}^2-Q_{\mathrm{D}}^2}{2 C_0}
+   + \varphi_{\mathrm{th}} Q_0 \ln \left(\frac{Q_{\mathrm{D}} + Q_0}{Q_{\mathrm{S}}+Q_0}\right) 
+  \right] \ , 
+\end{equation}
+where $L_{\mathrm{G}}$ is the gate length, $\mu$ is the mobility, and
+\begin{equation}
+Q_0=\frac{4 \varepsilon_{\mathrm{S}} \varepsilon_0}{R}\varphi_{\mathrm{th}} \ ,
+\end{equation}
+with $\varphi_{\mathrm{th}} = {k_B T}/{q}$,
+and $\varepsilon_{\mathrm{S}}$ is the dielectric constant of the channel material.
+$C_0$ is the oxide capacitance \textit{per unit area} (=$C_{OX}/2\pi R$ with $C_{OX}$ given by Eq. (\ref{eqn:Cox1})).
+$Q_{\mathrm{D}}$ and $Q_{\mathrm{S}}$ are inversion charges at source and drain and determined by solving the following equation for $Q$
+with $Q_{\mathrm{D}} = Q(V_{\mathrm{DS}})$ and $Q_{\mathrm{S}}=Q(0)$;
+%%%%%%%%%%%% Eq. 6
+\begin{equation}
+ (V_{\mathrm{GS}} - \Delta \varphi -V) - \varphi_{\mathrm{th}}
+  \ln \left(\frac{8}{\delta R^2}\right)
+  = \frac{Q}{C_0} + \varphi_{\mathrm{th}} \ln \left(\frac{Q}{Q_0}\right) +
+  \varphi_{\mathrm{th}} \ln \left(\frac{Q+Q_0}{Q_0}\right)
+\end{equation}
+Here, $\Delta \varphi$ is the difference of work function between channel material and the gate metal and
+\begin{equation}
+ \delta = \frac{q^2n_i}{k_B T \varepsilon_{\mathrm{S}}\varepsilon_0}
+\end{equation}
+with intrinsic carrier density $n_i$.
+This equation should be solved numerically, but
+a closed form for $Q$ is also given in Ref. \cite{Iniguez:2005ub} as
+%%%%%%%%% Eq. (17)
+\begin{equation}
+ Q = C_0
+  \left(
+   -\frac{2 C_0 \varphi_{\mathrm{th}}^2}{Q_0} +
+   \sqrt{\left(\frac{2 C_0 \varphi_{\mathrm{th}}^2}{Q_0}\right)^2
+   + 4 \varphi_{\mathrm{th}}^2 \ln^2
+   \left(
+	1+ \exp \left(\frac{V_{\mathrm{GS}}-V_{\mathrm{T}}+\Delta V_{\mathrm{T}} -V}{2 \varphi_{\mathrm{th}}}
+			\right)
+   \right)
+   }
+  \right)
+\end{equation}
+with
+% \begin{equation}
+%  \varphi_{\mathrm{th}} = \frac{k_B T}{q}
+  % \end{equation}
+  %%%% Eq. 16
+\begin{equation}
+ V_{\mathrm{T}} = V_0 + 2 \varphi_{\mathrm{th}} \ln \left(1+\frac{Q'}{Q_0}\right)
+\end{equation}
+and
+%%%% Eq. 18
+\begin{equation}
+ Q'=
+  C_0
+  \left(
+   -\frac{2 C_0 \varphi_{\mathrm{th}}^2}{Q_0} +
+   \sqrt{\left(\frac{2 C_0 \varphi_{\mathrm{th}}^2}{Q_0}\right)^2
+   + 4 \varphi_{\mathrm{th}}^2 \ln^2
+   \left(
+	1+ \exp \left(\frac{V_{\mathrm{GS}}-V_0 -V}{2 \varphi_{\mathrm{th}}}
+			\right)
+   \right)
+   }
+  \right)
+\end{equation}
+and
+\begin{equation}
+ \Delta V_{\mathrm{T}} = \frac{2C_0\varphi_{\mathrm{th}}^2}{Q_0}
+  \frac{Q'}{Q_0 + Q'}
+\end{equation}
+and
+\begin{equation}
+ V_0 = \Delta \varphi + \varphi_{\mathrm{th}} \ln \left(\frac{8}{\delta R^2}\right)
+\end{equation}
+
+\section{Velocity Saturation}
+電流を与える\cite{Iniguez:2005ub}の式(7)は
+\begin{equation}
+ I_{DS} = \mu \frac{2 \pi R}{L}\int_0^{V_{DS}} Q(V) dV
+\end{equation}
+であるが、これは通常のMOSFETと同様に
+\begin{equation}
+ I_{DS} = 2 \pi R Q(V) \mu \d{V}{x}
+\end{equation}
+をチャネルに沿って$x$で積分したものと思われる。
+したがって速度飽和を考慮するためには、例えばドリフト速度として
+\begin{equation}
+ v = \frac{\mu \d{V}{x}}{1+\frac{v_s}{\mu}\d{V}{x}}
+\end{equation}
+を考えてやると
+\begin{equation}
+ I_{DS} = 2 \pi R Q(V)  = 2 \pi R Q(V) \frac{\mu \d{V}{x}}{1+\frac{v_s}{\mu}\d{V}{x}}
+\end{equation}
+となる。分母をはらって$x$で積分すると
+\begin{equation}
+ I_{DS} (L +  \frac{v_s}{\mu} \int_0^{L} dx \d{V}{x})
+  = \mu 2 \pi R \int_0^{L} dx Q(V) \d{V}{x}
+\end{equation}
+となるので
+\begin{equation}
+ I_{DS} = \mu \frac{2 \pi R}{L} \frac{1}{{1 + \frac{v_s V_{DS}}{\mu L}}}
+  \int_{Q_S}^{Q_D} Q(V) dV
+\end{equation}
+となる。
+
+\appendix
+
+ \begin{thebibliography}{99}
+  \bibitem{Iniguez:2005ub}
+		  Iniguez, B., Jimenez, D., Roig, J., Hamid, H. A., Marsal, L. F., and Pallares, J. (2005). Explicit continuous model for long-channel undoped surrounding gate MOSFETs. IEEE Transactions on Electron Devices, 52(8), 1868–1873.     
+ \end{thebibliography}
+%% \bibliography{/Users/motohisa/Dropbox/Papers/rse}
+
+\end{document}
+

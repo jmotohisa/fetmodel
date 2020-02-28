@@ -25,6 +25,7 @@ FETMODEL_SWIG_HDRS =             \
  $(top_srcdir)/src/density1d.h   \
  $(top_srcdir)/src/density2d.h   \
  $(top_srcdir)/src/ballistic.h   \
+ $(top_srcdir)/src/mos1d.h 	     \
  $(top_srcdir)/src/capacitor.h
 
 

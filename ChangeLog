@@ -1,0 +1,4 @@
+2020-02-29  Junichi Motohisa  <motohisa@ist.hokudai.ac.jp>
+
+	* python/fetmodel.c, python/fetmodel.h ("C"): unnecessary constructor removed
+

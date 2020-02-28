@@ -24,7 +24,7 @@ Cc = math.sqrt(1.6e-19*1e21/(2*epsS*8.86e-12*1))
 alpha_D = 0
 alpha_G = 1
 
-p = fetmodel.param_ballistic_new()
+p = fetmodel.param_ballistic()
 p.ems = ems
 p.alpha = alpha
 p.W1 = W1

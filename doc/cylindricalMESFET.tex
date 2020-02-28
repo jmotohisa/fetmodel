@@ -81,7 +81,7 @@
 \subsection{Poisson Equation}
 Poisson方程式
 \begin{equation}
- \frac{1}{r} \d{}{r}(r\d{\psi}{r}) = \frac{q}{\epsilon} N_D
+ \frac{1}{r} \d{}{r}(r\d{\psi}{r}) = -\frac{q}{\epsilon} N_D
 \end{equation}
 の一般解は
 \begin{equation}
@@ -95,11 +95,14 @@ Poisson方程式
 \end{eqnarray}
 $\tilde{R}=(R-W)/R$とおくと
 \begin{eqnarray}
-c_1 &=& \frac{q N_D}{2 \epsilon} \tilde{R}^2 \\
-c_2& =& \frac{q N_D}{4 \epsilon}\tilde{R}^2 (1-\ln (R^2\tilde{R}^2))
+c_1 &=& \frac{q N_D R^2}{2 \epsilon} \tilde{R}^2 \\
+c_2& =& \frac{q N_D R^2}{4 \epsilon}\tilde{R}^2 (1-\ln (R^2\tilde{R}^2))
 \end{eqnarray}
 \begin{equation}
- \frac{4 \epsilon}{e N_D R^2} V_{bi} = (1-\tilde{R}^2)+\tilde{R}^2 \ln \tilde{R}^2\label{eqn:R}
+ \frac{4 \epsilon}{q N_D R^2} V_{bi} = (1-\tilde{R}^2)+\tilde{R}^2 \ln \tilde{R}^2\label{eqn:R}
+\end{equation}
+\begin{equation}
+ W = R(1-\tilde{R})
 \end{equation}
 式(\ref{eqn:R})の右辺をプロットしたものを図\ref{fig:rgraph}に示す。
 
@@ -175,7 +178,7 @@ Poisson方程式は
 \end{equation}
 を用いて
 \begin{equation}
- \tilde{r}=r/L_D
+\tilde{r}=r/L_D
 \end{equation}
 および
 \begin{equation}
@@ -194,13 +197,14 @@ Poisson方程式は
 Poisson方程式は
 \begin{equation}
  \frac{1}{r}\d{}{r}(r\d{\phi}{r}) =  -\frac{q}{\epsilon}
-  (N_D^ + p - N_A^- - n)
+  (N_D^+ + p - N_A^- - n)
 \end{equation}
-電荷中性条件
+ドナーおよびアクセプタはすべての領域ですべてイオン化しているとすれば、
+バルク領域においては電荷中性条件
 \begin{equation}
  N_D^+ - N_A^- = n_{p0}-p_{n0}
 \end{equation}
-および
+が成立する。この式と
 \begin{equation}
  n=n_{p0} \exp(\beta \phi),\ p = p_{p0} \exp(-\beta\phi)
 \end{equation}
@@ -305,6 +309,76 @@ $Q_S \gg Q_D$として
    2 + \frac{Q_S}{C_{\mathrm{OX}}V_{th}}
    - \frac{Q_0}{Q_S+Q_0} \right]
   }
+\end{equation}
+
+\section{Poisson Equation (3)}
+p形における表面反転を考える。
+表面ポテンシャルを$\psi_S$とすると
+ポアソン方程式および境界条件は$N_D \to -N_A$、
+$V_{bi} \to -\psi_S$とすればよいから
+ポアソン方程式の解は
+式(\ref{eqn:R})から
+\begin{equation}
+ \frac{4 \epsilon}{q N_A R^2} \psi_{S} = (1-\tilde{R}^2)+\tilde{R}^2 \ln \tilde{R}^2\label{eqn:R}
+\end{equation}
+単位長さあたりの酸化膜容量を$C_{OX}$とすると
+\begin{equation}
+ V_{GS} - \psi_S = \frac{Q}{C_{OX}} = \pi(R^2-(R-W)^2) q N_A \frac{1}{C_{OX}}
+\end{equation}
+\begin{equation}
+V_{GS} = \psi_S + (1-\tilde{R}^2) \frac{\pi R^2 q N_A }{C_{OX}}
+\end{equation}
+これを$\psi_S$で微分して
+\begin{equation}
+ \d{V_{GS}}{\psi_S} = 1 - 2 \tilde{R} \d{\tilde{R}}{\psi_S}  \frac{\pi R^2 q N_A }{C_{OX}}
+\end{equation}
+ここで
+\begin{equation}
+ \d{\tilde{R}}{\psi_{S}} = \frac{\epsilon}{q N_A R^2} \frac{1}{\tilde{R}
+  \ln \tilde{R}}
+\end{equation}
+であるから
+\begin{equation}
+ \d{V_{GS}}{\psi_S} = 1 - 2 \pi \frac{\epsilon}{ C_{OX} \ln \tilde{R}}
+\end{equation}
+よって
+\begin{equation}
+ C_D = \frac{2 \pi \epsilon}{-\ln\tilde{R}} = \frac{2 \pi \epsilon}{-\ln(1-W/R)}
+\end{equation}
+とすれば、
+
+
+\appendix
+\section{円筒構造におけるキャパシタンス}
+単位長さあたりの電荷密度を$Q$とすると
+\begin{equation}
+ 2 \pi r \epsilon_{OX} E_{OX} = Q 
+\end{equation}
+より
+\begin{equation}
+  E_{OX} = \frac{Q }{2 \pi r \epsilon_{OX} }
+\end{equation}
+$r$に対して
+
+
+$R$から$R+d$まで積分すると
+右辺は
+\begin{equation}
+ \frac{Q}{2 \pi \epsilon_{OX}} (\ln (R+d)-\ln R)
+\end{equation}
+一方左辺は
+\begin{equation}
+ \int_R^{R+d} \d{V}{r} dr =
+   \int_{V(R)}^{V{R+d}} dV
+  =  V(R+d)-V(R) \equiv V
+\end{equation}
+よって単位長さあたりの酸化膜容量は
+\begin{equation}
+ C_{OX} =\frac{ 2 \pi \epsilon_{OX}}{ln(1+d/R)}
+\end{equation}
+単位面積あたりでは$2 \pi R$で割って
+\begin{equation}
+ C_{OX} = \frac{\epsilon_{OX} }{R(\epsilon_{OX}}{ln(1+d/R))}
 \end{equation}
 
 \end{document}

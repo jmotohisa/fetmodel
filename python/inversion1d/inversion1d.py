@@ -40,7 +40,12 @@ if __name__ == '__main__':
             psis0, p.ni, p.eps_semi, 1e21, p.temp)*1e-4
         qcharge2[i] = func_Qcharge1dMOS0(
             psis0, p.ni, p.eps_semi, 1e20, p.temp)*1e-4
+        # qcharge1[i] = fetmodel.func_Qcharge1dMOS0(
+        #     psis0, p.ni, p.eps_semi, 1e21, p.temp)*1e-4
+        # qcharge2[i] = fetmodel.func_Qcharge1dMOS0(
+        #     psis0, p.ni, p.eps_semi, 1e20, p.temp)*1e-4
 
+    # qcharge1 = (qcharge2/qcharge1)
     fig, ax = plt.subplots()
     ax.plot(psis, qcharge1, label='Na=1e15cm^-3')
     ax.plot(psis, qcharge2, label='Na=1e14cm^-3')

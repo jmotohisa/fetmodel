@@ -8,6 +8,7 @@
 #include "../src/density2d.h"
 #include "../src/ballistic.h"
 #include "../src/capacitor.h"
+#include "../src/mos1d.h"
 #include "fetmodel.h"
 
   extern void Qapprox_cMOS_func(double *in_array,double *out_array, int size, param_cMOSFET p);
@@ -35,6 +36,7 @@
 %include "../src/density2d.h"
 %include "../src/ballistic.h"
 %include "../src/capacitor.h"
+%include "../src/mos1d.h"
 %include "fetmodel.h"
 
 %apply (double* IN_ARRAY1, int DIM1) {(double * in_array, int size_in)}
@@ -94,6 +96,7 @@
 					  E0_2d_root,
 					  Ids_ballistic2d_E0,
 					  Ids_ballistic2d,
+					  func_Qcharge1dMOS0,
   					  )
 %}
   

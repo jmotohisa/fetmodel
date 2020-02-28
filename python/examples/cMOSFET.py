@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 # import h5py
 
-p = fetmodel.param_cMOSFET_new()
+p = fetmodel.param_cMOSFET()
 p.radius = 6.25e-9
 p.Lg = 1e-6
 p.eps_semi = 11.6

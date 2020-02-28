@@ -81,3 +81,17 @@ def Ids_ballistic2d_E0(E0,Vds, Vgs, p, EFs):
 
 def Ids_ballistic2d(Vds, Vgs, p, EFs):
     return fetmodel.Ids_ballistic2d0(Vds, Vgs, EFs,p.alpha_D, p.alpha_G,p.Ceff,p.ems, p.temp)
+
+
+## from mos1d
+def func_Qcharge1dMOS0(psis, ni, eps_semi, Na, temp):
+    pp0 = Na
+    np0 = ni**2/Na
+    return fetmodel.func_QsMOS1D(psis,np0,pp0,eps_semi,temp)
+
+## from cMOSFET
+def Ids_cMOSFET(Vds, Vgs, p):
+    """
+    p: class of parameters_cMOSFET
+    """
+    return(fetmodel.Ids_cMOSFET)

@@ -125,7 +125,7 @@ if __name__=='__main__':
     p.output()
     print("")
     
-    # p = fetmodel.param_ballistic_new()
+    # p = fetmodel.param_ballistic()
     # p.ems = ems
     # p.alpha = alpha
     # p.W1 = W1

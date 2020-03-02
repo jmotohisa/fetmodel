@@ -2,19 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-Analysis of Short channel MOSFET: subthreshold slope, Vth rolloff
+Analysis of Short channel DG MOSFET: subthreshold slope, Vth rolloff
 
 References
-[1] B. Yu et al., IEEE Trans. Electon Dev. 56(10) 2357 (2009):
-A Two-Dimensional Analytical Solution of Short-Channel Effects in Nanowire MOSFETs
+[1] Liang, X., & Taur, Y. (2004). A 2-D analytical solution for SCEs in DG MOSFETs.
+IEEE Transactions on Electron Devices, 51(9), 1385–1391.
+https://doi.org/10.1109/TED.2004.832707
 
-[2] Auth, C. P., & Plummer, J. D. (1997).
-Scaling theory for cylindrical, fully-depleted, surrounding-gate MOSFET’s.
-IEEE Electron Device Letters, 18(2), 74–76. https://doi.org/10.1109/55.553049
-
-[3] Guanghui Mei et al 2011 Jpn. J. Appl. Phys. 50 074202
-DOI: https://doi.org/10.1143/JJAP.50.074202
-Analytical Model for Subthreshold Swing and Threshold Voltage of Surrounding Gate Metal–Oxide–Semiconductor Field-Effect Transistors
 """
 
 import numpy as np
@@ -28,31 +22,15 @@ import matplotlib.pyplot as plt
 import fetmodel
 
 
-def lambda3_naturallength(p):
-    """
-    Natural lenghth in NW MOSFET
-    Expression lambda_3 ref [2]
-    """
-    # return math.sqrt(2*p.eps_semi/p.eps_ox*p.tox/p.radius+1)*(p.radius/2)
-    return math.sqrt(2*p.eps_semi/p.eps_ox*math.log(1+p.tox/p.radius)+1)*(p.radius/2)
 
 
-def lambda2_naturallength(p):
+def func_for_findroot_sce_dgfet0(invlambda1, tOX0, epsOX, epsS):
     """
-    Natural lenghth in double gate MOSFET
-    Expression lambda_2 ref [2]
+    Function to find invlambda1 (Eq.(8) in the Ref.[1])
+    Normalized with thickness of channel tSi (tOX0=tOX/tSi)
     """
-    return math.sqrt(p.eps_semi/(p.eps_ox)*(1+(p.eps_ox*p.radius/(2*p.eps_semi*p.tox)))*p.radius*p.tox)
-
-
-def func_for_findroot_sce_nwfet0(k1, tOX0, epsOX, epsS):
-    """
-    Function to find k (Eq.(8) in the Ref.[1])
-    Normalized with radius R (tOX0=tOX/radius)
-    """
-    k2 = k1*(1+tOX0)
-    lhs = epsS * jv(1, k1) * (jv(0, k1)*yv(0, k2)-jv(0, k2)*yv(0, k1))
-    rhs = epsOX * (jv(1, k1)*yv(0, k2)-jv(0, k2)*yv(1, k1)) * jv(0, k1)
+    lhs = epsS * math.tan(math.pi*tOX0*invlambdad1n)
+    rhs = epsOX * math.cot(math.pi/2*invlambda1)
     return(lhs-rhs)
 
 
@@ -60,21 +38,21 @@ def k1_sce_nwfet0(tOX0, epsOX, epsS):
     """
     solution of Eq.(8) in Ref. [1]: tOX0 is normzlied with radius
     """
-    k1 = optimize.root_scalar(
-        func_for_findroot_sce_nwfet0, args=(tOX0, epsOX, epsS),
+    invlambda1 = optimize.root_scalar(
+        func_for_findroot_sce_dgfet0, args=(tOX0, epsOX, epsS),
         x0=0.8, x1=2)
-    return(k1.root)
+    return(1/invlambda1.root)
 
 
-def k1_sce_nwfet(p):
+def k1_sce_dgfet(p):
     """
     solution of Eq.(8) in Ref.[1]
     """
-    k1 = k1_sce_nwfet0(p.tox/p.radius, p.eps_ox, p.eps_semi)
-    return(k1/p.radius)
+    k1 = k1_sce_nwfet0(p.tox/(p.radius*2), p.eps_ox, p.eps_semi)
+    return(k1/(p.radius*2))
 
 
-def coefsE0(k, radius, tOX, epsOX, epsS):
+def coefsb1_dgfet(k, tSi, tOX, epsOX, epsS):
     """
     coefficient E in Eq.(14) of Ref.[1]
     """

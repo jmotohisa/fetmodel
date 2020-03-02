@@ -47,7 +47,7 @@ INIT_PY = __init__.py
 ######################################################################
 # specification of python source files to be byte-compiled at installation
 ######################################################################
-HL_IFACE = define_params.py wrapper.py
+HL_IFACE = define_params.py wrapper.py isubth_nwfet/isubth_nwfet.py
 
 pkgpython_PYTHON = __init__.py $(HL_IFACE)
 

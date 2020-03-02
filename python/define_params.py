@@ -56,31 +56,70 @@ class parameters_cMOSFET:
                  eps_ox=3.9,
                  mue=0.04):
 
-        self.radius=radius
-        self.Lg=Lg
-        self.eps_semi=eps_semi
-        self.Rs=Rs
-        self.Rd=Rd
+        self.cMOSFET = fetmodel.param_cMOSFET()
+        self.cMOSFET.radius=radius
+        self.cMOSFET.Lg=Lg
+        self.cMOSFET.eps_semi=eps_semi
+        self.cMOSFET.Rs=Rs
+        self.cMOSFET.Rd=Rd
         if Cox<0 :
-            self.Cox=fetmodel.Cox_radial_area(eps_ox,tox,radius)
+            self.cMOSFET.Cox=fetmodel.Cox_radial_area(eps_ox,tox,radius)
         else:
-            self.Cox=Cox
-        self.temp=temp
-        self.ni=ni
-        self.dphi=dphi
-        self.tox=tox
-        self.eps_ox=eps_ox
-        self.mue=mue
+            self.cMOSFET.Cox=Cox
+        self.cMOSFET.temp=temp
+        self.cMOSFET.ni=ni
+        self.cMOSFET.dphi=dphi
+        self.cMOSFET.tox=tox
+        self.cMOSFET.eps_ox=eps_ox
+        self.cMOSFET.mue=mue
         
     def output(self):
-        print("Lg=",self.Lg)
-        print("eps_semi=",self.eps_semi)
-        print("Rs=",self.Rs)
-        print("Rd=",self.Rd)
-        print("Cox=",self.Cox)
-        print("temp=",self.temp)
-        print("ni=",self.ni)
-        print("dphi=",self.dphi)
-        print("tox=",self.tox)
-        print("eps_ox=",self.eps_ox)
-        print("mue=",self.mue)
+        print("radius=",self.cMOSFET.radius)
+        print("Lg=",self.cMOSFET.Lg)
+        print("eps_semi=",self.cMOSFET.eps_semi)
+        print("Rs=",self.cMOSFET.Rs)
+        print("Rd=",self.cMOSFET.Rd)
+        print("Cox=",self.cMOSFET.Cox)
+        print("temp=",self.cMOSFET.temp)
+        print("ni=",self.cMOSFET.ni)
+        print("dphi=",self.cMOSFET.dphi)
+        print("tox=",self.cMOSFET.tox)
+        print("eps_ox=",self.cMOSFET.eps_ox)
+        print("mue=",self.cMOSFET.mue)
+
+
+class parameters_cMESFET:
+    def __init__(self,
+                 radius=6.25e-9,
+                 Lg=1.5e-6,
+                 eps_semi=11.6,
+                 Rs=0.,
+                 Rd=0.,
+                 temp=300.,
+                 mue=0.04,
+                 Nd = 1e22,
+                 Vbi = 0.7,):
+
+        self.cMESFET = fetmodel.param_cMESFET()
+        self.cMESFET.radius=radius
+        self.cMESFET.Lg=Lg
+        self.cMESFET.eps_semi=eps_semi
+        self.cMESFET.Rs=Rs
+        self.cMESFET.Rd=Rd
+        self.cMESFET.temp=temp
+        self.cMESFET.mue=mue
+        self.cMESFET.Nd=Nd
+        self.cMESFET.Vbi=Vbi
+        
+        
+    def output(self):
+        print("radius=",self.cMESFET.radius)
+        print("Lg=",self.cMESFET.Lg)
+        print("eps_semi=",self.cMESFET.eps_semi)
+        print("Rs=",self.cMESFET.Rs)
+        print("Rd=",self.cMESFET.Rd)
+        print("temp=",self.cMESFET.temp)
+        print("mue=",self.cMESFET.mue)
+        print("Nd=",self.cMESFET.Nd)
+        print("Vbi=",self.cMESFET.Vbi)
+        

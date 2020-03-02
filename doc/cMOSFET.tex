@@ -3,7 +3,7 @@
 %% file: fem2dp-2.tex
 %% author: Junichi Motohisa
 %% created: 2017-11-21 18:32:34
-%% last saved : Time-stamp: <Fri Feb 28 18:28:27 JST 2020>
+%% last saved : Time-stamp: <Sun Mar 01 21:39:56 JST 2020>
 \usepackage[dvipdfmx]{graphicx}
 \usepackage{multicol}
 \usepackage{cite}
@@ -187,11 +187,11 @@ and
 をチャネルに沿って$x$で積分したものと思われる。
 したがって速度飽和を考慮するためには、例えばドリフト速度として
 \begin{equation}
- v = \frac{\mu \d{V}{x}}{1+\frac{v_s}{\mu}\d{V}{x}}
+ v = \frac{\mu \d{V}{x}}{1+\frac{\mu}{v_s}\d{V}{x}}
 \end{equation}
 を考えてやると
 \begin{equation}
- I_{DS} = 2 \pi R Q(V)  = 2 \pi R Q(V) \frac{\mu \d{V}{x}}{1+\frac{v_s}{\mu}\d{V}{x}}
+ I_{DS} = 2 \pi R Q(V)  = 2 \pi R Q(V) \frac{\mu \d{V}{x}}{1+\frac{\mu}{v_s}\d{V}{x}}
 \end{equation}
 となる。分母をはらって$x$で積分すると
 \begin{equation}
@@ -200,7 +200,7 @@ and
 \end{equation}
 となるので
 \begin{equation}
- I_{DS} = \mu \frac{2 \pi R}{L} \frac{1}{{1 + \frac{v_s V_{DS}}{\mu L}}}
+ I_{DS} = \mu \frac{2 \pi R}{L} \frac{1}{{1 + \frac{\mu V_{DS}}{v_s L}}}
   \int_{Q_S}^{Q_D} Q(V) dV
 \end{equation}
 となる。

@@ -135,6 +135,12 @@
 ;; simulation main functions
 
 ;; Cylindrical 1D MOSFET
+
+(define-external-function get-radius false false
+  'number 'params-NWFET)
+(define-external-function get-radius2 false false
+  'number 'params-NWFET)
+
 (define-external-function func-Qapprox-cMOSFET true true
   'number 'number)
 

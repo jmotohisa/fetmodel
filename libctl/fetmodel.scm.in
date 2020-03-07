@@ -68,6 +68,12 @@
 (define (Cox-func-default x) 0.0233)
 ;; (define-input-var Cox 0.0233 'number) ; gate capacitance, F/m^2
 
+(define-class params-solver no-parent
+  (define-property left 0 'number)
+  (define-property right 1 'number)
+  (define-property initial 0 'number)
+  (define-property solver 0 'integer))
+
 (define-class params-NWFET no-parent
   (define-property sizes NW-default 'NW-sizes) ;; NW shape and size
   (define-property tox 10e-9 'number) ;; oxide thickness
@@ -112,9 +118,14 @@
   )
 
 ;; input
+(define solver-params-default
+  (make params-solver))
 (define FET-params-default
   (make params-NWFET))
 
+
+(define-input-var solver-params solver-params-default
+  'params-solver)
 (define-input-var FET-params FET-params-default
   'params-NWFET)
 (define-input-var params-parasitic
@@ -141,28 +152,35 @@
 (define-external-function get-radius2 false false
   'number 'params-NWFET)
 
-(define-external-function func-Qapprox-cMOSFET true true
+(define-external-function rootfind_Q_cMOSFET false false
+  'number 'number 'number 'number 'params-NWFET)
+
+(define-external-function Qcharge-cMOSFET true true
   'number 'number)
 
-(define-external-function func-Q-cMOSFET true true
+(define-external-function Qcharge2-cMOSFET true true
   'number 'number)
 
-(define-external-function func-Ids-cMOSFET true true
+(define-external-function Ids-cMOSFET true true
   'number 'number 'number)
 
-(define-external-function func-Ids0-cMOSFET true true
+(define-external-function Ids2-cMOSFET true true
   'number 'number 'number)
 
-(define-external-function func-Ids-cMOSFET-R true true
+(define-external-function Ids-cMOSFET-R true true
   'number 'number 'number)
 
-(define-external-function func-Ids0-cMOSFET-R true true
+(define-external-function Ids2-cMOSFET-R true true
   'number 'number 'number)
+
+;; function to find Q
+(define-external-function frf-Q-cMOSFET true false 'number
+  'number 'number 'number 'params-NWFET)
 
 ;; Cylindrical 1D MESFET
-(define-external-function func-Ids-cMESFET true true
+(define-external-function Ids-cMESFET true true
   'number 'number 'number)
-(define-external-function func-Ids-cMESFET-R true true
+(define-external-function Ids-cMESFET-R true true
   'number 'number 'number)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,5 +1,5 @@
 /*
- *  cfet_libctl.c - Time-stamp: <Mon Aug 19 20:56:22 JST 2019>
+ *  cfet_libctl.c - Time-stamp: <Sun Mar 08 06:52:50 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -122,7 +122,7 @@ double get_Cox(params_NWFET p)
 }
 
 // Get global and store local valuable 
-void get_global_cMOSFET(param_cMOSFET *p)
+void get_global_cMOSFET(param_cMOSFET *p, param_solver *ps)
 {
   p->radius=get_radius(FET_params);
   p->Lg=FET_params.Lg;
@@ -136,9 +136,12 @@ void get_global_cMOSFET(param_cMOSFET *p)
   p->tox=FET_params.tox;
   p->eps_ox=FET_params.eps_ox;
   p->mue=FET_params.mobility;
+
+  ps->left = solver_params.left;
+  ps->right = solver_params.right;
 }
 
-void get_global_cMESFET(param_cMESFET *p)
+void get_global_cMESFET(param_cMESFET *p, param_solver *ps)
 {
   p->temp=temperature;
   p->radius=get_radius(FET_params);
@@ -154,47 +157,82 @@ void get_global_cMESFET(param_cMESFET *p)
   /* p->eps_ox=FET_params.eps_ox; */
   p->Nd=FET_params.subclass.params_cMESFET_data->Nd;
   p->Vbi=FET_params.subclass.params_cMESFET_data->Vbi;
+  
+  ps->left = solver_params.left;
+  ps->right = solver_params.right;
 }
 
 // cMOSFET: Charges
-number func_Qapprox_cMOSFET(number Vgs)
-{
-  param_cMOSFET p;
-  get_global_cMOSFET(&p);
-  return(Qapprox_cMOSFET(Vgs,p));
-}
 
-number func_Q_cMOSFET(number Vgs)
+number frf_Q_cMOSFET(number qq,number V, number Vgs,params_NWFET FET_params)
 {
   param_cMOSFET p;
-  get_global_cMOSFET(&p);
-  return(Q_cMOSFET(Vgs,p));
+  p.radius=get_radius(FET_params);
+  p.Lg=FET_params.Lg;
+  p.eps_semi=FET_params.eps_s;
+  p.Rs=params_parasitic.Rs;
+  p.Rd=params_parasitic.Rd;
+  p.Cox=get_Cox(FET_params);
+  p.temp=temperature;
+  p.ni=FET_params.subclass.params_cMOSFET_data->ni;
+  p.dphi=FET_params.subclass.params_cMOSFET_data->dphi;
+  p.tox=FET_params.tox;
+  p.eps_ox=FET_params.eps_ox;
+  p.mue=FET_params.mobility;
+  return(func_rootfind_Q_cMOSFET(qq,V, Vgs, p));
+}
+						  
+number Qcharge_cMOSFET(number Vgs)
+{
+  param_cMOSFET p;
+  param_solver ps;
+  get_global_cMOSFET(&p, &ps);
+  return(func_Qcharge_cMOSFET(Vgs,0,p,ps));
+xb}
+
+number Qcharge2_cMOSFET(number Vgs)
+{
+  param_cMOSFET p;
+  param_solver ps;
+  get_global_cMOSFET(&p,&ps);
+  return(func_Qcharge2_cMOSFET(Vgs,0,p));
 }
 
 // cMOSFET: current
 
-#define EXPORT_CMOSFET(name) \
-  number func_##name(number Vds, number Vgs) \
-  {											 \
-  param_cMOSFET p;							 \
-  get_global_cMOSFET(&p);					 \
-  return( name(Vds,Vgs,p));				 \
+#define EXPORT_CMOSFET(name)						 \
+  number name(number Vds, number Vgs)				 \
+  {													 \
+	param_cMOSFET p;								 \
+	param_solver ps;								 \
+	get_global_cMOSFET(&p,&ps);						 \
+	return( func_##name(Vds,Vgs,p,ps));				 \
   }
 
 EXPORT_CMOSFET(Ids_cMOSFET);
 EXPORT_CMOSFET(Ids_cMOSFET_R);
-EXPORT_CMOSFET(Ids0_cMOSFET);
-EXPORT_CMOSFET(Ids0_cMOSFET_R);
 
+#define EXPORT2_CMOSFET(name)						 \
+  number name(number Vds, number Vgs)				 \
+  {													 \
+	param_cMOSFET p;								 \
+	param_solver ps;								 \
+	get_global_cMOSFET(&p,&ps);						 \
+	return( func_##name(Vds,Vgs,p));				 \
+  }
+
+EXPORT2_CMOSFET(Ids2_cMOSFET);
+EXPORT2_CMOSFET(Ids2_cMOSFET_R);
 
 // cMESFET: current
 
 #define EXPORT_CMESFET(name)				 \
-  number func_##name(number Vds, number Vgs) \
+  number name(number Vds, number Vgs)		 \
   {											 \
-  param_cMESFET p;							 \
-  get_global_cMESFET(&p);					 \
-  return( name(Vds,Vgs,p));				 \
+	param_cMESFET p;						 \
+	param_solver ps;						 \
+	get_global_cMESFET(&p,&ps);				 \
+	return(func_##name(Vds,Vgs,p,ps));		 \
   }
 
 EXPORT_CMESFET(Ids_cMESFET);

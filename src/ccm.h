@@ -1,5 +1,5 @@
 /*
- *  ccm.h - last saved: Time-stamp: <Sun Sep 15 07:32:57 JST 2019>
+ *  ccm.h - last saved: Time-stamp: <Sun Mar 08 06:52:41 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -83,15 +83,24 @@ extern "C" {
 	double	Vbi;
   } param_cMESFET;
 
-  GLOBAL double Q_cMOSFET(double Vgs, param_cMOSFET p);
-  GLOBAL double Qapprox_cMOSFET(double Vgs, param_cMOSFET p);
-  GLOBAL double Ids_cMOSFET(double Vds,double Vgs,param_cMOSFET p);
-  GLOBAL double Ids_cMOSFET_R(double Vds,double Vgs,param_cMOSFET cMOS);
-  GLOBAL double Ids0_cMOSFET(double Vds,double Vgs,param_cMOSFET p);
-  GLOBAL double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET p);
+  typedef struct
+  {
+	double left;
+	double right;
+  } param_solver;
 
-  GLOBAL double Ids_cMESFET(double Vds,double Vgs,param_cMESFET cMES);
-  GLOBAL double Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET cMES);
+  GLOBAL double func_rootfind_Q_cMOSFET(double qq,double V, double Vgs, param_cMOSFET p);
+
+  GLOBAL double func_Qcharge_cMOSFET(double V, double Vgs, param_cMOSFET p, param_solver ps);
+  GLOBAL double func_Qcharge2_cMOSFET(double V, double Vgs, param_cMOSFET p);
+  GLOBAL double func_rootfine_Q_cMOSFET(double qq, double V, double Vgs, param_cMOSFET p);
+  GLOBAL double func_Ids_cMOSFET(double Vds,double Vgs,param_cMOSFET p,param_solver ps);
+  GLOBAL double func_Ids2_cMOSFET(double Vds,double Vgs,param_cMOSFET p);
+  GLOBAL double func_Ids_cMOSFET_R(double Vds,double Vgs,param_cMOSFET p,param_solver ps);
+  GLOBAL double func_Ids2_cMOSFET_R(double Vds,double Vgs,param_cMOSFET p);
+
+  GLOBAL double func_Ids_cMESFET(double Vds,double Vgs,param_cMESFET p, param_solver ps);
+  GLOBAL double func_Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET p, param_solver ps);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

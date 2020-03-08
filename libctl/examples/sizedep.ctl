@@ -30,8 +30,8 @@
 (set! interactive? false)
 
 (for-each (lambda (Vgs) (print "res1:\t" Vgs "\t"
-							   (func-Qapprox-cMOSFET Vgs) "\t"
-							   (func-Q-cMOSFET Vgs) "\n")) Vgs1)
+							   (Qcharge2-cMOSFET Vgs) "\t"
+							   (Qcharge-cMOSFET Vgs) "\n")) Vgs1)
 
 (set! FET-params
   (make params-cMOSFET
@@ -47,5 +47,5 @@
 	))
 
 (for-each (lambda (Vgs) (print "res2:\t" Vgs "\t"
-							   (func-Qapprox-cMOSFET Vgs) "\t"
-							   (func-Q-cMOSFET Vgs) "\n")) Vgs1)
+							   (Qcharge2-cMOSFET Vgs) "\t"
+							   (Qcharge-cMOSFET Vgs) "\n")) Vgs1)

@@ -1,5 +1,5 @@
 /*
- *  fetmodel.c - Time-stamp: <Sat Feb 29 07:59:19 JST 2020>
+ *  fetmodel.c - Time-stamp: <Sun Mar 08 07:10:50 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -89,19 +89,20 @@
 // Cylindrical MOSFET
 // charges:: numpy compatible
 void Qapprox_cMOS_func(double *in_array,double *out_array,int size,
-					   param_cMOSFET p)
+				  param_cMOSFET p)
 {
   int i;
   for(i=0;i<size;i++)
-	*(out_array+i)=Qapprox_cMOSFET(*(in_array+i),p);
+	*(out_array+i)=func_Qcharge2_cMOSFET(0,*(in_array+i),p);
 }
 
 void Q_cMOS_func(double *in_array,double *out_array,int size,
 				 param_cMOSFET p)
 {
   int i;
+  param_solver ps;
   for(i=0;i<size;i++)
-	*(out_array+i)=Q_cMOSFET(*(in_array+i),p);
+	*(out_array+i)=func_Qcharge_cMOSFET(0,*(in_array+i),p,ps);
 }
 
 // Current:: numpy Vgs
@@ -110,15 +111,16 @@ void Ids0_cMOS_func(double *in_array, double *out_array, int size,
 {
   int i;
   for(i=0;i<size;i++)
-	*(out_array+i)=Ids0_cMOSFET(Vds,*(in_array+i),p);
+	*(out_array+i)=func_Ids2_cMOSFET(Vds,*(in_array+i),p);
 }
 
 void Ids_cMOS_func(double *in_array, double *out_array, int size,
 				   double Vds,param_cMOSFET p)
 {
   int i;
+  param_solver ps;
   for(i=0;i<size;i++)
-	*(out_array+i)=Ids_cMOSFET(Vds,*(in_array+i),p);
+	*(out_array+i)=func_Ids_cMOSFET(Vds,*(in_array+i),p,ps);
 }
 
 void Ids0_cMOS_R_func(double *in_array, double *out_array, int size,
@@ -126,15 +128,16 @@ void Ids0_cMOS_R_func(double *in_array, double *out_array, int size,
 {
   int i;
   for(i=0;i<size;i++)
-	*(out_array+i)=Ids0_cMOSFET_R(Vds,*(in_array+i),p);
+	*(out_array+i)=func_Ids2_cMOSFET_R(Vds,*(in_array+i),p);
 }
 
 void Ids_cMOS_R_func(double *in_array, double *out_array, int size,
 				   double Vds,param_cMOSFET p)
 {
   int i;
+  param_solver ps;
   for(i=0;i<size;i++)
-	*(out_array+i)=Ids_cMOSFET_R(Vds,*(in_array+i),p);
+	*(out_array+i)=func_Ids_cMOSFET_R(Vds,*(in_array+i),p,ps);
 }
 
 // cyrlindircal MESFET
@@ -142,16 +145,18 @@ void Ids_cMES_func(double *in_array, double *out_array, int size,
 				   double Vds,param_cMESFET p)
 {
   int i;
+  param_solver ps;
   for(i=0;i<size;i++)
-	*(out_array+i)=Ids_cMESFET(Vds,*(in_array+i),p);
+	*(out_array+i)=func_Ids_cMESFET(Vds,*(in_array+i),p,ps);
 }
 
 void Ids_cMES_R_func(double *in_array, double *out_array, int size,
-				   double Vds,param_cMESFET p)
+					 double Vds,param_cMESFET p)
 {
   int i;
+  param_solver ps;
   for(i=0;i<size;i++)
-	*(out_array+i)=Ids_cMESFET_R(Vds,*(in_array+i),p);
+	*(out_array+i)=func_Ids_cMESFET_R(Vds,*(in_array+i),p,ps);
 }
 
 // ballistic FET

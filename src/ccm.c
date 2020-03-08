@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Sun Mar 08 06:48:29 JST 2020>
+ *  ccm.c - Time-stamp: <Sun Mar 08 19:48:52 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -339,7 +339,10 @@ double qroot_newton(double V,double Vgs, param_cMOSFET p, param_solver ps)
   gsl_root_fdfsolver *s;
   double x0,x;
   gsl_function_fdf FDF;
-  struct func_Qcharge_cMOSFET_param params; // ={V,Vgs,p};
+  struct func_Qcharge_cMOSFET_param params; //={V,Vgs,p};
+  params.V=V;
+  params.Vgs=Vgs;
+  params.p=p;
   
   x=Q_approx(V,Vgs,p);
 

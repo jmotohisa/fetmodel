@@ -152,9 +152,6 @@
 (define-external-function get-radius2 false false
   'number 'params-NWFET)
 
-(define-external-function rootfind_Q_cMOSFET false false
-  'number 'number 'number 'number 'params-NWFET)
-
 (define-external-function Qcharge-cMOSFET true true
   'number 'number)
 

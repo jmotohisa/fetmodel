@@ -33,17 +33,17 @@
 
 ;; Fig.2
 (for-each (lambda (Vgs) (print "Fig2:\t" Vgs "\t"
-							   (func-Qapprox-cMOSFET Vgs) "\t"
-							   (func-Q-cMOSFET Vgs) "\n")) Vgs1)
+							   (Qcharge2-cMOSFET Vgs) "\t"
+							   (Qcharge-cMOSFET Vgs) "\n")) Vgs1)
 
 (print "\n")
 ;; Fig.3; Vds = 0.1 V
 (for-each (lambda (Vgs) (print "Fig3:\t" Vgs "\t"
-							   (func-Ids0-cMOSFET 0.1 Vgs) "\t"
-							   (func-Ids-cMOSFET 0.1 Vgs) "\n")) Vgs1)
+							   (Ids2-cMOSFET 0.1 Vgs) "\t"
+							   (Ids-cMOSFET 0.1 Vgs) "\n")) Vgs1)
 
 (print "\n")
 ;; Fig.4: Vds = 1V;
 (for-each (lambda (Vgs) (print "Fig4:\t" Vgs "\t"
-							   (func-Ids0-cMOSFET 1 Vgs) "\t"
-							   (func-Ids0-cMOSFET  1 Vgs) "\n")) Vgs1)
+							   (Ids2-cMOSFET 1 Vgs) "\t"
+							   (Ids-cMOSFET  1 Vgs) "\n")) Vgs1)

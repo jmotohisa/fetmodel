@@ -1,5 +1,5 @@
 /*
- *  cfet_libctl.c - Time-stamp: <Sun Mar 08 10:51:51 JST 2020>
+ *  cfet_libctl.c - Time-stamp: <Sun Mar 08 21:08:25 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -187,7 +187,7 @@ number Qcharge_cMOSFET(number Vgs)
   param_cMOSFET p;
   param_solver ps;
   get_global_cMOSFET(&p, &ps);
-  return(func_Qcharge_cMOSFET(Vgs,0,p,ps));
+  return(func_Qcharge_cMOSFET(0,Vgs,p,ps));
 }
 
 number Qcharge2_cMOSFET(number Vgs)
@@ -195,7 +195,7 @@ number Qcharge2_cMOSFET(number Vgs)
   param_cMOSFET p;
   param_solver ps;
   get_global_cMOSFET(&p,&ps);
-  return(func_Qcharge2_cMOSFET(Vgs,0,p));
+  return(func_Qcharge2_cMOSFET(0,Vgs,p));
 }
 
 // cMOSFET: current

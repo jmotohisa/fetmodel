@@ -55,13 +55,14 @@ if __name__ == '__main__':
     print(fetmodel.func_Qcharge2_cMOSFET(Vds, Voff, p))
     print(fetmodel.func_Qcharge2_cMOSFET(Vds, Voff+0.5, p))
 
-    for i, q0 in enumerate(qq):
-       qfunc1[i] = cMOSFET.qfunc_cMOSFET(10.**q0,Vds,Voff,p)
-       qfunc2[i] = fetmodel.func_rootfind_Q_cMOSFET(10.**q0,Vds,Voff+0.25,p)
+    # for i, q0 in enumerate(qq):
+    #    # qfunc1[i] = cMOSFET.qfunc_cMOSFET(10.**q0,Vds,Voff,p)
+    #    qfunc2[i] = fetmodel.func_rootfind_Q_cMOSFET(10.**q0,Vds,Voff+0.25,p)
     
     # print(qfunc1-qfunc2)
-    plt.plot(qq,qfunc1,qq,qfunc2)
-    plt.show()
+    # plt.plot(qq,qfunc1)
+    # plt.plot(qq,qfunc2)
+    # plt.show()
     
-    print(cMOSFET.qroot_brent(Vds,Voff,p))
-    print(cMOSFET.qroot_brent(Vds,Voff+0.25,p))
+    # print(cMOSFET.qroot_brent(Vds,Voff,p))
+    # print(cMOSFET.qroot_brent(Vds,Voff+0.25,p))

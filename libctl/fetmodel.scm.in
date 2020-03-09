@@ -173,6 +173,8 @@
 ;; function to find Q
 (define-external-function frf-Q-cMOSFET true false 'number
   'number 'number 'number 'params-NWFET)
+(define-external-function frf-logQ-cMOSFET true false 'number
+  'number 'number 'number 'params-NWFET)
 
 ;; Cylindrical 1D MESFET
 (define-external-function Ids-cMESFET true true

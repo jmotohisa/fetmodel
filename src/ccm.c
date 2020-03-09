@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Mon Mar 09 16:57:13 JST 2020>
+ *  ccm.c - Time-stamp: <Mon Mar 09 20:54:54 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -104,6 +104,9 @@ double qroot_brent(double, double, param_cMOSFET, param_solver );
 double qfunc_cMOSFET_gsl(double, void *);
 double qdfunc_cMOSFET_gsl(double, void *);
 void qfdfunc_cMOSFET_gsl(double, void *, double *, double *);
+double logqfunc_cMOSFET_gsl(double, void *);
+double logqdfunc_cMOSFET_gsl(double, void *);
+void logqfdfunc_cMOSFET_gsl(double, void *, double *, double *);
 double r_cMESFET_gsl(double, void *);
 
 int Ids0_cMOSFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
@@ -344,14 +347,14 @@ double qroot_newton(double V,double Vgs, param_cMOSFET p, param_solver ps)
   params.Vgs=Vgs;
   params.p=p;
   
-  x=Q_approx(V,Vgs,p)*2;
+  x=log(Q_approx(V,Vgs,p));
 
-  FDF.f = &qfunc_cMOSFET_gsl;
-  FDF.df = &qdfunc_cMOSFET_gsl;
-  FDF.fdf = &qfdfunc_cMOSFET_gsl;
+  FDF.f = &logqfunc_cMOSFET_gsl;
+  FDF.df = &logqdfunc_cMOSFET_gsl;
+  FDF.fdf = &logqfdfunc_cMOSFET_gsl;
   FDF.params = &params;
-  /* T = gsl_root_fdfsolver_newton; */
-  T = gsl_root_fdfsolver_secant;
+  T = gsl_root_fdfsolver_newton;
+  /* T = gsl_root_fdfsolver_secant; */
   /* T = gsl_root_fdfsolver_steffenson; */
   s = gsl_root_fdfsolver_alloc(T);
   gsl_root_fdfsolver_set(s,&FDF,x);
@@ -364,26 +367,17 @@ double qroot_newton(double V,double Vgs, param_cMOSFET p, param_solver ps)
 	status = gsl_root_test_delta(x,x0,0,1e-3);
   } while (status==GSL_CONTINUE && iter < max_iter);
   
-  return(pow(10,x));
+  return(exp(x));
 }
 
-/* double qfunc_cMOSFET(double qq,double V, double Vgs, param_cMOSFET p) */
-/* { */
-/*   double qqq1,qqq2; */
-/*   // dirty hack */
-/*   if(qq<0) */
-/* 	qq=fabs(qq)/10; */
-/*   qqq1 = Vgs-p.dphi-V-Vth*log(8/(delta*POW2(p.radius))); */
-/*   qqq2 =(qq/p.Cox + Vth*(log(qq/Q0)+log(1+(qq/Q0)))); */
-/*   return(qqq1-qqq2); */
-/* } */
-
-// qq=exp(qq) version
 double qfunc_cMOSFET(double qq,double V, double Vgs, param_cMOSFET p)
 {
   double qqq1,qqq2;
+  // dirty hack
+  if(qq<0)
+	qq=fabs(qq)/10;
   qqq1 = Vgs-p.dphi-V-Vth*log(8/(delta*POW2(p.radius)));
-  qqq2 =(exp(qq)/p.Cox + Vth*(qq-log(Q0)+log(1+(exp(qq)/Q0))));
+  qqq2 =(qq/p.Cox + Vth*(log(qq/Q0)+log(1+(qq/Q0))));
   return(qqq1-qqq2);
 }
 
@@ -396,28 +390,46 @@ double qfunc_cMOSFET_gsl(double qq, void *pp)
   return(qfunc_cMOSFET(qq,V,Vgs,p));
 }
 
-/* double qdfunc_cMOSFET_gsl(double qq, void *pp) */
-/* { */
-/*   struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp; */
-/*   /\* double V = (params->V); *\/ */
-/*   /\* double Vgs = (params->Vgs); *\/ */
-/*   param_cMOSFET p = (params->p); */
-/*   double qqq1; */
-/*   qqq1 =-(1/p.Cox + Vth*(1/qq+1/(qq+Q0))); */
-/*   return(qqq1); */
-/* } */
-
-/* void qfdfunc_cMOSFET_gsl(double qq, void *pp, double *f, double *df) */
-/* { */
-/*   struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp; */
-/*   double V = (params->V); */
-/*   double Vgs = (params->Vgs); */
-/*   param_cMOSFET p = (params->p); */
-/*   *f=qfunc_cMOSFET(qq,V,Vgs,p); */
-/*   *df=-(1/p.Cox + Vth*(1/qq+1/(qq+Q0))); */
-/* } */
-
 double qdfunc_cMOSFET_gsl(double qq, void *pp)
+{
+  struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp;
+  /* double V = (params->V); */
+  /* double Vgs = (params->Vgs); */
+  param_cMOSFET p = (params->p);
+  double qqq1;
+  qqq1 =-(1/p.Cox + Vth*(1/qq+1/(qq+Q0)));
+  return(qqq1);
+}
+
+void qfdfunc_cMOSFET_gsl(double qq, void *pp, double *f, double *df)
+{
+  struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp;
+  double V = (params->V);
+  double Vgs = (params->Vgs);
+  param_cMOSFET p = (params->p);
+  *f=qfunc_cMOSFET(qq,V,Vgs,p);
+  *df=-(1/p.Cox + Vth*(1/qq+1/(qq+Q0)));
+}
+
+// qq=exp(qq) version
+double logqfunc_cMOSFET(double qq,double V, double Vgs, param_cMOSFET p)
+{
+  double qqq1,qqq2;
+  qqq1 = Vgs-p.dphi-V-Vth*log(8/(delta*POW2(p.radius)));
+  qqq2 =(exp(qq)/p.Cox + Vth*(qq-log(Q0)+log(1+(exp(qq)/Q0))));
+  return(qqq1-qqq2);
+}
+
+double logqfunc_cMOSFET_gsl(double qq, void *pp)
+{
+  struct func_Qcharge_cMOSFET_param *params = (struct func_Qcharge_cMOSFET_param *) pp;
+  double V = (params->V);
+  double Vgs = (params->Vgs);
+  param_cMOSFET p = (params->p);
+  return(logqfunc_cMOSFET(qq,V,Vgs,p));
+}
+
+double logqdfunc_cMOSFET_gsl(double qq, void *pp)
 {
   struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp;
   /* double V = (params->V); */
@@ -428,14 +440,13 @@ double qdfunc_cMOSFET_gsl(double qq, void *pp)
   return(qqq1);
 }
 
-// qq=exp(qq) version
-void qfdfunc_cMOSFET_gsl(double qq, void *pp, double *f, double *df)
+void logqfdfunc_cMOSFET_gsl(double qq, void *pp, double *f, double *df)
 {
   struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp;
   double V = (params->V);
   double Vgs = (params->Vgs);
   param_cMOSFET p = (params->p);
-  *f=qfunc_cMOSFET(qq,V,Vgs,p);
+  *f=logqfunc_cMOSFET(qq,V,Vgs,p);
   *df=-(exp(qq)/p.Cox + Vth*(1+1/(1+Q0*exp(-qq))));
 }
 
@@ -809,7 +820,8 @@ int Ids_cMESFET_RmodFunc(gsl_vector *x, void *pp, gsl_vector *f)
 }
 
 /***************************************************/
-// Exporter
+/* Exporter                                        */
+/***************************************************/
 double func_Qcharge_cMOSFET(double V, double Vgs, param_cMOSFET p, param_solver ps)
 {
   return(qroot0(V, Vgs, p, ps));
@@ -823,6 +835,11 @@ double func_Qcharge2_cMOSFET(double V, double Vgs, param_cMOSFET p)
 double func_rootfind_Q_cMOSFET(double qq,double V, double Vgs, param_cMOSFET p)
 {
   return(qfunc_cMOSFET(qq,V, Vgs, p));
+}
+
+double func_rootfind_logQ_cMOSFET(double qq,double V, double Vgs, param_cMOSFET p)
+{
+  return(logqfunc_cMOSFET(qq,V, Vgs, p));
 }
 
 double func_Ids_cMOSFET(double Vds,double Vgs,param_cMOSFET p, param_solver ps)

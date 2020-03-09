@@ -13,7 +13,7 @@ import scipy.constants as const
 from scipy import integrate
 # import h5py
 
-def qfunc_cMOSFET(qq,V,Vgs,p):
+def qfunc_cMOSFET_orig(qq,V,Vgs,p):
     if(qq<0):
         qq=np.abs(qq)/10.
 
@@ -24,11 +24,19 @@ def qfunc_cMOSFET(qq,V,Vgs,p):
     qqq2 =(qq/p.Cox + Vth*(math.log(qq/Q0)+math.log(1+(qq/Q0))));
     return qqq1-qqq2
 
+def qfunc_cMOSFET(qq,V,Vgs,p):
+    Vth = const.Boltzmann*p.temp/const.elementary_charge
+    Q0= 4*p.eps_semi*const.epsilon_0/p.radius*Vth
+    delta = const.elementary_charge**2*p.ni/(const.Boltzmann*p.temp*p.eps_semi*const.epsilon_0)
+    qqq1 = Vgs-p.dphi-V-Vth*math.log(8/(delta*p.radius**2))
+    qqq2 =(math.exp(qq)/p.Cox + Vth*(1-math.log(Q0)+math.log(1+(math.exp(qq)/Q0))));
+    return qqq1-qqq2
+
 def qroot_brent(V,Vgs,p):
     e0 = optimize.root_scalar(qfunc_cMOSFET,
-                              args=(V, Vgs, p), x0=1e-9,x1=1e-3)
+                              args=(V, Vgs, p), x0=-10,x1=-2)
     if e0.converged==True:
-        return e0.root
+        return 10**e0.root
     else:
         print("Q-cMOSFET convergence error !")
         print(e0)

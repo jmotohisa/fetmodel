@@ -1,5 +1,5 @@
 /*
- *  cfet_libctl.c - Time-stamp: <Mon Mar 09 14:50:26 JST 2020>
+ *  cfet_libctl.c - Time-stamp: <Mon Mar 09 20:17:23 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -180,6 +180,24 @@ number frf_Q_cMOSFET(number qq,number V, number Vgs,params_NWFET FET_params)
   p.eps_ox=FET_params.eps_ox;
   p.mue=FET_params.mobility;
   return(func_rootfind_Q_cMOSFET(qq,V, Vgs, p));
+}
+
+number frf_logQ_cMOSFET(number qq,number V, number Vgs,params_NWFET FET_params)
+{
+  param_cMOSFET p;
+  p.radius=get_radius(FET_params);
+  p.Lg=FET_params.Lg;
+  p.eps_semi=FET_params.eps_s;
+  p.Rs=params_parasitic.Rs;
+  p.Rd=params_parasitic.Rd;
+  p.Cox=get_Cox(FET_params);
+  p.temp=temperature;
+  p.ni=FET_params.subclass.params_cMOSFET_data->ni;
+  p.dphi=FET_params.subclass.params_cMOSFET_data->dphi;
+  p.tox=FET_params.tox;
+  p.eps_ox=FET_params.eps_ox;
+  p.mue=FET_params.mobility;
+  return(func_rootfind_logQ_cMOSFET(qq,V, Vgs, p));
 }
 						  
 number Qcharge_cMOSFET(number Vgs)

@@ -35,8 +35,8 @@
 
 (for-each (lambda (Vgs)
 			(print "res1:\t" Vgs "\t"
-				   (/ (func-Ids0-cMOSFET 0.5 Vgs) (* 2 pi (get-radius FET-params)))"\t"
-				   (/ (func-Ids-cMOSFET 0.5 Vgs)  (* 2 pi (get-radius FET-params))) "\n")) Vgs1)
+				   (/ (Ids2-cMOSFET 0.5 Vgs) (* 2 pi (get-radius FET-params)))"\t"
+				   (/ (Ids-cMOSFET 0.5 Vgs)  (* 2 pi (get-radius FET-params))) "\n")) Vgs1)
 
 (set! FET-params
   (make params-cMOSFET
@@ -53,5 +53,5 @@
 
 (for-each (lambda (Vgs)
 			(print "res2:\t" Vgs "\t"
-				   (/ (func-Ids0-cMOSFET 0.5 Vgs) (* 2 pi (get-radius FET-params)))"\t"
-				   (/ (func-Ids-cMOSFET 0.5 Vgs)  (* 2 pi (get-radius FET-params))) "\n")) Vgs1)
+				   (/ (Ids2-cMOSFET 0.5 Vgs) (* 2 pi (get-radius FET-params)))"\t"
+				   (/ (Ids-cMOSFET 0.5 Vgs)  (* 2 pi (get-radius FET-params))) "\n")) Vgs1)

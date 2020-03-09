@@ -34,4 +34,4 @@
 
 (set! interactive? true)
 
-(print (func-Ids-cMOSFET Vds Vgs) "\n")
+(print (Ids-cMOSFET Vds Vgs) "\n")

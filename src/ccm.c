@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Sun Mar 08 19:48:52 JST 2020>
+ *  ccm.c - Time-stamp: <Mon Mar 09 15:30:02 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -344,13 +344,15 @@ double qroot_newton(double V,double Vgs, param_cMOSFET p, param_solver ps)
   params.Vgs=Vgs;
   params.p=p;
   
-  x=Q_approx(V,Vgs,p);
+  x=Q_approx(V,Vgs,p)*2;
 
   FDF.f = &qfunc_cMOSFET_gsl;
   FDF.df = &qdfunc_cMOSFET_gsl;
   FDF.fdf = &qfdfunc_cMOSFET_gsl;
   FDF.params = &params;
-  T = gsl_root_fdfsolver_newton;
+  /* T = gsl_root_fdfsolver_newton; */
+  T = gsl_root_fdfsolver_secant;
+  /* T = gsl_root_fdfsolver_steffenson; */
   s = gsl_root_fdfsolver_alloc(T);
   gsl_root_fdfsolver_set(s,&FDF,x);
 
@@ -539,7 +541,7 @@ double Ids_cMOSFET_R0(double Vds,double Vgs,param_cMOSFET p,param_solver ps)
 	  break;
 	status = gsl_multiroot_test_residual(s->f,1e-7);
   } while(status==GSL_CONTINUE && iter <1000);
-  idsmod = Ids_cMOSFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),p,ps);
+  idsmod = func_Ids_cMOSFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),p,ps);
   gsl_multiroot_fsolver_free(s);
   gsl_vector_free(x);
   return(idsmod);
@@ -556,8 +558,8 @@ int Ids_cMOSFET_RmodFunc(gsl_vector *x, void *pp, gsl_vector *f)
   const double x_Vds = gsl_vector_get(x,0);
   const double x_Vgs = gsl_vector_get(x,1);
   
-  gsl_vector_set(f,0,x_Vgs-Vgs+Ids_cMOSFET(x_Vds,x_Vds,p,ps)*p.Rs);
-  gsl_vector_set(f,1,x_Vds-Vds+Ids_cMOSFET(x_Vds,x_Vds,p,ps)*(p.Rs+p.Rd));
+  gsl_vector_set(f,0,x_Vgs-Vgs+func_Ids_cMOSFET(x_Vds,x_Vds,p,ps)*p.Rs);
+  gsl_vector_set(f,1,x_Vds-Vds+func_Ids_cMOSFET(x_Vds,x_Vds,p,ps)*(p.Rs+p.Rd));
 
   return GSL_SUCCESS;
 }
@@ -754,7 +756,7 @@ double func_Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET p,param_solver ps)
 	  break;
 	status = gsl_multiroot_test_residual(s->f,1e-7);
   } while(status==GSL_CONTINUE && iter <1000);
-  idsmod = Ids_cMESFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),p,ps);
+  idsmod = func_Ids_cMESFET(gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),p,ps);
   gsl_multiroot_fsolver_free(s);
   gsl_vector_free(x);
   return(idsmod);
@@ -770,8 +772,8 @@ int Ids_cMESFET_RmodFunc(gsl_vector *x, void *pp, gsl_vector *f)
   const double x_Vds = gsl_vector_get(x,0);
   const double x_Vgs = gsl_vector_get(x,1);
   
-  gsl_vector_set(f,0,x_Vgs-Vgs+Ids_cMESFET(x_Vds,x_Vds,p,ps)*p.Rs);
-  gsl_vector_set(f,1,x_Vds-Vds+Ids_cMESFET(x_Vds,x_Vds,p,ps)*(p.Rs+p.Rd));
+  gsl_vector_set(f,0,x_Vgs-Vgs+func_Ids_cMESFET(x_Vds,x_Vds,p,ps)*p.Rs);
+  gsl_vector_set(f,1,x_Vds-Vds+func_Ids_cMESFET(x_Vds,x_Vds,p,ps)*(p.Rs+p.Rd));
 
   return GSL_SUCCESS;
 }

@@ -1,5 +1,5 @@
 /*
- *  ccm.h - last saved: Time-stamp: <Sun Mar 08 06:52:41 JST 2020>
+ *  ccm.h - last saved: Time-stamp: <Mon Mar 09 15:31:31 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -93,7 +93,7 @@ extern "C" {
 
   GLOBAL double func_Qcharge_cMOSFET(double V, double Vgs, param_cMOSFET p, param_solver ps);
   GLOBAL double func_Qcharge2_cMOSFET(double V, double Vgs, param_cMOSFET p);
-  GLOBAL double func_rootfine_Q_cMOSFET(double qq, double V, double Vgs, param_cMOSFET p);
+  GLOBAL double func_rootfind_Q_cMOSFET(double qq, double V, double Vgs, param_cMOSFET p);
   GLOBAL double func_Ids_cMOSFET(double Vds,double Vgs,param_cMOSFET p,param_solver ps);
   GLOBAL double func_Ids2_cMOSFET(double Vds,double Vgs,param_cMOSFET p);
   GLOBAL double func_Ids_cMOSFET_R(double Vds,double Vgs,param_cMOSFET p,param_solver ps);

@@ -90,8 +90,15 @@ def func_Qcharge1dMOS0(psis, ni, eps_semi, Na, temp):
     return fetmodel.func_QsMOS1D(psis,np0,pp0,eps_semi,temp)
 
 ## from cMOSFET
-def Ids_cMOSFET(Vds, Vgs, p):
+def Ids_cMOSFET(Vds, Vgs, p, ps=fetmodel.param_solver()):
     """
     p: class of parameters_cMOSFET
     """
-    return(fetmodel.Ids_cMOSFET)
+    return(fetmodel.func_Ids_cMOSFET(Vds,Vgs,p,ps))
+
+
+def Ids2_cMOSFET(Vds, Vgs, p):
+    """
+    p: class of parameters_cMOSFET
+    """
+    return(fetmodel.func_Ids2_cMOSFET(Vds,Vgs,p))

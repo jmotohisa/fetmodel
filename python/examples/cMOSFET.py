@@ -30,9 +30,36 @@ def qroot_brent(V,Vgs,p):
     if e0.converged==True:
         return e0.root
     else:
-        print("EFs convergence error !")
+        print("Q-cMOSFET convergence error !")
         print(e0)
         return 0
+
+def Voff_from_Ioff_cMOSFET(p, Vds, Ids_cutoff, ps, left=-0.5, right=0.5):
+    e0 = optimize.root_scalar(
+        func_det_Voff, args=(p, Vds, Ids_cutoff,ps), x0=left, x1=right,method='brentq',bracket=[left,right])
+    if(e0.converged==True):
+        return e0.root
+    else:
+        print("Vgs convergence error !")
+        print(e0)
+        return 0
+
+def func_det_Voff(Vgs, p, Vds, Ids_cutoff, ps):
+    return Ids_cutoff - fetmodel.func_Ids_cMOSFET(Vds, Vgs, p,ps)/(2*math.pi*p.radius)
+
+def Voff_from_Ioff_cMOSFET2(p, Vds, Ids_cutoff, left=-0.5, right=0.5):
+    e0 = optimize.root_scalar(
+        func_det_Voff2, args=(p, Vds, Ids_cutoff), x0=left, x1=right,method='brentq',bracket=[left,right])
+    if(e0.converged==True):
+        return e0.root
+    else:
+        print("dphi convergence error !")
+        print(e0)
+        return 0
+
+def func_det_Voff2(Vgs, p, Vds, Ids_cutoff):
+    return Ids_cutoff - fetmodel.func_Ids2_cMOSFET(Vds, Vgs, p)/(2*math.pi*p.radius)
+
 
 if __name__ == '__main__':
     p = fetmodel.param_cMOSFET()
@@ -55,6 +82,7 @@ if __name__ == '__main__':
     Vgs=0
     print(qfunc_cMOSFET(qq,V,Vgs,p))
     print(qroot_brent(V,Vgs,p))
+    print(fetmodel.func_rootfind_Q_cMOSFET(qq,V,Vgs,p))
 
     Vgs = np.arange(0, 2, 0.01)
 

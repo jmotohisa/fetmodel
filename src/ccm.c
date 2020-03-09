@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Mon Mar 09 15:30:02 JST 2020>
+ *  ccm.c - Time-stamp: <Mon Mar 09 16:57:13 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -364,17 +364,26 @@ double qroot_newton(double V,double Vgs, param_cMOSFET p, param_solver ps)
 	status = gsl_root_test_delta(x,x0,0,1e-3);
   } while (status==GSL_CONTINUE && iter < max_iter);
   
-  return(x);
+  return(pow(10,x));
 }
 
+/* double qfunc_cMOSFET(double qq,double V, double Vgs, param_cMOSFET p) */
+/* { */
+/*   double qqq1,qqq2; */
+/*   // dirty hack */
+/*   if(qq<0) */
+/* 	qq=fabs(qq)/10; */
+/*   qqq1 = Vgs-p.dphi-V-Vth*log(8/(delta*POW2(p.radius))); */
+/*   qqq2 =(qq/p.Cox + Vth*(log(qq/Q0)+log(1+(qq/Q0)))); */
+/*   return(qqq1-qqq2); */
+/* } */
+
+// qq=exp(qq) version
 double qfunc_cMOSFET(double qq,double V, double Vgs, param_cMOSFET p)
 {
   double qqq1,qqq2;
-  // dirty hack
-  if(qq<0)
-	qq=fabs(qq)/10;
   qqq1 = Vgs-p.dphi-V-Vth*log(8/(delta*POW2(p.radius)));
-  qqq2 =(qq/p.Cox + Vth*(log(qq/Q0)+log(1+(qq/Q0))));
+  qqq2 =(exp(qq)/p.Cox + Vth*(qq-log(Q0)+log(1+(exp(qq)/Q0))));
   return(qqq1-qqq2);
 }
 
@@ -387,6 +396,27 @@ double qfunc_cMOSFET_gsl(double qq, void *pp)
   return(qfunc_cMOSFET(qq,V,Vgs,p));
 }
 
+/* double qdfunc_cMOSFET_gsl(double qq, void *pp) */
+/* { */
+/*   struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp; */
+/*   /\* double V = (params->V); *\/ */
+/*   /\* double Vgs = (params->Vgs); *\/ */
+/*   param_cMOSFET p = (params->p); */
+/*   double qqq1; */
+/*   qqq1 =-(1/p.Cox + Vth*(1/qq+1/(qq+Q0))); */
+/*   return(qqq1); */
+/* } */
+
+/* void qfdfunc_cMOSFET_gsl(double qq, void *pp, double *f, double *df) */
+/* { */
+/*   struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp; */
+/*   double V = (params->V); */
+/*   double Vgs = (params->Vgs); */
+/*   param_cMOSFET p = (params->p); */
+/*   *f=qfunc_cMOSFET(qq,V,Vgs,p); */
+/*   *df=-(1/p.Cox + Vth*(1/qq+1/(qq+Q0))); */
+/* } */
+
 double qdfunc_cMOSFET_gsl(double qq, void *pp)
 {
   struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp;
@@ -394,10 +424,11 @@ double qdfunc_cMOSFET_gsl(double qq, void *pp)
   /* double Vgs = (params->Vgs); */
   param_cMOSFET p = (params->p);
   double qqq1;
-  qqq1 =-(1/p.Cox + Vth*(1/qq+1/(qq+Q0)));
+  qqq1 =-(exp(qq)/p.Cox + Vth*(1+1/(1+Q0*exp(-qq))));
   return(qqq1);
 }
 
+// qq=exp(qq) version
 void qfdfunc_cMOSFET_gsl(double qq, void *pp, double *f, double *df)
 {
   struct func_Qcharge_cMOSFET_param * params = (struct func_Qcharge_cMOSFET_param *) pp;
@@ -405,9 +436,8 @@ void qfdfunc_cMOSFET_gsl(double qq, void *pp, double *f, double *df)
   double Vgs = (params->Vgs);
   param_cMOSFET p = (params->p);
   *f=qfunc_cMOSFET(qq,V,Vgs,p);
-  *df=-(1/p.Cox + Vth*(1/qq+1/(qq+Q0)));
+  *df=-(exp(qq)/p.Cox + Vth*(1+1/(1+Q0*exp(-qq))));
 }
-
 
 // Drain current
 /*

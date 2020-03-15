@@ -2,6 +2,7 @@
 *.la
 *.o
 *.lo
+*~
 main.c
 geom.c
 stamp-h1

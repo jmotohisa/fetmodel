@@ -310,7 +310,12 @@ dnl AC_SUBST([PYTHON_LIBS])
 dnl AC_SUBST([PYTHON_CFLAGS])
 ###
 ##############################################################################
+# Checks for SWIG
+AX_PKG_SWIG([1.3.21])
+AX_SWIG_ENABLE_CXX
+AX_SWIG_PYTHON
 
+##############################################################################
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h])

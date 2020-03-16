@@ -80,6 +80,7 @@ fi
 
 AM_CONDITIONAL(WITH_LIBCTL, test "x$with_libctl" != xno)
 
+
 ##############################################################################
 # Check for Guile library and its behavior (for libctl front end):
 

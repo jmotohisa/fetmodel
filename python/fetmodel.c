@@ -1,5 +1,5 @@
 /*
- *  fetmodel.c - Time-stamp: <Sun Mar 08 07:10:50 JST 2020>
+ *  fetmodel.c - Time-stamp: <Tue Mar 10 17:45:14 JST 2020>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -89,7 +89,7 @@
 // Cylindrical MOSFET
 // charges:: numpy compatible
 void Qapprox_cMOS_func(double *in_array,double *out_array,int size,
-				  param_cMOSFET p)
+					   param_cMOSFET p)
 {
   int i;
   for(i=0;i<size;i++)

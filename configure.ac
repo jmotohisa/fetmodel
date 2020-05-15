@@ -311,7 +311,7 @@ dnl AC_SUBST([PYTHON_CFLAGS])
 ###
 ##############################################################################
 # Checks for SWIG
-AX_PKG_SWIG([1.3.21])
+AX_PKG_SWIG(1.3.21, [], [AC_MSG_ERROR([SWIG is required to build..]) ])
 AX_SWIG_ENABLE_CXX
 AX_SWIG_PYTHON
 

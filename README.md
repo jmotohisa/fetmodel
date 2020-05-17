@@ -60,16 +60,31 @@ Ids_cMES_R(numpyarray Vgs, numpyarray Ids, Vds, param_cMESFET p)
 
 # Installation
 Installation requires followings
-- Autorools
+- Autotools
 - libtool
 - pkg-config
-- python
-- swig
-- guile
 - gsl
+- python (for python binding)
+- swig (for python ginding)
+- guile (for guile/libctl binding)
 - [libctl](https://libctl.readthedocs.io/en/latest/)
 
 To run python biding, following modules are required.
 - numpy
 - matplotlib
 - scipy
+
+## Installation in macOS
+
+If you are using Macrports:
+
+    $ sudo port install autoconf automake autoconf-archive libtool guile swig gsl 
+
+
+If you are using homebrew:
+
+    $ brew install autoconf automake autoconf-archive libtool guile swig gsl 
+    
+# Known issuues
+Most likely, the python bindings are not installed appripriately under your pyghon site-packages directory. 
+Copy /somewhere/site-packages/fetmodel to your PYTHONPATH

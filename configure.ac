@@ -295,6 +295,7 @@ else
 	  dnl PY_PREFIX=`$PYTHON -c 'import sys ; print(sys.prefix)'`
 	  dnl PYTHON_LIBS="-lpython$PYTHON_VERSION"
 	  dnl PYTHON_CFLAGS="-I$PY_PREFIX/include/python$PYTHON_VERSION"
+	dnl pythondir=`echo "$pythondir" | sed "s,$PYTHON_PREFIX,$myown_pfx,"` 
 ### 
     fi # have_python
 

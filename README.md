@@ -1,14 +1,14 @@
-* Calculation of Drain Current in various FETs
+# Calculation of Drain Current in various FETs
 
-** cylindrical MOSFET: 
+### cylindrical MOSFET: 
 Iniguez, B., Jimenez, D., Roig, J., Hamid, H., Marsal, L., & Pallares, J. (2005). Explicit continuous model for long-channel undoped surrounding gate MOSFETs. IEEE Transactions on Electron Devices, 52(8), 1868–1873.
 
-** cylindrical MESFET: see doc
+### cylindrical MESFET: see doc
 
-** Ballistic MOSFET
+### Ballistic MOSFET
 
 
-**Basic Function to export (ccm.h)
+## Basic Function to export (ccm.h)
 ~~~
 double func_Qcharge_cMOSFET(double V, double Vgs, param_cMOSFET p, param_solver ps);
 double func_Ids_cMOSFET(double Vds, double Vgs, param_cMOSFET p, param_solver ps);
@@ -23,7 +23,7 @@ double Ids_cMESFET(double Vds, double Vgs, param_cMESFET p);
 double Ids_cMESFET_R(double Vds, double Vgs, param_cMESFET p);
 ~~~
 
-*Exported functions in Libctl/Guile (fetmodel.scm/cfet_libctl.c):
+## Exported functions in Libctl/Guile (fetmodel.scm/cfet_libctl.c):
 ~~~~
 (Qcharge-cMOSFET Vgs)
 (Ids-cMOSFET Vds Vgs)
@@ -37,7 +37,7 @@ double Ids_cMESFET_R(double Vds, double Vgs, param_cMESFET p);
 (func-Ids-cMESFET-R Vds Vgs)
 ~~~~
 
-**Exported functions in Python ():
+## Exported functions in Python ():
 ~~~
 Q_cMOSFET( Vgs, param_cMOSFET p)
 Qapprox_cMOSFET( Vgs, param_cMOSFET p)
@@ -58,4 +58,33 @@ Ids_cMES(numpyarray Vgs, numpyarray Ids, Vds, param_cMESFET p)
 Ids_cMES_R(numpyarray Vgs, numpyarray Ids, Vds, param_cMESFET p)
 ~~~
 
+# Installation
+Installation requires followings
+- Autotools
+- libtool
+- pkg-config
+- gsl
+- python (for python binding)
+- swig (for python ginding)
+- guile (for guile/libctl binding)
+- [libctl](https://libctl.readthedocs.io/en/latest/)
 
+To run python biding, following modules are required.
+- numpy
+- matplotlib
+- scipy
+
+## Installation in macOS
+
+If you are using Macrports:
+
+    $ sudo port install autoconf automake autoconf-archive libtool guile swig gsl 
+
+
+If you are using homebrew:
+
+    $ brew install autoconf automake autoconf-archive libtool guile swig gsl 
+    
+# Known issuues
+Most likely, the python bindings are not installed appripriately under your pyghon site-packages directory. 
+Copy /somewhere/site-packages/fetmodel to your PYTHONPATH

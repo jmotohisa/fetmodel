@@ -313,8 +313,14 @@ dnl AC_SUBST([PYTHON_CFLAGS])
 ##############################################################################
 # Checks for SWIG
 AX_PKG_SWIG(1.3.21, [], [AC_MSG_ERROR([SWIG is required to build..]) ])
-# AX_SWIG_ENABLE_CXX
-# AX_SWIG_PYTHON
+dnl AX_SWIG_ENABLE_CXX
+dnl AX_SWIG_PYTHON
+dnl AC_CHECK_PROG(SWIG, swig, swig, echo)
+dnl if test "$USE_MAINTAINER_MODE" = yes && (test "x$with_python" = "xyes" || test "x$with
+dnl _scheme" = "xyes") && test "x$SWIG" = xecho; then
+dnl   AC_MSG_ERROR([SWIG not found; configure --without-python --without-scheme or use a r
+dnl elease tarball])
+dnl fi
 
 ##############################################################################
 # Checks for header files.

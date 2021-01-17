@@ -123,3 +123,19 @@ class parameters_cMESFET:
         print("Nd=",self.cMESFET.Nd)
         print("Vbi=",self.cMESFET.Vbi)
         
+
+class parameters_solver:
+
+    def __init__(self,
+                 left=0.,
+                 right=1.
+                 ):
+
+        self.param_solver=fetmodel.param_solver()
+        self.param_solver.left = left
+        self.param_solver.right = right
+
+    def output(self):
+        print("left=",self.param_solver.left)
+        print("right=",self.param_solver.right)
+

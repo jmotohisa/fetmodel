@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Mon Mar 09 20:54:54 JST 2020>
+ *  ccm.c - Time-stamp: <Sun Jan 17 07:59:37 UTC 2021>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -265,9 +265,15 @@ double Q_approx(double V, double Vgs, param_cMOSFET p)
 */
 double Q_approx0(double V,double Vgs,double Vt,double deltaVt, param_cMOSFET p)
 {
-  double a,b,c1,c2;
+  double a,b0,b,b2,c1,c2;
   a=2*p.Cox*Vth*Vth/Q0;
-  b=2*Vth*log(1+exp((Vgs-Vt+deltaVt-V)/(2*Vth)));
+  b0=(Vgs-Vt+deltaVt-V)/(2*Vth);
+  if(b0>log(DBL_MAX))
+	{
+	  b=(Vgs-Vt+deltaVt-V);
+	} else {
+	b=2*Vth*log(1+exp(b0));
+  }
   c1=sqrt(a*a+b*b)-a;
   c2=b*b/(2*a);
   if(c1 < DBL_EPSILON)
@@ -340,14 +346,18 @@ double qroot_newton(double V,double Vgs, param_cMOSFET p, param_solver ps)
   int iter=0,max_iter=100;
   const gsl_root_fdfsolver_type *T;
   gsl_root_fdfsolver *s;
-  double x0,x;
+  double x0,x,xx;
   gsl_function_fdf FDF;
   struct func_Qcharge_cMOSFET_param params; //={V,Vgs,p};
   params.V=V;
   params.Vgs=Vgs;
   params.p=p;
-  
-  x=log(Q_approx(V,Vgs,p));
+
+  xx=Q_approx(V,Vgs,p);
+  if(xx>exp(DBL_MIN))
+	x=log(xx);
+  else
+	x=DBL_MIN;
 
   FDF.f = &logqfunc_cMOSFET_gsl;
   FDF.df = &logqdfunc_cMOSFET_gsl;

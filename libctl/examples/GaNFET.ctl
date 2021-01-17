@@ -52,9 +52,9 @@
 (set! interactive? false)
 
 ;; Fig.2
-(for-each (lambda (Vgs) (print "Fig2:\t" Vgs "\t"
-							   (Qcharge2-cMOSFET Vgs) "\t"
-							   (Qcharge-cMOSFET Vgs) "\n")) Vgs1)
+;; (for-each (lambda (Vgs) (print "Fig2:\t" Vgs "\t"
+;; 							   (Qcharge2-cMOSFET Vgs) "\t"
+;; 							   (Qcharge-cMOSFET Vgs) "\n")) Vgs1)
 
 ;; (print "\n")
 ;; ;; Fig.3; Vds = 0.5 V

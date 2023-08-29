@@ -1,5 +1,5 @@
 /*
- *  density1d.c - Time-stamp: <Mon Sep 30 12:01:06 JST 2019>
+ *  density1d.c - Time-stamp: <Tue Aug 29 20:34:57 JST 2023>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -103,14 +103,14 @@ double density1d0(double EFermi, double Enm, double ems,double temp)
 }
 
 double density1d_rect1d0(double EFermi, double ems,double temp,
-						 double W1, double W2, int n, int m)
+			 double W1, double W2, int n, int m)
 {
   double Enm = Ep_nm_rect1d(ems, W1, W2, n , m);
   return(density1d0(EFermi, Enm, ems,temp));
 }
 
 double density1d_rect1d_all0(double EFermi, double ems, double temp,
-							   double W1, double W2, int nmax, int mmax)
+			     double W1, double W2, int nmax, int mmax)
 {
   int n,m;
   double sum;
@@ -271,7 +271,7 @@ double density1d_NP0(double EFermi, double Enm, double alpha_nm, double ems_nm, 
 }
 
 double density1d_rect1dNP0(double EFermi,double alphaNP, double ems, double temp,
-						   double W1, double W2, int n, int m)
+			   double W1, double W2, int n, int m)
 {
   double gamma_nm, Enm; //,alpha_nm, ems_nm;
 
@@ -279,9 +279,9 @@ double density1d_rect1dNP0(double EFermi,double alphaNP, double ems, double temp
   gamma_nm = gamma_nm_rect1dNP(alphaNP, ems, W1, W2, n, m);
   Enm = E_nm_NP(alphaNP, gamma_nm);
   return(density1d_NP0(EFermi, Enm,
-					   alpha_nm_NP(alphaNP, gamma_nm),
-					   ems_nm_NP(ems, gamma_nm),
-					   temp));
+		       alpha_nm_NP(alphaNP, gamma_nm),
+		       ems_nm_NP(ems, gamma_nm),
+		       temp));
 }
 
 double density1d_rect1dNP_all0(double EFermi,double alphaNP, double ems, double temp,

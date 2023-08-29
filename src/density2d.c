@@ -1,5 +1,5 @@
 /*
- *  density2d.c - Time-stamp: <Tue Aug 29 07:18:08 JST 2023>
+ *  density2d.c - Time-stamp: <Tue Aug 29 20:34:48 JST 2023>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -49,6 +49,8 @@
 
 #define GLOBAL_VALUE_DEFINE
 #include "density2d.h"
+
+#include "density1d.h"
 
 /*!
   @brief
@@ -101,3 +103,51 @@ double density2d_QW_all(double EFermi, param_density2d_QW p)
 // nonparabolic band
 // nonparabolicity parameter
 // double Enm, double alpha_nm, double ems_nm
+
+double E_n_rectQWNP(double alphaNP, double ems, double W1, int n)
+{
+  return(E_nm_rect1dNP(alphaNP,ems,W1,W1,n,0));
+}
+
+double density2d_NP0(double EFermi, double Enm, double alpha_nm, double ems_nm, double temp)
+{
+  param_density2d p;
+  p.temp=temp;
+  p.EFermi=EFermi;
+  p.Enm=Enm;
+  p.alphanm=alpha_nm;
+  p.emsnm=ems_nm;
+  
+  /* return (density2d_NP(p)); */
+  return(0);
+}
+
+double density2d_rectQWNP0(double EFermi,double alphaNP, double ems, double temp,
+			   double W1, int n)
+{
+  double gamma_nm, Enm; //,alpha_nm, ems_nm;
+
+  /* alphaNP = alpha_NP(Eg, ems); */
+  gamma_nm = gamma_nm_rect1dNP(alphaNP, ems, W1, W1, n, 0);
+  Enm = E_nm_NP(alphaNP, gamma_nm);
+  return(density2d_NP0(EFermi, Enm,
+		       alpha_nm_NP(alphaNP, gamma_nm),
+		       ems_nm_NP(ems, gamma_nm),
+		       temp));
+}
+
+double density2d_rectQWNP_all0(double EFermi,double alphaNP, double ems, double temp,
+			       double W1, int nmax)
+{
+  int n;
+  double sum;
+
+  /* alphaNP = alpha_NP(Eg, ems); */
+  sum=0;
+  for(n=1;n<=nmax;n++)
+    {
+      sum += density2d_rectQWNP0(EFermi,alphaNP, ems, temp,W1,n);
+    }
+  return(sum);
+}
+

@@ -141,8 +141,8 @@ def Ids_ballistic2d_QW(Vds, Vgs, p, EFs):
     p: class of parameters_ballistic
     (wrapper)
     """
-    return(fetmodel.Ids_ballistic2d0_E0_QW(Vds, Vgs, EFs, p.alpha_D, p.alpha_G, p.Ceff,
-                                           p.alpha, p.ems, p.temp, p.W1, int(p.nmax)))
+    return(fetmodel.Ids_ballistic2d_QW0(Vds, Vgs, EFs, p.alpha_D, p.alpha_G, p.Ceff,
+                                        p.alpha, p.ems, p.temp, p.W1, int(p.nmax)))
 
 # from mos1d
 

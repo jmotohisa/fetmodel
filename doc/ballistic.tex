@@ -3,7 +3,7 @@
 %% file: fem2dp-2.tex
 %% author: Junichi Motohisa
 %% created: 2017-11-21 18:32:34
-%% last saved : Time-stamp: <Fri Sep 27 13:37:01 JST 2019>
+%% last saved : Time-stamp: <Tue Aug 29 18:06:24 JST 2023>
 \usepackage[dvipdfmx]{graphicx}
 \usepackage{multicol}
 \usepackage{cite}
@@ -204,6 +204,133 @@ Top of the barrierのエネルギー$E_0$の低下量が小さくなる効果が
 % $V_{GS}$の増加に対する
 % このため$V_{GS}$に対する電流の増加は小さくなることがわかる。
 
+\subsection{Model of Ballistic One-dimensional Transistor} % \cite{motohisa}}}} 
+Next\footnote{This section is taken from \protect{\cite{motohisa}}},
+brief outline to calculate drain current in ballistic NW-FETs is described following the
+model of ballistic transistor by Lundstrom and co-workers\cite{LG,Rahman:2003ug}. 
+The electron density in one-dimensional (1D) electron system is calculated as
+%\begin{equation}
+\begin{align}
+ n_{\mathrm{1D}} &= \int_{E_C}^\infty \frac{\sqrt{2 m^*}}{\pi \hbar}\frac{1}{\sqrt{E-E_{C}}}  \frac{1}{1+\exp\left(\frac{E - E_F}{k_B T}\right)} dE \\
+ &= \mathcal{D}_{\mathrm{1D}} F_{-1/2}\left( \frac{E_F-E_C}{k_B T}
+ \right) \ ,
+ \label{eqn:1deg0}
+\end{align}
+%\end{equation}
+where $E_F$ is the Fermi level,
+$E_C$ represents the bottom of the conduction band, $m^*$ is the density-of-state effective mass,
+$\mathcal{D}_{\mathrm{1D}}$ is the effective density of state in 1D system given by
+\begin{equation}
+ \mathcal{D}_{\mathrm{1D}} = \frac{\sqrt{2 m^* k_B T}}{\sqrt{\pi} \hbar} \ , 
+\end{equation}
+$F_j(\eta)$ is a Fermi-Dirac integral of the $j$-th order
+\begin{equation}
+ F_{j}(\eta) = \frac{1}{\Gamma(j+1)} \int_0^\infty \frac{\eta_0^j}{1+\exp(\eta_0-\eta)} d \eta_0 \ , 
+\end{equation}
+and $\Gamma(z)$ is the Gamma function.
+Drain current of the transistor in the ballistic regime is determined by the net carrier flow
+from source to drain with energy larger than the top of the barrier $U_{\mathrm{SCF}}$, shown in Fig. \ref{fig:TOB}.  
+$U_{\mathrm{SCF}}$ is determined in a self-consistent way by solving the following equation:
+\begin{equation}
+ U_{\mathrm{SCF}} = -q(\alpha_{\mathrm{G}} V_{\mathrm{G}} + \alpha_{\mathrm{D}} V_{\mathrm{D}} + \alpha_{\mathrm{S}} V_{\mathrm{S}}) + \frac{q^2}{C_{\Sigma}} n_s
+  \label{eqn:tob1D1}
+\end{equation}
+Here $n_s$ represents the electron density at the top of the barrier and given by the sum of the contribution from the
+source side and the drain side.
+Thus, using Eq. (\ref{eqn:1deg0}), $n_s$ in 1D system is given by
+\begin{equation}
+ n_s = \frac{\mathcal{D}_{\mathrm{1D}}}{2}
+  \left[
+   F_{-1/2}(\frac{E_F - U_{\mathrm{SCF}}}{k_B T})+
+   F_{-1/2}(\frac{E_F -q V_{\mathrm{D}}- U_{\mathrm{SCF}}}{k_B T})
+										 \right]
+  \label{eqn:1degdens}
+\end{equation}
+% where and
+% $\mathcal{D}_{\mathrm{1D}}$ is an effective density of states of one-dimensional electron gas
+% \begin{equation}
+%  \mathcal{D}_{\mathrm{1D}} = \frac{m^*_{DOS}}{\pi \hbar^2}
+% \end{equation}
+Furthermore, $V_i$'s ($i=\mathrm{G}$, $\mathrm{D}$, or $\mathrm{S}$) are the
+voltage at the terminals of FETs, 
+$\alpha_i$'s are the leverage factor of each terminals and given by the capacitance $C_{i}$ associated with the each terminals as
+\begin{equation}
+ \alpha_{G} = \frac{C_{\mathrm{G}}}{C_{\Sigma}}, \quad
+  \alpha_{\mathrm{D}} = \frac{C_{\mathrm{D}}}{C_{\Sigma}}, \quad
+   \alpha_{\mathrm{S}} = \frac{C_{\mathrm{S}}}{C_{\Sigma}}, \quad
+\end{equation}
+and
+\begin{equation}
+ C_{\Sigma} = C_{G} + C_{\mathrm{D}} + C_{\mathrm{S}}
+\end{equation}
+The values of these capacitors are set so that to fit with are used to fit the experimental data of $S$ and DIBL, 
+as described in Refs. \cite{Rahman:2003ug,Liang:2007uh}.
+By setting $V_{G}=V_{\mathrm{GS}}+V_{\mathrm{S}}$、$V_{\mathrm{D}}=V_{\mathrm{DS}}+V_{\mathrm{S}}$, Eq. (\ref{eqn:tob1D1}) reduces to
+\begin{equation}
+ U_{UCF} + q V_{\mathrm{S}} = -q(\alpha_{\mathrm{G}} V_{\mathrm{GS}} + \alpha_{\mathrm{D}} V_{\mathrm{DS}}) + \frac{q^2}{C_{\Sigma}} n_s
+\end{equation}
+using $\alpha_{\mathrm{G}} + \alpha_{\mathrm{D}} + \alpha_{\mathrm{S}} =1$. 
+By replacing $U_{\mathrm{SCF}} = E_0 - q V_{\mathrm{S}}$ and $E_F =E_{\mathrm{Fs}}-  q V_{\mathrm{S}}$ , 
+% we obtain
+% \begin{equation}
+%  n_s = \mathcal{D}_{\mathrm{1D}}
+%   \left[
+%    F_{-1/2}(\frac{E_F + q V_{\mathrm{S}} - U'_{SCF}}{k_B T})+
+%    F_{-1/2}(\frac{E_F + q V_{\mathrm{S}} - q V_{\mathrm{D}}- U'_{SCF}}{k_B T})
+% 									 \right]
+% \end{equation}
+% By setting  and rewriting $U'_{SCF}$ as $U_{\mathrm{SCF}}$, we obtain
+\begin{equation}
+ E_{0} = -q(\alpha_{\mathrm{G}} V_{\mathrm{GS}} + \alpha_{\mathrm{D}} V_{\mathrm{DS}}) + \frac{q^2}{C_{\Sigma}} n_s
+  \label{eqn:TOB}
+\end{equation}
+and
+\begin{equation}
+ n_s = \mathcal{D}_{\mathrm{1D}}
+  \left[
+   F_{-1/2}(\frac{E_{\mathrm{Fs}} - E_0}{k_B T})+
+   F_{-1/2}(\frac{E_{\mathrm{Fs}} - q V_{\mathrm{DS}}- E_0}{k_B T})
+												   \right]
+  \label{eqn:1deg}
+\end{equation}
+Equation (\ref{eqn:TOB}) is identical to Eq. (30) in Ref. \cite{Lind}, or
+Eq. (35) in \cite{Yu:2008tv}, except for that multiple subbands and
+nonparabolicity are not considered in $n_s$ given in Eq. (\ref{eqn:1deg}).
+The drain current $I_{\mathrm{DS}}$ is calculated as \cite{Lind,LG,Yu:2008tv}
+%\begin{equation}
+\begin{align}
+ I_{\mathrm{DS}} &=   \frac{2q k_B T}{h}
+  \left[
+   F_0\left((E_{\mathrm{Fs}}-E_{0})/k_B T\right)
+-  F_0\left((E_{\mathrm{Fs}}-E_{0}-qV_{\mathrm{DS}})/k_B T\right)
+							   \right] \\
+&=  \frac{2q k_B T}{h}
+  \left[\ln \left(1+ \exp \left(\frac{E_{\mathrm{Fs}}-E_{0}}{k_B T}\right)\right)
+ -\ln \left(1+ \exp \left(\frac{E_{\mathrm{Fs}}-E_{0}-qV_{\mathrm{DS}}}{k_B T} \right)
+ \right)
+ \right]
+ \label{eqn:IDSballistic}
+\end{align}
+% \end{equation}
+If one has to take into account multiple subbands in NWs,
+it is doable by considering quantized energy $E_n$ 
+and taking sum of the contribution from each subbands for $n_s$ (Eq. (\ref{eqn:1deg}))
+and $I_{\mathrm{DS}}$ (Eq. (\ref{eqn:IDSballistic})), as described in Refs. \cite{Lind,Yu:2008tv}.
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[keepaspectratio,width=8cm,bb=0 0 520 439]{TOB.pdf}
+ \caption{Illustration to show how the top of the barrier is determined by the Fermi level in the
+ drain and source.
+ The carriers (electrons) from source to drain (or vice versa) has positive (negative) wavevector $k$ and contribute to the
+ positive drain current $I_{\mathrm{DS}}$, and total carrier density at the
+ top of the barrier is determined by the some of the carriers from source and drain.
+% Reproduced and modified with permission from Ref. \protect{\cite{Rahman:2003ug}}.
+ Copyright @ IEEE. All rights reserved. Reprinted, with permission, from Ref. \protect{\cite{Rahman:2003ug}}.
+ % Copyright IEEE.
+ \label{fig:TOB}}
+\end{figure}
+
 \appendix
 \section{Notes on band nonparablicity}
 2バンドモデルでは\cite{mikoshiba}
@@ -319,7 +446,20 @@ The effective sub-band mass increases with energy, and the effective non-parabol
   \bibitem{mikoshiba} 御子柴 半導体の物理
   \bibitem{Vurgaftman} Vurgaftman
   \bibitem{kittel} C. Kittel, 固体物理学入門
-  \bibitem{Godoy} Andr\'es Godoy, Zhicheng Yang, Umberto Ravaioli, Francisco Gámiz. (2005) Effects of nonparabolic bands in quantum wires. Journal of Applied Physics 98:1, 013702. 
+  \bibitem{Godoy} Andr\'es Godoy, Zhicheng Yang, Umberto Ravaioli, Francisco Gámiz. (2005) Effects of nonparabolic bands in quantum wires. Journal of Applied Physics 98:1, 013702.
+ \bibitem{motohisa} J. Motohosia and S. Hara, \textit{Nanowire Field Effect Transistor},
+	 in {\em Fundamental Properties of Semiconductor
+  Nanowires\/} Fukata N and Rurali R (eds) 2021, (Singapore: Springer Singapore).
+\bibitem{Yu:2008tv}
+B.~Yu, L.~Wang, Y.~Yuan, P.M. Asbeck, Y.~Taur, IEEE Transactions on Electron
+  Devices \textbf{55}(11), 2846 (2008)
+\bibitem{Liang:2007uh}
+G.~Liang, J.~Xiang, N.~Kharche, G.~Klimeck, C.M. Lieber, M.~Lundstrom, Nano
+  Letters \textbf{7}(3), 642 (2007)
+\bibitem{Rahman:2003ug}
+A.~Rahman, {Jing Guo}, S.~Datta, M.~Lundstrom, IEEE Transactions on Electron
+  Devices \textbf{50}(9), 1853 (2003)
+
 \end{thebibliography}
 %% \bibliography{/Users/motohisa/Dropbox/Papers/rse}
 

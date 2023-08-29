@@ -1,5 +1,5 @@
 /*
- *  density2d.h - last saved: Time-stamp: <Fri Aug 30 19:57:48 JST 2019>
+ *  density2d.h - last saved: Time-stamp: <Tue Aug 29 07:16:35 JST 2023>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -48,7 +48,29 @@ extern "C" {
 #define	GLOBAL extern
 #endif
 
+    typedef struct param_density2d_struct
+  {
+	double temp;
+	double EFermi;
+	double Enm;
+	double alphanm;
+	double emsnm;
+  } param_density2d;
+  
+  typedef struct param_density2d_QW_struct
+  {
+	double alpha;
+	double ems;
+	double temp;
+	double W1;
+	int nmax;
+  } param_density2d_QW;
+
+
   GLOBAL double density2d0(double EFermi,double Enm, double ems, double temp);
+  GLOBAL double density2d_QW0(double EFermi,double ems, double temp,double W1, int n);
+  GLOBAL double density2d_QW_all0(double EFermi,double ems, double temp,
+				  double W1, int nmax);
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Mon Sep 30 12:04:51 JST 2019>
+ *  ballistic.c - Time-stamp: <Tue Aug 29 12:27:50 JST 2023>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -71,11 +71,7 @@ double func_for_findroot_E0_rect1d(double ene0,param_E0 *p);
 double func_for_findroot_E0_2d(double ene0,param_E0 *p);
 double E0_rect1dNP_root(param_ballistic p);
 double Ids_ballistic1d_rect1dNP(double VDS, double VGS,
-								param_ballistic p,double EFs);
-
-extern double density1d_NP(param_density1d params);
-extern double density1d_rect1d_all(double EFermi,param_density1d_rect p);
-extern double density1d_rect1dNP_all(double EFermi,param_density1d_rect p);
+				param_ballistic p,double EFs);
 
 double E0_2d_root(param_ballistic p);
 double Ids_ballistic2d(double VDS, double VGS, param_ballistic p,double EFs);
@@ -91,11 +87,11 @@ double Ids_ballistic2d(double VDS, double VGS, param_ballistic p,double EFs);
 // 1D, rectangular cross section, with nonparabolicity
 
 double func_for_findroot_E0_rect1dNP0(double ene0,double EFermi,
-									  double VDS, double VGS, 
-									  double alpha_D, double alpha_G,
-									  double Ceff,
-									  double alpha, double ems, double temp,
-									  double W1, double W2, int nmax, int mmax)
+				      double VDS, double VGS, 
+				      double alpha_D, double alpha_G,
+				      double Ceff,
+				      double alpha, double ems, double temp,
+				      double W1, double W2, int nmax, int mmax)
 {
   double n1d_S,n1d_D;
   param_density1d_rect p_density1d_rect;
@@ -138,7 +134,7 @@ double func_for_findroot_E0_rect1dNP00(double ene0,void *pp)
 }
 
 double E0_rect1dNP_root_brent(param_E0 params,
-							  double low, double high)
+			      double low, double high)
 {
   gsl_function F;
   int status;
@@ -222,10 +218,10 @@ double E0_rect1dNP_root(param_ballistic p)
 
 // current
 double Ids_ballistic1d_rect1dNP0(double VDS, double VGS, double EFs, 
-								double alpha_D, double alpha_G,
-								double Ceff,
-								double alpha, double ems, double temp,
-								double W1, double W2, int nmax, int mmax)
+				 double alpha_D, double alpha_G,
+				 double Ceff,
+				 double alpha, double ems, double temp,
+				 double W1, double W2, int nmax, int mmax)
 {
   double Enm,E0;
   //  double gamma_nm,Enmp;
@@ -256,9 +252,9 @@ double Ids_ballistic1d_rect1dNP0(double VDS, double VGS, double EFs,
 double Ids_ballistic1d_rect1dNP(double VDS, double VGS, param_ballistic p,double EFs)
 {
   return(Ids_ballistic1d_rect1dNP0(VDS,VGS,EFs,
-									p.alpha_D, p.alpha_G, p.Ceff,
-									p.alpha, p.ems, p.temp,
-									p.W1, p.W2, p.nmax, p.nmax));
+				   p.alpha_D, p.alpha_G, p.Ceff,
+				   p.alpha, p.ems, p.temp,
+				   p.W1, p.W2, p.nmax, p.nmax));
 }
 
 
@@ -285,11 +281,11 @@ double func_for_findroot_E0_2d0(double ene0,double EFermi,
 double func_for_findroot_E0_2d(double ene0,param_E0 *p)
 {
   return(func_for_findroot_E0_2d0(ene0,
-								  p->EFermi, p->VDS, p->VGS,
-								  p->alpha_D, p->alpha_G,
-								  p->Ceff,
-								  p->p_density1d_rect.ems,
-								  p->p_density1d_rect.temp));
+				  p->EFermi, p->VDS, p->VGS,
+				  p->alpha_D, p->alpha_G,
+				  p->Ceff,
+				  p->p_density1d_rect.ems,
+				  p->p_density1d_rect.temp));
 
 }
 
@@ -332,8 +328,8 @@ double E0_2d_root_brent(param_E0 params,
 }
 
 double E0_2d_root0(double EFermi,
-				   double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
-				   double ems, double temp)
+		   double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
+		   double ems, double temp)
 {
   double low,high;
   param_density1d_rect p_density1d_rect;
@@ -399,6 +395,166 @@ double Ids_ballistic2d0(double VDS, double VGS,	double EFs,
 double Ids_ballistic2d(double VDS, double VGS, param_ballistic p,double EFs)
 {
   return(Ids_ballistic2d0(VDS,VGS,EFs,
-						  p.alpha_D, p.alpha_G, p.Ceff,
-						  p.ems, p.temp));
+			  p.alpha_D, p.alpha_G, p.Ceff,
+			  p.ems, p.temp));
 }
+
+
+/*!
+  2D, with quantum confinment (subbands), parabollic band
+*/
+double func_for_findroot_E0_QW0(double ene0,double EFermi,
+				double VDS, double VGS, 
+				double alpha_D, double alpha_G,
+				double Ceff,
+				double alpha, double ems, double temp,
+				double W1, int nmax)
+{
+  double n2d_S,n2d_D;
+  param_density2d_QW p_density2d_QW;
+  
+  p_density2d_QW.alpha=alpha;
+  p_density2d_QW.ems=ems;
+  p_density2d_QW.temp=temp;
+  p_density2d_QW.W1=W1;
+  p_density2d_QW.nmax=nmax;
+
+  n2d_S=density2d_QW_all(EFermi-ene0,   p_density2d_QW);
+  n2d_D=density2d_QW_all(EFermi-ene0-VDS,p_density2d_QW);
+  return(ene0+alpha_D*VDS + alpha_G*VGS - (n2d_S + n2d_D)/(2*Ceff)*GSL_CONST_MKS_ELECTRON_VOLT);
+}
+
+double func_for_findroot_E0_QW(double ene0,param_E0 *p)
+{
+  return(func_for_findroot_E0_QW0(ene0,
+				  p->EFermi, p->VDS, p->VGS,
+				  p->alpha_D, p->alpha_G,
+				  p->Ceff,
+				  p->p_density1d_rect.alpha,
+				  p->p_density1d_rect.ems,
+				  p->p_density1d_rect.temp,
+				  p->p_density1d_rect.W1,p->p_density1d_rect.nmax));
+}
+
+double func_for_findroot_E0_QW00(double ene0,void *pp)
+{
+  param_E0 *p = (param_E0 *) pp;
+  double e0=func_for_findroot_E0_QW(ene0,p);
+  return(e0);
+}
+
+double E0_QW_root_brent(param_E0 params,
+			double low, double high)
+{
+  gsl_function F;
+  int status;
+  int iter = 0, max_iter = 100;
+  double r;
+  const gsl_root_fsolver_type *T;
+  gsl_root_fsolver *s;
+
+  F.function = &func_for_findroot_E0_QW00;
+  F.params = &params;
+
+  //FindRoots/Q/L=(low) qfunc_cMOSFET,param_cMOSFET;
+
+  T= gsl_root_fsolver_brent;
+  s = gsl_root_fsolver_alloc(T);
+
+  gsl_root_fsolver_set(s,&F,low,high);
+  do {
+        iter++;
+        status = gsl_root_fsolver_iterate(s);
+        r=gsl_root_fsolver_root(s);
+        low = gsl_root_fsolver_x_lower(s);
+        high = gsl_root_fsolver_x_upper(s);
+        status = gsl_root_test_interval(low,high,0,0.001);
+  } while (status==GSL_CONTINUE && iter < max_iter);
+
+  return(r);
+}
+
+double E0_QW_root0(double EFermi,
+		   double VDS, double VGS, double alpha_D, double alpha_G, double Ceff,
+		   double ems, double temp,
+		   double W1, int nmax)
+{
+  double low,high;
+  param_density1d_rect p_density1d_rect;
+  param_E0 params;
+  
+  p_density1d_rect.ems=ems;
+  p_density1d_rect.temp=temp;
+  p_density1d_rect.W1=W1;
+  p_density1d_rect.nmax=nmax;
+  
+  params.p_density1d_rect = p_density1d_rect;
+  params.EFermi = EFermi;
+  params.VDS = VDS;
+  params.VGS = VGS;
+  params.alpha_D = alpha_D;
+  params.alpha_G = alpha_G;
+  params.Ceff = Ceff;
+  low=-1;
+  high=1;
+  return(E0_QW_root_brent(params, low, high));
+}
+
+double E0_QW_root(param_ballistic p)
+{
+  return(E0_QW_root0(p.EFermi,p.VDS, p.VGS, p.alpha_D, p.alpha_G, p.Ceff,
+		     p.ems, p.temp,p.W1,p.nmax));
+}
+
+// current
+
+double Ids_ballistic2d0_E0_QW(double E0,
+			      double VDS, double VGS, double EFs, 
+			      double alpha_D, double alpha_G,
+			      double Ceff,
+			      double ems, double temp,
+			      double W1, int nmax)
+{
+  int n;
+  double Enm;
+  double ns0,v0,vinj,v1,v2,f1,f2,ids;
+  // point to modify start
+  ids=0;
+  for(n=1;n<=nmax;n++)
+    {
+      Enm=Ep_n_rectQW(ems, W1, n);
+      ns0=(density2d0(EFs-E0,Enm,ems, temp) + density2d0(EFs-E0-VDS,Enm,ems,temp))/2.;
+      v0 = sqrt(2*kBT0/(MASS(ems)*M_PI));
+      v1=gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0));
+      v2=gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+      vinj = v0*v1/v2;
+      f1=1-gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0));
+      f2=1+gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+      ids+=GSL_CONST_MKS_ELECTRON_VOLT*ns0*vinj*f1/f2;
+  // point to modify end
+  /* printf("%le\t%le\t%le\t%le\t%le\n",ids,v0,v1,v2,vinj); */
+    }
+  return(ids);
+}
+
+double Ids_ballistic2d_QW0(double VDS, double VGS,	double EFs,
+			   double alpha_D, double alpha_G,
+			   double Ceff,
+			   double ems, double temp,
+			   double W1, int nmax)
+{
+  double E0;
+  
+  E0=E0_QW_root0(EFs,VDS, VGS, alpha_D, alpha_G, Ceff,
+		 ems, temp,W1,nmax);
+  return(Ids_ballistic2d0_E0_QW(E0,VDS,VGS,EFs,
+				alpha_D,alpha_G,Ceff,ems,temp,W1,nmax));
+}
+
+double Ids_ballistic2d_QW(double VDS, double VGS, param_ballistic p,double EFs)
+{
+  return(Ids_ballistic2d_QW0(VDS,VGS,EFs,
+			     p.alpha_D, p.alpha_G, p.Ceff,
+			     p.ems, p.temp,p.W1,p.nmax));
+}
+

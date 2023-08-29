@@ -1,5 +1,5 @@
 /*
- *  density2d.h - last saved: Time-stamp: <Tue Aug 29 07:16:35 JST 2023>
+ *  density2d.h - last saved: Time-stamp: <Tue Aug 29 12:29:57 JST 2023>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -66,11 +66,16 @@ extern "C" {
 	int nmax;
   } param_density2d_QW;
 
-
   GLOBAL double density2d0(double EFermi,double Enm, double ems, double temp);
   GLOBAL double density2d_QW0(double EFermi,double ems, double temp,double W1, int n);
   GLOBAL double density2d_QW_all0(double EFermi,double ems, double temp,
 				  double W1, int nmax);
+
+  GLOBAL double density2d_QW_all(double EFermi, param_density2d_QW p);
+
+  // utility functions
+  GLOBAL double Ep_n_rectQW(double ems, double W1, int n);
+
 
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL

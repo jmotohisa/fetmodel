@@ -341,5 +341,5 @@ if test "x$with_python" = xyes; then
    AC_CONFIG_FILES([python/Makefile])
 fi
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile test/Makefile])
 AC_OUTPUT

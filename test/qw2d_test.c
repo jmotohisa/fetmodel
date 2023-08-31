@@ -1,5 +1,5 @@
 /*
- *  qw2d_test.c - Time-stamp: <Thu Aug 31 08:01:31 JST 2023>
+ *  qw2d_test.c - Time-stamp: <Thu Aug 31 09:25:54 JST 2023>
  *
  *   Copyright (c) 2023  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -85,16 +85,18 @@ int main()
   double Cc = sqrt(1.6e-19*1e21/(2*epsS*8.86e-12*1));
   alpha_D = 0;
   alpha_G = 1;
+  nmax=10;
+  EFs=0;
   
   /* Vgsmin=-0.1; */
   /* Vgsmax=0.1; */
   /* dVgs=0.01 */
   double ids;
   VDS=0.5;
-  VGS=0.1;
+  VGS=-0.1;
   ids=Ids_ballistic2d_QW0(VDS, VGS, EFs,
 			  alpha_D, alpha_G,
-			  Ceff,
+			  Cox,
 			  alpha, ems, temp,
 			  W1, nmax);
   printf("%le\n",ids);

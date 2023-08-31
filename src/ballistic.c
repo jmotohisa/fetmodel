@@ -1,5 +1,5 @@
 /*
- *  ballistic.c - Time-stamp: <Tue Aug 29 19:49:44 JST 2023>
+ *  ballistic.c - Time-stamp: <Thu Aug 31 09:26:44 JST 2023>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -518,6 +518,7 @@ double Ids_ballistic2d_QW0(double VDS, double VGS, double EFs,
   double Enm,E0;
   double ns0,v0,vinj,v1,v2,f1,f2,ids;
   int n;
+  double ene0,ene1;
   gsl_set_error_handler_off();
 
   E0=E0_QW_root0(EFs, VDS, VGS, alpha_D, alpha_G, Ceff,
@@ -529,15 +530,18 @@ double Ids_ballistic2d_QW0(double VDS, double VGS, double EFs,
     {
       Enm=Ep_n_rectQW(ems, W1, n);
       ns0=(density2d0(EFs-E0,Enm,ems, temp) + density2d0(EFs-E0-VDS,Enm,ems,temp))/2.;
+	  if(ns0>1) { // simple fix to avoid unverflow)
       v0 = sqrt(2*kBT0/(MASS(ems)*M_PI));
-      v1=gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0));
-      v2=gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+	  ene0=BETA*(EFs-Enm-E0);
+      v1=gsl_sf_fermi_dirac_half(ene0);
+      v2=gsl_sf_fermi_dirac_0(ene0);
       vinj = v0*v1/v2;
-      f1=1-gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_half(BETA*(EFs-Enm-E0));
-      f2=1+gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0-VDS))/gsl_sf_fermi_dirac_0(BETA*(EFs-Enm-E0));
+	  ene1=BETA*(EFs-Enm-E0-VDS);
+      f1=1-gsl_sf_fermi_dirac_half(ene1)/gsl_sf_fermi_dirac_half(ene0);
+      f2=1+gsl_sf_fermi_dirac_0(ene1)/gsl_sf_fermi_dirac_0(ene0);
       ids+=GSL_CONST_MKS_ELECTRON_VOLT*ns0*vinj*f1/f2;
-  // point to modify end
-  /* printf("%le\t%le\t%le\t%le\t%le\n",ids,v0,v1,v2,vinj); */
+	  /* printf("%le\t%le\t%le\t%le\t%le\n",ids,v0,v1,v2,vinj); */
+	  }
     }
   return(ids);
 }

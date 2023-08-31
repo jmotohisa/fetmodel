@@ -1,7 +1,7 @@
 /*
- *  fd.h - last saved: Time-stamp: <Thu Aug 31 08:58:16 JST 2023>
+ *  fdtest.c - Time-stamp: <Thu Aug 31 09:07:05 JST 2023>
  *
- *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
+ *   Copyright (c) 2023  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
  *   Redistribution and use in source and binary forms, with or without
  *   modification, are permitted provided that the following conditions
@@ -26,37 +26,56 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: fd.h 2019-09-16 21:52:16 jmotohisa $
+ *  $Id: fdtest.c 2023-08-31 08:47:09 jmotohisa $
  */
 
 /*! 
-  @file fd.h 
+  @file fdtest.c 
   @brief 
   @author J. Motohisa
+  @date
 */
 
-#ifndef _FD_H
-#define _FD_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <complex.h>
+#include <tgmath.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* #define GLOBAL_VALUE_DEFINE */
+/* #include "fdtest.h" */
 
-#ifdef	GLOBAL_VALUE_DEFINE
-#define	GLOBAL
-#else
-#define	GLOBAL extern
-#endif
+/*!
+  @brief
+  @param[in]
+  @param[out]
+  @param[in,out]
+  @return
+*/
 
-  GLOBAL double fd_mhalf(double x);
-  GLOBAL double fd_0(double x);
-  GLOBAL double fd_half(double x);
+#include <gsl/gsl_sf_fermi_dirac.h>
+#include "../src/fd.h"
 
-#undef GLOBAL_VALUE_DEFINE
-#undef GLOBAL
+int main()
+{
+  double ene;
+  double fd01,fd02,fd03;
+  double fdh1,fdh2,fdh3;
+  double fdm1,fdm2,fdm3;
+  
+  ene=-100;
+  fd01=gsl_sf_fermi_dirac_0(ene);
+  fd02=fd_0(ene);
+  fd03=fd01;
+  
+  fdh1=gsl_sf_fermi_dirac_half(ene);
+  fdh2=fd_half(ene);
+  fdh3=exp(ene);
+  
+  fdm1=fd_mhalf(ene);
+  fdm2=gsl_sf_fermi_dirac_mhalf(ene);
+  fdm3=exp(ene);
 
-#ifdef __cplusplus
+  /* printf("%le\t%le\t%le\t%le\t%le\t%le\t%le\t%le\t%le\t%le\n", */
+  /* 		 ene,fd01,fd02,fd03,fdh1,fdh2,fdh3,fdm1,fdm2,fdm3); */
+  printf("%le\t%le\t%le\t%le\t%le\t%le\n",ene,fdh1,fd01,fdm1,fdh1/fd01,fd01/fdm1);
 }
-#endif
-
-#endif  // _FD_H

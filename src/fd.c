@@ -1,5 +1,5 @@
 /*
- *  fd.c - Time-stamp: <Mon Sep 16 22:17:49 JST 2019>
+ *  fd.c - Time-stamp: <Thu Aug 31 09:09:47 JST 2023>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *

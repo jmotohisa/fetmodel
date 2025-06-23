@@ -86,6 +86,7 @@ from .define_params import (
 							parameters_ballistic,
 							parameters_cMOSFET,
 							parameters_cMESFET,
+							parameters_plMOSFET,
 							)
 from .wrapper import (
 		      density1d_rect1d_all,
@@ -117,5 +118,18 @@ from .isubth_nwfet import (
 						   DIBL_nwfet0,
 						   DIBL_nwfet,
 						   )
+from .planarMOSFET import (
+			   psiB_func,
+			   Vth_body,
+			   Vth_plMOSFET,
+			   Ids0_plMOSFET,
+			   Ids1_plMOSFET,
+			   Ids2_plMOSFET,
+			   Vdssat1_plMOSFET,
+			   func_psiS_findroot_plMOSFET,
+			   func_psiS_findroot1_plMOSFET,
+			   func_psiS_findroot_prime_plMOSFET,
+			   find_psiS_plMOSFET,
+			   )
 %}
   

@@ -1,5 +1,5 @@
 /*
- *  mos1d.h - last saved: Time-stamp: <Wed Jan 08 21:20:55 JST 2020>
+ *  mos1d.h - last saved: Time-stamp: <Sun Jun 22 19:08:46 JST 2025>
  *
  *   Copyright (c) 2020  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -47,9 +47,26 @@ extern "C" {
 #else
 #define	GLOBAL extern
 #endif
+typedef struct
+{
+  double Lg;
+  double eps_semi;
+  double Rs;
+  double Rd;
+  double Cox;
+  double temp;
+  double ni;
+  double dphi;
+  double tox;
+  double eps_ox;
+  double mue;
+  double NA;
+  /* double Eg; */
+  } param_plMOSFET;
 
+  GLOBAL double func_Qs_plMOS(double psis,param_plMOSFET p);
   GLOBAL double func_QsMOS1D(double psis,double np0,double pp0,double eps_s,double temp);
-
+  
 #undef GLOBAL_VALUE_DEFINE
 #undef GLOBAL
 

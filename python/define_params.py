@@ -125,6 +125,53 @@ class parameters_cMESFET:
         print("Vbi=", self.cMESFET.Vbi)
 
 
+class parameters_plMOSFET:
+    def __init__(self,
+                 Lg=1.5e-6,
+                 eps_semi=11.6,
+                 Rs=0.,
+                 Rd=0.,
+                 Cox=-1.,
+                 temp=300.,
+                 ni=1.45e16,
+                 dphi=0.,
+                 tox=1.5e-9,
+                 eps_ox=3.9,
+                 mue=0.04,
+                 NA=1e21):
+
+        self.plMOSFET = fetmodel.param_plMOSFET()
+        self.plMOSFET.Lg = Lg
+        self.plMOSFET.eps_semi = eps_semi
+        self.plMOSFET.Rs = Rs
+        self.plMOSFET.Rd = Rd
+        if Cox < 0:
+            self.plMOSFET.Cox = const.epsilon_0*eps_ox/tox
+        else:
+            self.plMOSFET.Cox = Cox
+        self.plMOSFET.temp = temp
+        self.plMOSFET.ni = ni
+        self.plMOSFET.dphi = dphi
+        self.plMOSFET.tox = tox
+        self.plMOSFET.eps_ox = eps_ox
+        self.plMOSFET.mue = mue
+        self.plMOSFET.NA = NA
+
+    def output(self):
+        print("Lg=", self.plMOSFET.Lg)
+        print("eps_semi=", self.plMOSFET.eps_semi)
+        print("Rs=", self.plMOSFET.Rs)
+        print("Rd=", self.plMOSFET.Rd)
+        print("Cox=", self.plMOSFET.Cox)
+        print("temp=", self.plMOSFET.temp)
+        print("ni=", self.plMOSFET.ni)
+        print("dphi=", self.plMOSFET.dphi)
+        print("tox=", self.plMOSFET.tox)
+        print("eps_ox=", self.plMOSFET.eps_ox)
+        print("mue=", self.plMOSFET.mue)
+        print("NA=", self.plMOSFET.NA)
+
+
 class parameters_solver:
 
     def __init__(self,

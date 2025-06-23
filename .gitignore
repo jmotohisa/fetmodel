@@ -60,3 +60,4 @@ doc/*.synctex.gz
 doc/*.pdf
 
 test/qw2d_test
+test/fdtest

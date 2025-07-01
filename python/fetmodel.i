@@ -130,6 +130,7 @@ from .planarMOSFET import (
 			   func_psiS_findroot1_plMOSFET,
 			   func_psiS_findroot_prime_plMOSFET,
 			   find_psiS_plMOSFET,
+			   Ids_plMOSFET,
 			   )
 %}
   

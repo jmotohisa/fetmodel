@@ -136,9 +136,9 @@ psiS4 = np.empty_like(Vds)
 for i, Vds0 in enumerate(Vds):
     Vgs = 1
     psiS1[i] = fetmodel.find_psiS_plMOSFET(p, Vgs, Vds0)
-    Vgs = 2
-    psiS2[i] = fetmodel.find_psiS_plMOSFET(p, Vgs, Vds0)
     Vgs = 3
+    psiS2[i] = fetmodel.find_psiS_plMOSFET(p, Vgs, Vds0)
+    Vgs = 5
     psiS3[i] = fetmodel.find_psiS_plMOSFET(p, Vgs, Vds0)
 
 fig = plt.figure()
@@ -149,3 +149,42 @@ ax.plot(Vds, psiS3)
 psiS4 = 2*fetmodel.psiB_func(p)+Vds
 ax.plot(Vds, psiS4, '.')
 plt.show()
+
+Vds = np.linspace(0, 5)
+Vgs = np.linspace(1, 5, 5)
+print(Vgs)
+
+Ids1 = np.zeros([Vgs.shape[0], Vds.shape[0]])
+Ids2 = np.zeros([Vgs.shape[0], Vds.shape[0]])
+Ids3 = np.zeros([Vgs.shape[0], Vds.shape[0]])
+Ids4 = np.zeros([Vgs.shape[0], Vds.shape[0]])
+
+for i, Vgs0 in enumerate(Vgs):
+    for j, Vds0 in enumerate(Vds):
+        Ids1[i][j] = fetmodel.Ids1_plMOSFET(Vgs0, Vds0, p)
+        Ids2[i][j] = fetmodel.Ids0_plMOSFET(
+            Vgs0, Vds0, fetmodel.Vth_plMOSFET(p), p)
+        Ids3[i][j] = fetmodel.Ids2_plMOSFET(Vgs0, Vds0, p)
+        Ids4[i][j] = fetmodel.Ids_plMOSFET(Vgs0, Vds0, p)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+for j, ids0 in enumerate(Ids2):
+    if (j == 0):
+        ax.plot(Vds, Ids2[j, :], color='black', label=r'Eq.(3.2)')
+        ax.plot(Vds, Ids1[j, :], color='red', label=r'Eq.(3.3)')
+        ax.plot(Vds, Ids3[j, :], color='blue', label=r'Eq.(3.4)')
+        ax.plot(Vds, Ids4[j, :], color='orange', label=r'strict')
+    else:
+        ax.plot(Vds, Ids2[j, :], color='black')
+        ax.plot(Vds, Ids1[j, :], color='red')
+        ax.plot(Vds, Ids3[j, :], color='blue')
+        ax.plot(Vds, Ids4[j, :], color='orange')
+
+ax.set_xlim([0, 5])
+ax.set_xlabel(r'$V_{DS}$ [V]', size=18)
+# ax.set_ylim([0,2])
+ax.set_ylabel(r'$I_{DS}$ [A/m]', size=18)
+# ax.plot(Vds, Vth2,label=r'$N_A=3\times 10^{15} \mathrm{cm}^{-3}$')
+ax.legend(loc='best', fontsize=18)
+ax.tick_params(labelsize=18)

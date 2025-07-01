@@ -153,9 +153,32 @@ def func_psiS_findroot1_plMOSFET(psiS, p, Vgs):
     return psiB+a-Vgs
 
 
-def find_psiS_plMOSFET(p, Vgs, Vds):
-    x0 = psiB_func(p)
+def find_psiS_plMOSFET(p, Vgs, Vds, x0=1, maxiter=200):
     e0 = optimize.root_scalar(func_psiS_findroot_plMOSFET, method='newton',
                               fprime=func_psiS_findroot_prime_plMOSFET,
-                              args=(p, Vgs, Vds), x0=x0)
-    return e0.root
+                              args=(p, Vgs, Vds), x0=x0, maxiter=maxiter)
+    if e0.converged:
+        #        print(Vgs,Vds,x0,e0.root)
+        return e0.root
+    else:
+        print(Vgs, Vds, x0, float('nan'))
+        print(e0)
+        return float('nan')
+
+
+def Ids_plMOSFET00(psiS, Vgs, p):
+    a1 = p.Cox*((Vgs+p.temp*const.k/const.e)*psiS - psiS**2/2)
+    a2 = -np.sqrt(2*const.epsilon_0*p.eps_semi*const.e)**(1.5)*2/3
+    a3 = const.k * p.temp/const.e * \
+        np.sqrt(2*const.epsilon_0*p.eps_semi*const.e*psiS)
+    return a1+a2+a3
+
+
+def Ids_plMOSFET0(psiSS, psiSD, Vgs, p):
+    return (Ids_plMOSFET00(psiSD, Vgs, p)-Ids_plMOSFET00(psiSS, Vgs, p))*p.mue/p.Lg
+
+
+def Ids_plMOSFET(Vgs, Vds, p):
+    psiSS = find_psiS_plMOSFET(p, Vgs, 0)
+    psiSD = find_psiS_plMOSFET(p, Vgs, Vds)
+    return Ids_plMOSFET0(psiSS, psiSD, Vgs, p)

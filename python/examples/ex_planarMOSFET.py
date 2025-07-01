@@ -62,7 +62,6 @@ Ids2 = np.zeros([Vgs.shape[0], Vds.shape[0]])
 Ids3 = np.zeros([Vgs.shape[0], Vds.shape[0]])
 
 p.output()
-print(Vgs)
 
 for i, Vgs0 in enumerate(Vgs):
     for j, Vds0 in enumerate(Vds):
@@ -150,9 +149,9 @@ psiS4 = 2*fetmodel.psiB_func(p)+Vds
 ax.plot(Vds, psiS4, '.')
 plt.show()
 
+######
 Vds = np.linspace(0, 5)
 Vgs = np.linspace(1, 5, 5)
-print(Vgs)
 
 Ids1 = np.zeros([Vgs.shape[0], Vds.shape[0]])
 Ids2 = np.zeros([Vgs.shape[0], Vds.shape[0]])
@@ -188,3 +187,30 @@ ax.set_ylabel(r'$I_{DS}$ [A/m]', size=18)
 # ax.plot(Vds, Vth2,label=r'$N_A=3\times 10^{15} \mathrm{cm}^{-3}$')
 ax.legend(loc='best', fontsize=18)
 ax.tick_params(labelsize=18)
+plt.show()
+
+######
+Vds = 5
+Vgs = np.linspace(0, 5, 101)
+
+Ids1 = np.zeros(Vgs.shape[0])
+
+for i, Vgs0 in enumerate(Vgs):
+    Ids1[i] = fetmodel.Ids_plMOSFET(Vgs0, Vds, p)
+
+fig = plt.figure()
+fig.tight_layout()
+ax = fig.add_subplot(111)
+for j, ids0 in enumerate(Ids2):
+    if (j == 0):
+        ax.plot(Vgs, Ids1, color='red', label=r'strict')
+
+ax.set_xlim([0, 5])
+ax.set_xlabel(r'$V_{GS}$ [V]', size=18)
+# ax.set_ylim([0,2])
+ax.set_yscale('log')
+ax.set_ylabel(r'$I_{DS}$ [A/m]', size=18)
+# ax.plot(Vds, Vth2,label=r'$N_A=3\times 10^{15} \mathrm{cm}^{-3}$')
+ax.legend(loc='best', fontsize=18)
+ax.tick_params(labelsize=18)
+plt.show()

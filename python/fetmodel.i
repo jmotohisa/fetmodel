@@ -103,7 +103,9 @@ from .wrapper import (
 		      func_for_findroot_E0_QW,
 		      E0_QW_root,
 		      Ids_ballistic2d_QW,
-		      func_Qcharge1dMOS0,
+		      func_Qcharge_plMOS,
+		      Q_plMOS,
+		      Q0_plMOS,
   					  )
 from .isubth_nwfet import (
 						   lambda3_naturallength,

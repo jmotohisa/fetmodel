@@ -59,8 +59,8 @@ def Ids_ballistic1d_rect1dNP(Vds, Vgs, p, EFs):
     p: class of parameters_ballistic
     (wrapper)
     """
-    return(fetmodel.Ids_ballistic1d_rect1dNP0(Vds, Vgs, EFs, p.alpha_D, p.alpha_G, p.Ceff,
-                                              p.alpha, p.ems, p.temp, p.W1, p.W2, int(p.nmax), int(p.mmax)))
+    return (fetmodel.Ids_ballistic1d_rect1dNP0(Vds, Vgs, EFs, p.alpha_D, p.alpha_G, p.Ceff,
+                                               p.alpha, p.ems, p.temp, p.W1, p.W2, int(p.nmax), int(p.mmax)))
 
 # 2D: no confinement
 
@@ -75,7 +75,7 @@ def density2d(Efermi, p):
 
 def func_for_findroot_E0_2d(ene0, Vds, Vgs, EFs, p):
     """
-    C-implementation of the function to find top of the barrier in 2D ballistic FET (wrapper) 
+    C-implementation of the function to find top of the barrier in 2D ballistic FET (wrapper)
     p: class of parameters_ballistic
     Single paraolic band
     """
@@ -116,7 +116,7 @@ def density2d_QW_all(Efermi, p):
 
 def func_for_findroot_E0_QW(ene0, Vds, Vgs, EFs, p):
     """
-    C-implementation of the function to find top of the barrier in 2D ballistic FET (wrapper) 
+    C-implementation of the function to find top of the barrier in 2D ballistic FET (wrapper)
     p: class of parameters_ballistic
     Single paraolic band, with quantum well confinement
     """
@@ -141,16 +141,9 @@ def Ids_ballistic2d_QW(Vds, Vgs, p, EFs):
     p: class of parameters_ballistic
     (wrapper)
     """
-    return(fetmodel.Ids_ballistic2d_QW0(Vds, Vgs, EFs, p.alpha_D, p.alpha_G, p.Ceff,
-                                        p.alpha, p.ems, p.temp, p.W1, int(p.nmax)))
+    return (fetmodel.Ids_ballistic2d_QW0(Vds, Vgs, EFs, p.alpha_D, p.alpha_G, p.Ceff,
+                                         p.alpha, p.ems, p.temp, p.W1, int(p.nmax)))
 
-# from mos1d
-
-
-def func_Qcharge1dMOS0(psis, ni, eps_semi, Na, temp):
-    pp0 = Na
-    np0 = ni**2/Na
-    return fetmodel.func_QsMOS1D(psis, np0, pp0, eps_semi, temp)
 
 # from cMOSFET
 
@@ -159,11 +152,27 @@ def Ids_cMOSFET(Vds, Vgs, p, ps=fetmodel.param_solver()):
     """
     p: class of parameters_cMOSFET
     """
-    return(fetmodel.func_Ids_cMOSFET(Vds, Vgs, p, ps))
+    return (fetmodel.func_Ids_cMOSFET(Vds, Vgs, p, ps))
 
 
 def Ids2_cMOSFET(Vds, Vgs, p):
     """
     p: class of parameters_cMOSFET
     """
-    return(fetmodel.func_Ids2_cMOSFET(Vds, Vgs, p))
+    return (fetmodel.func_Ids2_cMOSFET(Vds, Vgs, p))
+
+# from mos1d
+
+
+def func_Qcharge_plMOS(psis, ni, eps_semi, Na, temp):
+    pp0 = Na
+    np0 = ni**2/Na
+    return fetmodel.func_QsMOS1D(psis, np0, pp0, eps_semi, temp)
+
+
+def Q_plMOS(psis, p):
+    return func_Qcharge_plMOS(psis, p.ni, p.eps_semi, p.NA, p.temp)
+
+
+def Q0_plMOS(psis, p, np0, pp0):
+    return fetmodel.func_QsMOS1D(psis, np0, pp0, p.eps_semi, p.temp)

@@ -41,7 +41,7 @@ class parameters_ballistic:
         print("W2=", self.W2)
         print("nmax=", self.nmax)
         print("mmax=", self.mmax)
-b
+
 
 class parameters_cMOSFET:
     def __init__(self,

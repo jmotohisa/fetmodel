@@ -1,5 +1,5 @@
 /*
- *  ccm.c - Time-stamp: <Sun Jan 17 07:59:37 UTC 2021>
+ *  ccm.c - Time-stamp: <Tue Nov 04 22:23:36 JST 2025>
  *
  *   Copyright (c) 2019  jmotohisa (Junichi Motohisa)  <motohisa@ist.hokudai.ac.jp>
  *
@@ -109,9 +109,9 @@ double logqdfunc_cMOSFET_gsl(double, void *);
 void logqfdfunc_cMOSFET_gsl(double, void *, double *, double *);
 double r_cMESFET_gsl(double, void *);
 
-int Ids0_cMOSFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
-int Ids_cMOSFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
-int Ids_cMESFET_RmodFunc(gsl_vector *, void *, gsl_vector *);
+int Ids0_cMOSFET_RmodFunc(const gsl_vector *, void *, gsl_vector *);
+int Ids_cMOSFET_RmodFunc(const gsl_vector *, void *, gsl_vector *);
+int Ids_cMESFET_RmodFunc(const gsl_vector *, void *, gsl_vector *);
 
 /* void recalc_param_cMOSFET() */
 /* { */
@@ -537,7 +537,7 @@ double Ids0_cMOSFET_R(double Vds,double Vgs,param_cMOSFET p)
 }
    
 	
-int Ids0_cMOSFET_RmodFunc(gsl_vector *x, void *pp, gsl_vector *f)
+int Ids0_cMOSFET_RmodFunc(const gsl_vector *x, void *pp, gsl_vector *f)
 {
   struct Ids_params * params = (struct Ids_params *)pp;
   const double Vds = (params->Vds);
@@ -599,7 +599,7 @@ double Ids_cMOSFET_R0(double Vds,double Vgs,param_cMOSFET p,param_solver ps)
 }
    
 	
-int Ids_cMOSFET_RmodFunc(gsl_vector *x, void *pp, gsl_vector *f)
+int Ids_cMOSFET_RmodFunc(const gsl_vector *x, void *pp, gsl_vector *f)
 {
   struct Ids_params * params = (struct Ids_params *)pp;
   const double Vds = (params->Vds);
@@ -813,7 +813,7 @@ double func_Ids_cMESFET_R(double Vds,double Vgs,param_cMESFET p,param_solver ps)
   return(idsmod);
 }
 	
-int Ids_cMESFET_RmodFunc(gsl_vector *x, void *pp, gsl_vector *f)
+int Ids_cMESFET_RmodFunc(const gsl_vector *x, void *pp, gsl_vector *f)
 {
   struct Ids_params * params = (struct Ids_params *) pp;
   const double Vds = (params->Vds);

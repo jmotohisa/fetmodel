@@ -1,13 +1,13 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.56)
-AC_INIT(fetmodel, 0.2a, motohisa@ist.hokudai.ac.jp)
+AC_PREREQ([2.72])
+AC_INIT([fetmodel],[0.2a],[motohisa@ist.hokudai.ac.jp])
 AC_CONFIG_SRCDIR([src/ccm.c])
 
 SHARED_VERSION_INFO="0:0:0" # CURRENT:REVISION:AGE
 
-AC_CONFIG_HEADER([src/config.h])
+AC_CONFIG_HEADERS([src/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_SUBST(SHARED_VERSION_INFO)
 
@@ -25,7 +25,7 @@ AC_PROG_INSTALL
 # Compiler flags
 
 AC_ARG_ENABLE(debug,
-              [AC_HELP_STRING([--enable-debug],[compile for debugging])],
+              [AS_HELP_STRING([--enable-debug],[compile for debugging])],
 	      enable_debug=$enableval, enable_debug=no)
 if test "$enable_debug" = "yes"; then
 	CFLAGS="-g -Wall -O0"
@@ -36,7 +36,7 @@ fi
 
 ##############################################################################
 # More checks
-AC_PROG_LIBTOOL
+LT_INIT
 
 
 # Checks for libraries.
@@ -59,7 +59,7 @@ fi
 
 ##############################################################################
 
-AC_ARG_WITH(libctl, [AC_HELP_STRING([--with-libctl=<dir>],[specify libctl directory])], with_libctl=$withval, with_libctl=yes)
+AC_ARG_WITH(libctl, [AS_HELP_STRING([--with-libctl=<dir>],[specify libctl directory])], with_libctl=$withval, with_libctl=yes)
 if test "x$with_libctl" = "xno"; then
         :
 elif test "x$with_libctl" != "xyes"; then
@@ -71,7 +71,7 @@ fi
 # subsequent libraries are only for libctl front end
 pcsmatrix_save_LIBS=$LIBS
 
-AC_ARG_WITH(libctl, [AC_HELP_STRING([--with-libctl=<dir>],[specify libctl directory])], with_libctl=$withval, with_libctl=yes)
+AC_ARG_WITH(libctl, [AS_HELP_STRING([--with-libctl=<dir>],[specify libctl directory])], with_libctl=$withval, with_libctl=yes)
 if test "x$with_libctl" = "xno"; then
         :
 elif test "x$with_libctl" != "xyes"; then
@@ -109,28 +109,22 @@ AC_CHECK_HEADERS([libguile.h guile/gh.h])
 
 AC_CHECK_FUNCS(scm_make_smob_type)
 AC_MSG_CHECKING([for SCM_SMOB_PREDICATE])
-AC_TRY_LINK([#include <guile/gh.h>
-#include <libguile/smob.h>],
-                    [int x; SCM_SMOB_PREDICATE(1,x);],
-                    ok=yes, ok=no)
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <guile/gh.h>
+#include <libguile/smob.h>]], [[int x; SCM_SMOB_PREDICATE(1,x);]])],[ok=yes],[ok=no])
 AC_MSG_RESULT($ok)
 if test $ok = yes; then
 	AC_DEFINE(HAVE_SCM_SMOB_PREDICATE, 1, [define if we have SCM_SMOB_PREDICATE])
 fi
 AC_MSG_CHECKING([for SCM_SMOB_DATA])
-AC_TRY_LINK([#include <guile/gh.h>
-#include <libguile/smob.h>],
-                    [int x; SCM_SMOB_DATA(x);],
-                    ok=yes, ok=no)
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <guile/gh.h>
+#include <libguile/smob.h>]], [[int x; SCM_SMOB_DATA(x);]])],[ok=yes],[ok=no])
 AC_MSG_RESULT($ok)
 if test $ok = yes; then
 	AC_DEFINE(HAVE_SCM_SMOB_DATA, 1, [define if we have SCM_SMOB_DATA])
 fi
 AC_MSG_CHECKING([for SCM_NEWSMOB])
-AC_TRY_LINK([#include <guile/gh.h>
-#include <libguile/smob.h>],
-                    [int x; SCM_NEWSMOB(x,1,0);],
-                    ok=yes, ok=no)
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <guile/gh.h>
+#include <libguile/smob.h>]], [[int x; SCM_NEWSMOB(x,1,0);]])],[ok=yes],[ok=no])
 AC_MSG_RESULT($ok)
 if test $ok = yes; then
 	AC_DEFINE(HAVE_SCM_NEWSMOB, 1, [define if we have SCM_NEWSMOB])
@@ -242,7 +236,7 @@ AC_SUBST(LIBCTL_LIBS)
 # checks for python
 ##############################################################################
 AC_ARG_WITH(python,
-	[AC_HELP_STRING([--without-python], [compile without Python interface])],
+	[AS_HELP_STRING([--without-python],[compile without Python interface])],
         with_python=$withval,with_python=yes)
 
 if test "x$with_python" = xno; then
@@ -324,7 +318,15 @@ dnl fi
 
 ##############################################################################
 # Checks for header files.
-AC_HEADER_STDC
+dnl m4_warn([obsolete],
+dnl [The preprocessor macro 'STDC_HEADERS' is obsolete.
+dnl   Except in unusual embedded environments, you can safely include all
+dnl   C89 headers unconditionally.])dnl
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+dnl AC_CHECK_INCLUDES_DEFAULT
+dnl AC_PROG_EGREP
+
 AC_CHECK_HEADERS([stdlib.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
